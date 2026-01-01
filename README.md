@@ -7,13 +7,18 @@
 
 项目目录结构概览：
 
-- **`docs/`**: 存放你的学习笔记、研究论文和参考资料。
-- **`src/`**: 源代码的主目录。
-  - **`src/scripts/`**: 用于测试 API 连接或运行以此实验的简单脚本。
-- **`prompts/`**: 用于保存有趣的系统提示词 (System Prompts)、用户提示词 (User
-  Prompts) 以及提示词工程实验。
-- **`examples/`**: 保存对话日志、示例输出或截图。
-- **`.env.example`**: 环境变量的模板文件（用于安全地配置 API 密钥等）。
+- **`sessions/`**: 对话记录，按年月归档 (`sessions/2025/01/`)
+- **`notes/`**: 个人学习笔记
+  - `architecture/` - 系统设计笔记
+  - `project-meta/` - 项目分析与规划
+  - `ai-fundamentals/` - AI 基础知识
+  - `prompt-engineering/` - 提示工程
+  - `tools-and-apis/` - 工具与 API
+- **`library/`**: 外部资料库（论文、教程、参考资料）
+- **`prompts/`**: Prompt 模板
+  - `system/` - 系统提示词
+  - `user/` - 用户提示词模板
+- **`.env.example`**: 环境变量的模板文件（用于安全地配置 API 密钥等）
 
 ## 🚀 快速开始 (Getting Started)
 
