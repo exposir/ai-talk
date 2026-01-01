@@ -15,6 +15,7 @@
 | [settings.md](./settings.md) | 配置文件、权限、环境变量 |
 | [shortcuts.md](./shortcuts.md) | 快捷键速查、Vim 模式 |
 | [workflows.md](./workflows.md) | 常用工作流和最佳实践 |
+| [best-practices.md](./best-practices.md) | 最佳实践经验总结 |
 
 ### 个人笔记
 
