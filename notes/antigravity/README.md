@@ -27,6 +27,7 @@ AI 编程平台，基于 Gemini 3 Pro 模型。
 | ------------------------------------------ | ------------------------------------ |
 | [advanced-config.md](./advanced-config.md) | Settings、Rules、Workflows、MCP 配置 |
 | [shortcuts.md](./shortcuts.md)             | 完整快捷键与操作指南                 |
+| [pricing-usage.md](./pricing-usage.md)     | 订阅计划、用量配额                   |
 | [best-practices.md](./best-practices.md)   | 社区验证最佳实践                     |
 
 ### 个人笔记
