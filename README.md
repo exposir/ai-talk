@@ -1,63 +1,98 @@
-# AI Talk (AI 对话学习项目)
+# AI Talk
 
-欢迎来到 **AI Talk**
-项目！这个仓库旨在帮助你学习 AI 概念，并构建一个与 AI 模型交互的聊天界面。
+AI 对话学习项目，专注于 LLM 应用架构设计与实践。
 
-## 📂 目录结构 (Directory Structure)
+## 项目状态
 
-项目目录结构概览：
+当前处于**架构设计阶段**，文档和设计已完成，代码实现待开发。
 
-- **`sessions/`**: 对话记录，按年月归档 (`sessions/2025/01/`)
-- **`notes/`**: 个人学习笔记
-  - `architecture/` - 系统设计笔记
-  - `project-meta/` - 项目分析与规划
-  - `ai-fundamentals/` - AI 基础知识
-  - `prompt-engineering/` - 提示工程
-  - `tools-and-apis/` - 工具与 API
-- **`library/`**: 外部资料库（论文、教程、参考资料）
-- **`prompts/`**: Prompt 模板
-  - `system/` - 系统提示词
-  - `user/` - 用户提示词模板
-- **`.env.example`**: 环境变量的模板文件（用于安全地配置 API 密钥等）
+## 技术栈
 
-## 🚀 快速开始 (Getting Started)
+- **运行时**: Node.js
+- **API**: OpenAI / Gemini
+- **代码格式化**: Prettier
 
-### 前置要求
+## 架构设计
 
-- 已安装 [Node.js](https://nodejs.org/)
-- 拥有 OpenAI API Key (或其他服务商的 Key)
+项目采用"双引擎"分层架构：
 
-### 安装设置
+```mermaid
+flowchart TB
+    subgraph Control["Control Plane"]
+        RT[Risk Tagger] --> PE[Policy Engine]
+        PE --> R[Router]
+        R --> EF[Evidence Firewall]
+    end
 
-1. **克隆仓库** (如果尚未克隆):
+    subgraph Data["Data Plane"]
+        CB[Context Builder] --> AL[Agent Loop]
+        AL --> TG[Tool Gateway]
+        TG --> OH[Output Handler]
+        OH --> VR[Validator/Retry]
+        VR --> TE[Tracing/Eval]
+    end
 
-   ```bash
-   git clone <repository-url>
-   cd ai-talk
-   ```
+    subgraph Engines["Dual Engine"]
+        S1["System 1 (快车道)\n~80% 简单任务"]
+        S2["System 2 (慢车道)\n~20% 复杂任务"]
+    end
 
-2. **安装依赖**:
+    Control --> Engines
+    Engines --> Data
+```
 
-   ```bash
-   npm install
-   ```
+- **System 1 (快车道)**: 处理简单任务（问答、基础查询）
+- **System 2 (慢车道)**: 处理复杂任务（代码分析、深度推理）
 
-3. **配置环境变量**: 复制示例环境文件:
-   ```bash
-   cp .env.example .env
-   ```
-   打开 `.env` 并填入你的 API Key:
-   ```env
-   OPENAI_API_KEY=sk-...
-   ```
+详细设计见 `notes/architecture/`
 
-## 📝 使用方法
+## 目录结构
 
-_即将推出：关于如何运行聊天界面和脚本的说明。_
+```
+ai-talk/
+├── notes/                  # 学习笔记
+│   ├── architecture/       # 系统架构设计
+│   ├── claude-code/        # Claude Code 使用指南
+│   ├── ai-fundamentals/    # AI 基础知识
+│   ├── prompt-engineering/ # 提示工程
+│   ├── project-meta/       # 项目分析与规划
+│   └── tools-and-apis/     # 工具与 API
+├── library/                # 外部资料（论文、教程）
+├── prompts/                # Prompt 模板
+│   ├── system/             # 系统提示词
+│   └── user/               # 用户提示词
+├── sessions/               # 对话记录（按日期归档）
+├── docs/                   # 项目文档
+├── CLAUDE.md               # Claude Code 项目配置
+└── .env.example            # 环境变量模板
+```
 
-## 🗺️ 路线图 (Roadmap)
+## 快速开始
 
-- [x] 初始化项目结构
-- [ ] 实现基础聊天脚本
-- [ ] 添加 Web 界面
-- [ ] 探索不同的 AI 模型
+```bash
+# 克隆仓库
+git clone <repository-url>
+cd ai-talk
+
+# 安装依赖
+npm install
+
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env 填入 API Key
+
+# 格式化代码
+npx prettier --write .
+```
+
+## 环境变量
+
+| 变量 | 说明 |
+|------|------|
+| `OPENAI_API_KEY` | OpenAI API 密钥 |
+| `GEMINI_API_KEY` | Google Gemini API 密钥 |
+
+## 相关资源
+
+- [Claude Code 使用指南](./notes/claude-code/README.md)
+- [架构设计文档](./notes/architecture/)

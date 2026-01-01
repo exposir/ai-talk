@@ -4,6 +4,8 @@
 
 ## 目录
 
+### 参考文档
+
 | 文件 | 说明 |
 |------|------|
 | [basic-usage.md](./basic-usage.md) | 基础使用、CLI 参数、可用工具 |
@@ -13,6 +15,12 @@
 | [settings.md](./settings.md) | 配置文件、权限、环境变量 |
 | [shortcuts.md](./shortcuts.md) | 快捷键速查、Vim 模式 |
 | [workflows.md](./workflows.md) | 常用工作流和最佳实践 |
+
+### 个人笔记
+
+| 文件 | 说明 |
+|------|------|
+| [notes.md](./notes.md) | 使用心得、技巧、踩坑 |
 
 ## 快速开始
 
