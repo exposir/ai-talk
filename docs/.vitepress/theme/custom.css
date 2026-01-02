@@ -1,0 +1,13 @@
+/* 隐藏首页的默认 VitePress 样式 */
+.Layout.home .VPNav,
+.Layout.home .VPNavBar {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* 首页使用自定义组件时隐藏默认内容 */
+.custom-home-wrapper .VPHome,
+.custom-home-wrapper .VPHomeHero,
+.custom-home-wrapper .VPHomeFeatures {
+  display: none !important;
+}

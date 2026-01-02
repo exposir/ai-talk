@@ -12,6 +12,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
+      { text: '文档目录', link: '/guide/' },
       { text: 'Claude Code', link: '/claude-code/' },
       { text: 'Antigravity', link: '/antigravity/' },
       { text: '架构设计', link: '/architecture/' },
