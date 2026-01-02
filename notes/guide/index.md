@@ -57,7 +57,6 @@ LLM 应用双引擎分层架构设计。
 
 AI 模型、工具和技术的完整指南。
 
-- [目录索引](../ai-fundamentals/README.md) - AI 基础知识导览
 - [AI 模型汇总](../ai-fundamentals/ai-models.md) - 业内最新 LLM 和多模态模型
 - [本地部署指南](../ai-fundamentals/local-deployment.md) - Ollama、LM
   Studio 等工具 🚧
