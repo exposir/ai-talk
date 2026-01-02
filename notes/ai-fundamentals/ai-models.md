@@ -598,6 +598,12 @@ Understanding，包含 11.5K 道需要视觉理解的大学级问题，涵盖艺
 
 ### 开源模型排名
 
+**排名依据**：综合 Hugging Face Open LLM
+Leaderboard、LiveBench、各模型在上述基准测试中的表现，以及社区实际使用反馈。
+
+📎 来源：[huggingface.co/spaces/open-llm-leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard)
+| [livebench.ai](https://livebench.ai)
+
 | 排名 | 模型             | 公司     | 主要优势        | 推荐场景      |
 | ---- | ---------------- | -------- | --------------- | ------------- |
 | 1    | DeepSeek-V3.2    | DeepSeek | 综合最强        | 通用/推理     |
