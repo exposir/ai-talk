@@ -55,7 +55,18 @@ LLM 应用双引擎分层架构设计。
 
 ## 📚 AI 基础
 
+AI 模型、工具和技术的完整指南。
+
+- [目录索引](../ai-fundamentals/README.md) - AI 基础知识导览
 - [AI 模型汇总](../ai-fundamentals/ai-models.md) - 业内最新 LLM 和多模态模型
+- [本地部署指南](../ai-fundamentals/local-deployment.md) - Ollama、LM
+  Studio 等工具 🚧
+- [API 快速入门](../ai-fundamentals/api-quickstart.md) - 各家 API 调用方法 🚧
+- [Prompt 工程技巧](../ai-fundamentals/prompt-engineering.md) - 提示词优化技术 🚧
+- [多模态模型详解](../ai-fundamentals/multimodal-models.md) - 图像/语音/视频模型 🚧
+- [Agent 与工具调用](../ai-fundamentals/agents-and-tools.md) -
+  LangChain、MCP 协议 🚧
+- [AI 术语表](../ai-fundamentals/glossary.md) - 常见术语解释 🚧
 
 ---
 
