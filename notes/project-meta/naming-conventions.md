@@ -310,40 +310,7 @@ $spacing-unit: 8px;
 
 ---
 
-## 📋 当前项目待修复
-
-以下文件命名不符合规范（使用了下划线）：
-
-| 当前文件名                                       | 建议修改为                                       |
-| ------------------------------------------------ | ------------------------------------------------ |
-| `architecture/cost_analysis.md`                  | `architecture/cost-analysis.md`                  |
-| `architecture/design_2025_enhanced.md`           | `architecture/design-2025-enhanced.md`           |
-| `architecture/design_2025_v1.md`                 | `architecture/design-2025-v1.md`                 |
-| `architecture/usage_guide.md`                    | `architecture/usage-guide.md`                    |
-| `project-meta/project_analysis.md`               | `project-meta/project-analysis.md`               |
-| `project-meta/project_structure_optimization.md` | `project-meta/project-structure-optimization.md` |
-| `project-meta/structure_recommendations.md`      | `project-meta/structure-recommendations.md`      |
-
----
-
-## 🛠️ 重命名命令
-
-```bash
-# architecture 目录
-mv notes/architecture/cost_analysis.md notes/architecture/cost-analysis.md
-mv notes/architecture/design_2025_enhanced.md notes/architecture/design-2025-enhanced.md
-mv notes/architecture/design_2025_v1.md notes/architecture/design-2025-v1.md
-mv notes/architecture/usage_guide.md notes/architecture/usage-guide.md
-
-# project-meta 目录
-mv notes/project-meta/project_analysis.md notes/project-meta/project-analysis.md
-mv notes/project-meta/project_structure_optimization.md notes/project-meta/project-structure-optimization.md
-mv notes/project-meta/structure_recommendations.md notes/project-meta/structure-recommendations.md
-```
-
----
-
-## 📚 参考资料
+## 参考资料
 
 - [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
 - [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
