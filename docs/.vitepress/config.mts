@@ -62,6 +62,14 @@ export default defineConfig({
           items: [{ text: '概述', link: '/architecture/' }],
         },
       ],
+      '/project-meta/': [
+        {
+          text: '项目规划',
+          items: [
+            { text: '命名规范', link: '/project-meta/naming-conventions' },
+          ],
+        },
+      ],
     },
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/exposir' }],
