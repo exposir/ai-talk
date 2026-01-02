@@ -45,10 +45,10 @@ Google Agent-First IDE 使用指南。
 
 LLM 应用双引擎分层架构设计。
 
-- [架构设计 2025 v1](../architecture/design_2025_v1.md)
-- [架构设计 2025 增强版](../architecture/design_2025_enhanced.md)
-- [使用指南](../architecture/usage_guide.md)
-- [成本分析](../architecture/cost_analysis.md)
+- [架构设计 2025 v1](../architecture/design-2025-v1.md)
+- [架构设计 2025 增强版](../architecture/design-2025-enhanced.md)
+- [使用指南](../architecture/usage-guide.md)
+- [成本分析](../architecture/cost-analysis.md)
 - [评估](../architecture/evaluation.md)
 
 ---
@@ -69,7 +69,7 @@ LLM 应用双引擎分层架构设计。
 ## 📁 项目规划
 
 - [命名规范](../project-meta/naming-conventions.md) - 项目、目录、文件命名最佳实践
-- [项目分析](../project-meta/project_analysis.md)
-- [项目结构优化](../project-meta/project_structure_optimization.md)
+- [项目分析](../project-meta/project-analysis.md)
+- [项目结构优化](../project-meta/project-structure-optimization.md)
 - [文档项目结构优化](../project-meta/structure-optimization-for-documentation-project.md)
-- [结构建议](../project-meta/structure_recommendations.md)
+- [结构建议](../project-meta/structure-recommendations.md)
