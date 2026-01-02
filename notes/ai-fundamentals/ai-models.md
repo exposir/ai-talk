@@ -462,7 +462,7 @@ Google 开源的轻量级模型，适合本地部署。
 | -------------- | ---------------------------------------------------- |
 | **复杂推理**   | o3, Claude Opus 4.5, Gemini Deep Think, Grok 4 Heavy |
 | **代码生成**   | Claude Opus 4.5, o3, Claude Sonnet 4.5, DeepSeek-V3  |
-| **日常对话**   | GPT-4o-mini, Claude Haiku, Gemini Flash, 豆包        |
+| **日常对话**   | GPT-4o-mini, Claude Haiku, Gemini 3 Flash, 豆包      |
 | **长文档处理** | Gemini 2.5 Pro (2M), Claude (200K), Kimi (200K)      |
 | **多模态**     | GPT-5, Gemini 3, Claude Opus 4.5, Qwen3-Omni         |
 | **中文优化**   | DeepSeek, Qwen3, Kimi, 智谱 GLM                      |
@@ -471,11 +471,11 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### 按成本推荐
 
-| 预算            | 推荐模型                                          |
-| --------------- | ------------------------------------------------- |
-| **免费/低成本** | DeepSeek API, Gemini Flash, GPT-4o-mini, 开源模型 |
-| **中等预算**    | Claude Sonnet 4.5, GPT-4o, Gemini Pro             |
-| **不限预算**    | Claude Opus 4.5, o3, GPT-5, Grok 4 Heavy          |
+| 预算            | 推荐模型                                            |
+| --------------- | --------------------------------------------------- |
+| **免费/低成本** | DeepSeek API, Gemini 3 Flash, GPT-4o-mini, 开源模型 |
+| **中等预算**    | Claude Sonnet 4.5, GPT-4o, Gemini Pro               |
+| **不限预算**    | Claude Opus 4.5, o3, GPT-5, Grok 4 Heavy            |
 
 ---
 
@@ -618,7 +618,7 @@ Leaderboard、LiveBench、各模型在上述基准测试中的表现，以及社
 | 排名 | 模型            | 输入/输出价格 (per 1M) | 能力级别 | 推荐场景   |
 | ---- | --------------- | ---------------------- | -------- | ---------- |
 | 1    | DeepSeek API    | $0.14 / $0.28          | A+       | 大规模调用 |
-| 2    | Gemini Flash    | $0.075 / $0.30         | A        | 实时交互   |
+| 2    | Gemini 3 Flash  | $0.075 / $0.30         | A        | 实时交互   |
 | 3    | GPT-4o-mini     | $0.15 / $0.60          | A        | 日常任务   |
 | 4    | Claude Haiku    | $0.80 / $4             | A        | 高并发     |
 | 5    | Claude Sonnet   | $3 / $15               | S        | 开发主力   |
