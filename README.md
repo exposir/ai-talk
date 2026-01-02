@@ -2,40 +2,53 @@
 
 个人 AI 学习笔记项目，记录 LLM 应用架构设计与开发实践。
 
-## 内容
+## 📖 文档站点
 
-### 学习笔记 (`notes/`)
+- **在线文档**: https://exposir.github.io/ai-talk/
+- **完整目录**: [查看全部文档](./notes/index.md)
 
-| 目录                  | 内容                        | 链接                                |
-| --------------------- | --------------------------- | ----------------------------------- |
-| `architecture/`       | LLM 应用架构设计            | [查看](./notes/architecture/)       |
-| `claude-code/`        | Claude Code 完整使用指南    | [查看](./notes/claude-code/)        |
-| `antigravity/`        | Google Antigravity 使用指南 | [查看](./notes/antigravity/)        |
-| `ai-fundamentals/`    | AI 基础知识                 | [查看](./notes/ai-fundamentals/)    |
-| `prompt-engineering/` | 提示工程                    | [查看](./notes/prompt-engineering/) |
-| `tools-and-apis/`     | 工具与 API                  | [查看](./notes/tools-and-apis/)     |
-| `project-meta/`       | 项目规划                    | [查看](./notes/project-meta/)       |
+---
 
-### 其他资源
+## 🚀 快速导航
 
-| 目录        | 内容                 |
-| ----------- | -------------------- |
-| `library/`  | 论文、教程、参考资料 |
-| `prompts/`  | Prompt 模板收集      |
-| `sessions/` | 对话记录存档         |
+### AI 编程助手
 
-## 快速导航
+| 工具               | 说明                   | 文档                             |
+| ------------------ | ---------------------- | -------------------------------- |
+| 📘 **Claude Code** | Anthropic 终端 AI 助手 | [完整指南](./notes/claude-code/) |
+| 📗 **Antigravity** | Google Agent-First IDE | [完整指南](./notes/antigravity/) |
 
-### AI 编程助手指南
+### AI 资源
 
-- 📘 [Claude Code 完整指南](./notes/claude-code/) - Anthropic 终端 AI 助手
-- 📗 [Google Antigravity 指南](./notes/antigravity/) - Google Agent-First IDE
+| 主题            | 说明                      | 文档                                                  |
+| --------------- | ------------------------- | ----------------------------------------------------- |
+| 🤖 **AI 模型**  | 业内最新 LLM 和多模态模型 | [模型汇总](./notes/ai-fundamentals/ai-models.md)      |
+| 🔧 **开发工具** | AI 编程助手与开发工具     | [工具汇总](./notes/tools-and-apis/ai-coding-tools.md) |
+| 🏗️ **架构设计** | LLM 应用双引擎分层架构    | [架构笔记](./notes/architecture/)                     |
 
-### 架构设计
+---
 
-- 🏗️ [LLM 应用架构](./notes/architecture/) - 双引擎分层架构设计
+## 📁 项目结构
 
-## 架构设计
+```
+ai-talk/
+├── notes/                    # 学习笔记
+│   ├── index.md              # 📑 文档目录
+│   ├── claude-code/          # Claude Code 指南
+│   ├── antigravity/          # Antigravity 指南
+│   ├── architecture/         # 架构设计
+│   ├── ai-fundamentals/      # AI 基础知识
+│   ├── tools-and-apis/       # 工具与 API
+│   └── project-meta/         # 项目规划
+├── docs/                     # VitePress 配置
+├── library/                  # 论文、教程、参考资料
+├── prompts/                  # Prompt 模板收集
+└── sessions/                 # 对话记录存档
+```
+
+---
+
+## 🏗️ 架构设计
 
 学习和设计中的 LLM 应用架构（双引擎分层）：
 
@@ -66,7 +79,23 @@ flowchart TB
 
 详见 [架构设计笔记](./notes/architecture/)
 
-## 推荐阅读
+---
 
-- [Claude Code 完整使用指南](./notes/claude-code/)
-- [Google Antigravity 使用指南](./notes/antigravity/)
+## 🛠️ 本地开发
+
+```bash
+# 安装依赖
+npm install
+
+# 启动文档站点
+npm run docs:dev
+
+# 构建生产版本
+npm run docs:build
+```
+
+---
+
+## 📄 License
+
+MIT
