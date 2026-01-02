@@ -68,6 +68,7 @@ LLM 应用双引擎分层架构设计。
 
 ## 📁 项目规划
 
+- [命名规范](../project-meta/naming-conventions.md) - 项目、目录、文件命名最佳实践
 - [项目分析](../project-meta/project_analysis.md)
 - [项目结构优化](../project-meta/project_structure_optimization.md)
 - [文档项目结构优化](../project-meta/structure-optimization-for-documentation-project.md)
