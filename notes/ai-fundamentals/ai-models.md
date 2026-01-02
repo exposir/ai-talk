@@ -486,6 +486,11 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### Arena Elo 排名 (LMSYS Chatbot Arena)
 
+**测试说明**：用户向两个匿名模型发送相同问题，盲评选择更好的回答。采用类似国际象棋的 Elo 评分系统，基于数百万次人类投票计算排名。这是目前最权威的人类偏好评测。
+
+📎 来源：[lmarena.ai](https://lmarena.ai) |
+[chat.lmsys.org](https://chat.lmsys.org)
+
 | 排名 | 模型              | 公司      | Elo 评分 | 备注           |
 | ---- | ----------------- | --------- | -------- | -------------- |
 | 1    | Gemini 3 Pro      | Google    | 1487     | 2025.11 新纪录 |
@@ -501,24 +506,35 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### 代码能力 (SWE-bench Verified)
 
+**测试说明**：从真实 GitHub 开源项目中提取 2294 个软件工程问题（bug 修复、功能实现），让模型自主阅读代码库并生成补丁。Verified 版本经人工验证确保问题有效。这是目前最接近真实开发场景的代码能力测试。
+
+📎 来源：[swebench.com](https://www.swebench.com) |
+[github.com/princeton-nlp/SWE-bench](https://github.com/princeton-nlp/SWE-bench)
+
 | 排名 | 模型              | 得分      | 备注            |
 | ---- | ----------------- | --------- | --------------- |
 | 1    | Claude Opus 4.5   | **80.9%** | 🏆 首个突破 80% |
-| 2    | GPT-5.1 Codex-Max | 77.9%     | OpenAI 最强编码 |
-| 3    | Claude Sonnet 4.5 | 77.2%     | 性价比优选      |
-| 4    | GPT-5             | 74.9%     | 多模态编码      |
-| 5    | Claude Opus 4.1   | 74.5%     | 上代旗舰        |
-| 6    | o3                | 71.7%     | 推理驱动编码    |
-| 7    | DeepSeek-V3       | 68.2%     | 开源第一        |
-| 8    | Qwen3-235B        | 69.5%     | LiveCodeBench   |
-| 9    | o3-mini (high)    | 49.3%     | 轻量推理        |
+| 2    | Gemini 3 Flash    | 78.0%     | Google 编码专用 |
+| 3    | GPT-5.1 Codex-Max | 77.9%     | OpenAI 最强编码 |
+| 4    | Claude Sonnet 4.5 | 77.2%     | 性价比优选      |
+| 5    | Gemini 3 Pro      | 76.2%     | Google 旗舰     |
+| 6    | GPT-5             | 74.9%     | 多模态编码      |
+| 7    | Claude Opus 4.1   | 74.5%     | 上代旗舰        |
+| 8    | o3                | 71.7%     | 推理驱动编码    |
+| 9    | Qwen3-235B        | 69.5%     | 开源编码第一    |
+| 10   | DeepSeek-V3       | 68.2%     | 开源综合        |
 
 ### 推理能力 (GPQA Diamond)
 
+**测试说明**：Google-Proof
+Q&A 的钻石难度版本，包含 448 道由博士专家编写的研究生级科学问题（物理、化学、生物）。题目设计为即使搜索也难以直接找到答案，专门测试模型的深度推理能力。
+
+📎 来源：[github.com/idavidrein/gpqa](https://github.com/idavidrein/gpqa)
+
 | 排名 | 模型              | 得分      | 备注            |
 | ---- | ----------------- | --------- | --------------- |
-| 1    | GPT-5.2           | **92.4%** | 🏆 推理天花板   |
-| 2    | Gemini 3 Pro      | 93.8%     | 科学推理最强    |
+| 1    | Gemini 3 Pro      | **93.8%** | 🏆 科学推理最强 |
+| 2    | GPT-5.2           | 92.4%     | 推理天花板      |
 | 3    | GPT-5.1           | 88.1%     | 稳定高分        |
 | 4    | Grok-4            | 87.5%     | xAI 旗舰        |
 | 5    | Claude Opus 4.5   | 87.0%     | 逻辑推理强      |
@@ -530,26 +546,43 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### 通用知识 (MMLU)
 
+**测试说明**：Massive Multitask Language
+Understanding，包含 57 个学科的 15908 道选择题，涵盖 STEM、人文、社科等领域，从高中到研究生难度。是衡量模型知识广度的标准测试。
+
+📎 来源：[github.com/hendrycks/test](https://github.com/hendrycks/test) |
+[paperswithcode.com/dataset/mmlu](https://paperswithcode.com/dataset/mmlu)
+
 | 排名 | 模型            | 得分      | 备注          |
 | ---- | --------------- | --------- | ------------- |
 | 1    | GPT-5           | **92.5%** | 🏆 知识最全面 |
 | 2    | Claude Opus 4.5 | 90.8%     | MMMLU 口径    |
 | 3    | DeepSeek-V3     | 88.5%     | 开源领先      |
 | 4    | Llama 3.1 405B  | 88.0%     | 开源大模型    |
-| 5    | Qwen3-235B      | 80.6%     | MMLU Pro      |
-| 6    | GPT-4o          | 86.4%     | 上代旗舰      |
+| 5    | GPT-4o          | 86.4%     | 上代旗舰      |
+| 6    | Qwen3-235B      | 80.6%     | MMLU Pro      |
 
-### 数学能力 (AIME 2024/2025)
+### 数学能力 (AIME)
+
+**测试说明**：American Invitational Mathematics
+Examination，美国数学邀请赛，难度介于 AMC 和 USAMO 之间。每题 0-999 整数答案，需要创造性解题思路，是测试数学推理的黄金标准。
+
+📎 来源：[artofproblemsolving.com/wiki/index.php/AIME](https://artofproblemsolving.com/wiki/index.php/AIME)
 
 | 排名 | 模型            | AIME 2024 | AIME 2025 | 备注        |
 | ---- | --------------- | --------- | --------- | ----------- |
-| 1    | o3              | 96.7%     | -         | 🏆 数学最强 |
-| 2    | DeepSeek-R1     | 79.8%     | -         | 开源推理    |
-| 3    | DeepSeek-V3.2   | -         | 93.1%     | 最新版本    |
+| 1    | o3              | **96.7%** | -         | 🏆 数学最强 |
+| 2    | DeepSeek-V3.2   | -         | 93.1%     | 最新版本    |
+| 3    | DeepSeek-R1     | 79.8%     | -         | 开源推理    |
 | 4    | Qwen3-235B      | 75.2%     | -         | 阿里旗舰    |
 | 5    | Claude Opus 4.5 | 72.0%     | -         | 综合能力    |
 
 ### 多模态理解 (MMMU)
+
+**测试说明**：Massive Multi-discipline Multimodal
+Understanding，包含 11.5K 道需要视觉理解的大学级问题，涵盖艺术、商业、科学等 30+ 学科。测试模型同时理解图像和文本的能力。
+
+📎 来源：[mmmu-benchmark.github.io](https://mmmu-benchmark.github.io) |
+[huggingface.co/datasets/MMMU/MMMU](https://huggingface.co/datasets/MMMU/MMMU)
 
 | 排名 | 模型            | 得分      | 备注            |
 | ---- | --------------- | --------- | --------------- |
