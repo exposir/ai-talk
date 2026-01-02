@@ -105,3 +105,23 @@ AI 模型、工具和技术的完整指南。
 - [项目结构优化](../project-meta/project-structure-optimization.md)
 - [文档项目结构优化](../project-meta/structure-optimization-for-documentation-project.md)
 - [结构建议](../project-meta/structure-recommendations.md)
+
+---
+
+## 📖 书籍与规范笔记
+
+技术书籍阅读笔记和语言规范学习。
+
+### JavaScript 规范
+
+- [ECMA-262 第 16 版 (2025)](../book/ECMA262.md) -
+  JavaScript 官方语言规范完整目录与核心解析
+  - Scope / Conformance / Normative References
+  - Overview (宿主环境、原型系统、严格模式)
+  - 数据类型与抽象操作
+  - 2025 新特性速览
+
+### JavaScript 书籍
+
+- [你不知道的 JavaScript](../book/you-dont-know-js.md) - Kyle
+  Simpson 经典深入系列
