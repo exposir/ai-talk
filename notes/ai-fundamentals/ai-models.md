@@ -25,8 +25,13 @@ OpenAI 是 LLM 领域的先驱，其 GPT 系列和推理模型 o 系列处于行
 - 多模态任务 → GPT-4o/GPT-5
 - 日常对话 → GPT-4o-mini
 
-📎 **官网**: [openai.com](https://openai.com) | **API**:
-[platform.openai.com](https://platform.openai.com)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[openai.com](https://openai.com) | | API 平台 |
+[platform.openai.com](https://platform.openai.com) | | GitHub |
+[github.com/openai](https://github.com/openai) | | 社区论坛 |
+[community.openai.com](https://community.openai.com) | | Discord |
+[discord.gg/openai](https://discord.gg/openai) | | X (Twitter) |
+[@OpenAI](https://x.com/OpenAI) |
 
 ---
 
@@ -49,8 +54,12 @@ Anthropic 以安全性和可靠性著称，Claude 系列在编码和长文本处
 - Constitutional AI，安全可控
 - Artifacts 功能，实时预览代码/文档
 
-📎 **官网**: [anthropic.com](https://anthropic.com) | **API**:
-[docs.anthropic.com](https://docs.anthropic.com)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[anthropic.com](https://anthropic.com) | | API 文档 |
+[docs.anthropic.com](https://docs.anthropic.com) | | GitHub |
+[github.com/anthropics](https://github.com/anthropics) | | Discord |
+[discord.gg/anthropic](https://discord.gg/anthropic) | | X (Twitter) |
+[@AnthropicAI](https://x.com/AnthropicAI) |
 
 ---
 
@@ -72,8 +81,12 @@ Google 的 Gemini 系列以多模态能力和超长上下文见长，深度整�
 - 原生多模态，理解视频/音频
 - 深度整合 Google 搜索、Workspace
 
-📎 **官网**: [gemini.google.com](https://gemini.google.com) | **开发者**:
-[ai.google.dev](https://ai.google.dev)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[gemini.google.com](https://gemini.google.com) | | 开发者平台 |
+[ai.google.dev](https://ai.google.dev) | | GitHub |
+[github.com/google-gemini](https://github.com/google-gemini) | | Discord |
+[discord.gg/google-dev-community](https://discord.gg/google-dev-community) | | X
+(Twitter) | [@GoogleAI](https://x.com/GoogleAI) |
 
 ---
 
@@ -95,7 +108,9 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 无内容审查限制
 - 个性化幽默交互风格
 
-📎 **官网**: [x.ai](https://x.ai)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 | [x.ai](https://x.ai) | |
+GitHub | [github.com/xai-org](https://github.com/xai-org) | | X (Twitter) |
+[@xaboratory](https://x.com/xai) |
 
 ---
 
@@ -115,7 +130,12 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 卓越的 RAG 和检索能力
 - 多语言支持（100+ 语言）
 
-📎 **官网**: [cohere.com](https://cohere.com)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[cohere.com](https://cohere.com) | | 文档 |
+[docs.cohere.com](https://docs.cohere.com) | | GitHub |
+[github.com/cohere-ai](https://github.com/cohere-ai) | | Discord |
+[discord.gg/cohere](https://discord.gg/cohere) | | X (Twitter) |
+[@CohereAI](https://x.com/CohereAI) |
 
 ---
 
@@ -132,8 +152,12 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 | **Devstral Small 2**  | 2025.12  | 24B                | 编码模型，超越 Qwen3 Coder |
 | **Mistral Small 3.1** | 2025.3   | -                  | 高效轻量模型               |
 
-📎 **官网**: [mistral.ai](https://mistral.ai) | **开源**:
-[GitHub](https://github.com/mistralai)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[mistral.ai](https://mistral.ai) | | 文档 |
+[docs.mistral.ai](https://docs.mistral.ai) | | GitHub |
+[github.com/mistralai](https://github.com/mistralai) | | Discord |
+[discord.gg/mistralai](https://discord.gg/mistralai) | | X (Twitter) |
+[@MistralAI](https://x.com/MistralAI) |
 
 ---
 
@@ -155,8 +179,11 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 企业级 API，支持私有化部署
 - 文心一言 App 直接体验
 
-📎 **官网**: [yiyan.baidu.com](https://yiyan.baidu.com) | **API**:
-[cloud.baidu.com](https://cloud.baidu.com)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[yiyan.baidu.com](https://yiyan.baidu.com) | | API 平台 |
+[cloud.baidu.com](https://cloud.baidu.com) | | 开发者文档 |
+[ai.baidu.com](https://ai.baidu.com) | | GitHub |
+[github.com/PaddlePaddle](https://github.com/PaddlePaddle) |
 
 ---
 
@@ -175,7 +202,10 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 抖音、今日头条、飞书深度整合
 - 视频生成能力强
 
-📎 **官网**: [doubao.com](https://www.doubao.com)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[doubao.com](https://www.doubao.com) | | 开放平台 |
+[volcengine.com](https://www.volcengine.com) | | 开发者文档 |
+[volcengine.com/docs](https://www.volcengine.com/docs) |
 
 ---
 
@@ -195,8 +225,11 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - B 端商业化领先（2025 上半年收入 1.91 亿）
 - 开源版本可本地部署
 
-📎 **官网**: [zhipuai.cn](https://zhipuai.cn) | **开源**:
-[GitHub](https://github.com/THUDM)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[zhipuai.cn](https://zhipuai.cn) | | 开放平台 |
+[open.bigmodel.cn](https://open.bigmodel.cn) | | GitHub |
+[github.com/THUDM](https://github.com/THUDM) | | 开源模型 |
+[github.com/THUDM/GLM-4](https://github.com/THUDM/GLM-4) |
 
 ---
 
@@ -216,7 +249,10 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 语音多模态行业领先
 - 医疗、教育垂直领域深耕
 
-📎 **官网**: [xinghuo.xfyun.cn](https://xinghuo.xfyun.cn)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[xinghuo.xfyun.cn](https://xinghuo.xfyun.cn) | | 开放平台 |
+[xfyun.cn/platform](https://www.xfyun.cn/platform) | | 开发者社区 |
+[xfyun.cn/community](https://www.xfyun.cn/community) |
 
 ---
 
@@ -236,7 +272,11 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 付费用户月增速 170%+
 - 专注技术突破，目标超越 Anthropic
 
-📎 **官网**: [kimi.moonshot.cn](https://kimi.moonshot.cn)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[kimi.moonshot.cn](https://kimi.moonshot.cn) | | 开放平台 |
+[platform.moonshot.cn](https://platform.moonshot.cn) | | GitHub |
+[github.com/MoonshotAI](https://github.com/MoonshotAI) | | Discord |
+[discord.gg/kimi](https://discord.gg/Kimi-AI) |
 
 ---
 
@@ -259,8 +299,12 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 中文能力最强之一
 - 阿里云生态深度整合
 
-📎 **官网**: [qwen.ai](https://qwen.ai) | **GitHub**:
-[github.com/QwenLM](https://github.com/QwenLM)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 | [qwen.ai](https://qwen.ai)
+| | 阿里云百炼 | [bailian.aliyun.com](https://bailian.aliyun.com) | | GitHub |
+[github.com/QwenLM](https://github.com/QwenLM) | | Hugging Face |
+[huggingface.co/Qwen](https://huggingface.co/Qwen) | | Discord |
+[discord.gg/qwen](https://discord.gg/CV4E9Y9) |
+| 微信群 | 关注官方公众号“通义千问”入群 |
 
 ---
 
@@ -282,8 +326,13 @@ Elon Musk 创立的 xAI，Grok 系列以实时信息获取和个性化交互著�
 - 推理能力国际领先
 - API 价格仅为 OpenAI 1/10
 
-📎 **官网**: [deepseek.com](https://deepseek.com) | **GitHub**:
-[github.com/deepseek-ai](https://github.com/deepseek-ai)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[deepseek.com](https://deepseek.com) | | API 平台 |
+[platform.deepseek.com](https://platform.deepseek.com) | | GitHub |
+[github.com/deepseek-ai](https://github.com/deepseek-ai) | | Hugging Face |
+[huggingface.co/deepseek-ai](https://huggingface.co/deepseek-ai) | | Discord |
+[discord.gg/deepseek](https://discord.gg/Tc7c45Zzu5) | | X (Twitter) |
+[@deepseek_ai](https://x.com/deepseek_ai) |
 
 ---
 
@@ -312,8 +361,12 @@ Meta 开源的 Llama 系列是全球最流行的开源 LLM。
 | **Llama 3.3**        | 2024.12  | 70B         | 最新 Llama 3 系列  |
 | **Llama 3.1**        | 2024.7   | 8B/70B/405B | 长上下文，工具调用 |
 
-📎 **官网**: [llama.meta.com](https://llama.meta.com) | **GitHub**:
-[github.com/meta-llama](https://github.com/meta-llama)
+📎 **链接**：| 类型 | 地址 | |------|------| | 官网 |
+[llama.meta.com](https://llama.meta.com) | | GitHub |
+[github.com/meta-llama](https://github.com/meta-llama) | | Hugging Face |
+[huggingface.co/meta-llama](https://huggingface.co/meta-llama) | | Discord |
+[discord.gg/llama-community](https://discord.gg/llama-community) | | X (Twitter)
+| [@AIatMeta](https://x.com/AIatMeta) |
 
 ---
 
@@ -327,7 +380,11 @@ Google 开源的轻量级模型，适合本地部署。
 | **CodeGemma** | 7B        | 编程专用             |
 | **PaliGemma** | 3B        | 视觉语言模型         |
 
-📎 **开发者**: [ai.google.dev/gemma](https://ai.google.dev/gemma)
+📎 **链接**：| 类型 | 地址 | |------|------| | 开发者平台 |
+[ai.google.dev/gemma](https://ai.google.dev/gemma) | | GitHub |
+[github.com/google/gemma](https://github.com/google/gemma_pytorch) | | Hugging
+Face | [huggingface.co/google](https://huggingface.co/google) | | Kaggle |
+[kaggle.com/models/google/gemma](https://kaggle.com/models/google/gemma) |
 
 ---
 
@@ -340,7 +397,10 @@ Google 开源的轻量级模型，适合本地部署。
 | **Phi-4**   | 14B         | 小模型高性能，研究导向 |
 | **Phi-3.5** | 3.8B/7B/14B | 多尺寸，移动端优化     |
 
-📎 **GitHub**: [github.com/microsoft/phi-4](https://github.com/microsoft/phi-4)
+📎 **链接**：| 类型 | 地址 | |------|------| | GitHub |
+[github.com/microsoft/Phi-4](https://github.com/microsoft/Phi-4) | | Hugging
+Face | [huggingface.co/microsoft](https://huggingface.co/microsoft) | | Azure AI
+| [azure.microsoft.com/ai](https://azure.microsoft.com/en-us/solutions/ai) |
 
 ---
 
@@ -373,22 +433,45 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### 模型排行榜
 
-- **LMSYS Chatbot Arena**:
-  [chat.lmsys.org](https://chat.lmsys.org) - 人类评测盲测榜
-- **Open LLM Leaderboard**:
-  [huggingface.co](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) - 开源模型榜
-- **Artificial Analysis**:
-  [artificialanalysis.ai](https://artificialanalysis.ai) - 性能/价格分析
+| 名称                 | 链接                                                                                      | 说明                   |
+| -------------------- | ----------------------------------------------------------------------------------------- | ---------------------- |
+| LMSYS Chatbot Arena  | [chat.lmsys.org](https://chat.lmsys.org)                                                  | 人类评测盲测榜，最权威 |
+| Open LLM Leaderboard | [huggingface.co](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) | 开源模型榜             |
+| Artificial Analysis  | [artificialanalysis.ai](https://artificialanalysis.ai)                                    | 性能/价格综合分析      |
+| LMArena              | [lmarena.ai](https://lmarena.ai)                                                          | 多维度模型对比         |
 
 ### 聚合 API
 
-- **OpenRouter**: [openrouter.ai](https://openrouter.ai) - 一个 API 访问所有模型
-- **Together AI**: [together.ai](https://together.ai) - 开源模型托管
-- **Replicate**: [replicate.com](https://replicate.com) - 模型按需运行
+| 名称        | 链接                                   | 说明                  |
+| ----------- | -------------------------------------- | --------------------- |
+| OpenRouter  | [openrouter.ai](https://openrouter.ai) | 一个 API 访问所有模型 |
+| Together AI | [together.ai](https://together.ai)     | 开源模型托管          |
+| Replicate   | [replicate.com](https://replicate.com) | 模型按需运行          |
+| Groq        | [groq.com](https://groq.com)           | 超快推理，免费额度    |
 
 ### 本地部署
 
-- **Ollama**: [ollama.ai](https://ollama.ai) - 一键本地运行
-- **LM Studio**: [lmstudio.ai](https://lmstudio.ai) - 桌面端模型管理
-- **vLLM**:
-  [github.com/vllm-project](https://github.com/vllm-project/vllm) - 高性能推理引擎
+| 名称      | 链接                                                            | 说明                  |
+| --------- | --------------------------------------------------------------- | --------------------- |
+| Ollama    | [ollama.ai](https://ollama.ai)                                  | 一键本地运行          |
+| LM Studio | [lmstudio.ai](https://lmstudio.ai)                              | 桌面端模型管理        |
+| vLLM      | [github.com/vllm-project](https://github.com/vllm-project/vllm) | 高性能推理引擎        |
+| LocalAI   | [localai.io](https://localai.io)                                | OpenAI 兼容的本地 API |
+
+### 社区论坛
+
+| 名称                | 链接                                                       | 说明                 |
+| ------------------- | ---------------------------------------------------------- | -------------------- |
+| r/LocalLLaMA        | [reddit.com/r/LocalLLaMA](https://reddit.com/r/LocalLLaMA) | 本地模型讨论，最活跃 |
+| r/ChatGPT           | [reddit.com/r/ChatGPT](https://reddit.com/r/ChatGPT)       | ChatGPT 使用技巧     |
+| r/ClaudeAI          | [reddit.com/r/ClaudeAI](https://reddit.com/r/ClaudeAI)     | Claude 用户社区      |
+| Hugging Face Forums | [discuss.huggingface.co](https://discuss.huggingface.co)   | 开源 AI 技术讨论     |
+
+### 学习资源
+
+| 名称                     | 链接                                                   | 说明              |
+| ------------------------ | ------------------------------------------------------ | ----------------- |
+| Hugging Face Course      | [huggingface.co/course](https://huggingface.co/course) | 免费 NLP/LLM 课程 |
+| Prompt Engineering Guide | [promptingguide.ai](https://www.promptingguide.ai)     | 提示词工程指南    |
+| LangChain Docs           | [langchain.com](https://www.langchain.com)             | LLM 应用开发框架  |
+| LlamaIndex               | [llamaindex.ai](https://www.llamaindex.ai)             | RAG 框架文档      |
