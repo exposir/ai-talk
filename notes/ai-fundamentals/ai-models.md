@@ -514,7 +514,7 @@ Google 开源的轻量级模型，适合本地部署。
 | 排名 | 模型              | 得分      | 备注            |
 | ---- | ----------------- | --------- | --------------- |
 | 1    | Claude Opus 4.5   | **80.9%** | 🏆 首个突破 80% |
-| 2    | Gemini 3 Flash    | 78.0%     | Google 编码专用 |
+| 2    | Gemini 3 Flash    | 78.0%     | 编码专用优化    |
 | 3    | GPT-5.1 Codex-Max | 77.9%     | OpenAI 最强编码 |
 | 4    | Claude Sonnet 4.5 | 77.2%     | 性价比优选      |
 | 5    | Gemini 3 Pro      | 76.2%     | Google 旗舰     |
@@ -523,6 +523,10 @@ Google 开源的轻量级模型，适合本地部署。
 | 8    | o3                | 71.7%     | 推理驱动编码    |
 | 9    | Qwen3-235B        | 69.5%     | 开源编码第一    |
 | 10   | DeepSeek-V3       | 68.2%     | 开源综合        |
+
+> **注**：Gemini 3 Flash 得分高于 Pro 是因为 Flash 发布更晚（2025.12.17 vs
+> 2025.11.18），专为"agentic
+> coding"场景优化，Google 官方确认其在 SWE-bench 上超越 Pro。
 
 ### 推理能力 (GPQA Diamond)
 
