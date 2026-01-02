@@ -213,6 +213,8 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  padding: 0.1em 0;
+  line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
