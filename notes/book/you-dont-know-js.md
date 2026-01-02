@@ -7,11 +7,11 @@ JS》系列丛书的核心知识点整理，分为上卷（作用域/闭包、th
 
 ---
 
-## 一、作用域与闭包
+## 一、作用域与闭包 ⭐⭐⭐
 
 **核心观点**：JavaScript 是一门编译语言，所有的"坑"在代码执行前的几微秒就已埋下。
 
-### 1.1 幕后三巨头
+### 1.1 幕后三巨头 ⭐⭐
 
 | 角色                  | 职责                                           |
 | --------------------- | ---------------------------------------------- |
@@ -26,20 +26,20 @@ JS》系列丛书的核心知识点整理，分为上卷（作用域/闭包、th
 执行期：引擎问作用域"能找到 a 吗？" → 找到则赋值 2
 ```
 
-### 1.2 LHS 与 RHS 查询
+### 1.2 LHS 与 RHS 查询 ⭐⭐
 
 | 类型                      | 含义                              | 找不到时的行为           |
 | ------------------------- | --------------------------------- | ------------------------ |
 | **LHS** (Left-hand Side)  | 找变量容器以便赋值，如 `a = 2`    | 非严格模式：创建全局变量 |
 | **RHS** (Right-hand Side) | 找变量的源值，如 `console.log(a)` | 抛出 `ReferenceError`    |
 
-### 1.3 词法作用域
+### 1.3 词法作用域 ⭐⭐⭐
 
 - **定义**：作用域由代码**书写位置**决定（静态）
 - **遮蔽效应**：查找会在找到第一个匹配标识符时停止，内部变量遮蔽外部同名变量
 - **欺骗词法**：`eval()` 和 `with` 可动态修改作用域，但会导致引擎无法优化性能
 
-### 1.4 变量提升 (Hoisting)
+### 1.4 变量提升 (Hoisting) ⭐⭐⭐
 
 ```javascript
 a = 2;
@@ -52,7 +52,7 @@ console.log(a); // 输出 2，而非 undefined
 - 变量声明提升，赋值不提升
 - 函数声明优先级高于变量声明
 
-### 1.5 闭包
+### 1.5 闭包 ⭐⭐⭐
 
 > **定义**：当函数可以记住并访问所在的词法作用域时，就产生了闭包，即使函数是在当前词法作用域之外执行。
 
@@ -72,13 +72,60 @@ for (let i = 1; i <= 5; i++) {
 }
 ```
 
+### 1.6 模块模式 ⭐⭐⭐
+
+利用闭包实现私有变量和公共 API：
+
+#### IIFE 模块模式
+
+```javascript
+const MyModule = (function () {
+  // 私有变量
+  let privateVar = 0;
+
+  // 私有函数
+  function privateMethod() {
+    return privateVar++;
+  }
+
+  // 公共 API
+  return {
+    increment: function () {
+      return privateMethod();
+    },
+    getValue: function () {
+      return privateVar;
+    },
+  };
+})();
+
+MyModule.increment(); // 0
+MyModule.getValue(); // 1
+```
+
+#### ES6 模块
+
+```javascript
+// module.js
+let privateVar = 0;
+export function increment() {
+  return privateVar++;
+}
+export function getValue() {
+  return privateVar;
+}
+
+// main.js
+import { increment, getValue } from './module.js';
+```
+
 ---
 
-## 二、this 与原型
+## 二、this 与原型 ⭐⭐⭐
 
 **核心观点**：`this` 是动态的（看调用位置），与作用域（看定义位置）形成对比。
 
-### 2.1 this 绑定规则
+### 2.1 this 绑定规则 ⭐⭐⭐
 
 **优先级由低到高：**
 
@@ -98,7 +145,7 @@ bar(); // 退化为默认绑定
 
 **箭头函数**：不适用以上规则，`this` 继承自外层词法作用域。
 
-### 2.2 对象属性
+### 2.2 对象属性 ⭐⭐
 
 #### 属性描述符
 
@@ -136,7 +183,23 @@ obj.a = 5; // 调用 setter
 console.log(obj.a); // 10，调用 getter
 ```
 
-### 2.3 原型链
+#### 对象不可变性 ⭐⭐
+
+| 方法                            | 效果                                                                |
+| ------------------------------- | ------------------------------------------------------------------- |
+| `Object.preventExtensions(obj)` | 禁止添加新属性                                                      |
+| `Object.seal(obj)`              | 禁止添加/删除属性（相当于 preventExtensions + configurable: false） |
+| `Object.freeze(obj)`            | 完全冻结（相当于 seal + writable: false）                           |
+
+```javascript
+const obj = { a: 1 };
+Object.freeze(obj);
+obj.a = 2; // 静默失败（严格模式报错）
+obj.b = 3; // 静默失败
+console.log(obj.a); // 1
+```
+
+### 2.3 原型链 ⭐⭐⭐
 
 > **核心观点**：JavaScript 没有真正的"类"，原型链的本质是**委托**而非**复制**。
 
@@ -147,7 +210,7 @@ console.log(obj.a); // 10，调用 getter
 
 **ES6 `class` 是语法糖**：底层依然是原型链接，不是真正的类继承。
 
-### 2.4 OLOO 模式
+### 2.4 OLOO 模式 ⭐⭐
 
 **Objects Linked to Other Objects**：直接利用对象委托，避开
 `prototype`/`new`/`constructor` 的复杂性。
@@ -171,18 +234,18 @@ XYZ.prepareTask = function (ID, Label) {
 
 ---
 
-## 三、类型与语法
+## 三、类型与语法 ⭐⭐⭐
 
 **核心观点**：强制类型转换不是设计缺陷，而是核心特性。觉得它坑，是因为拒绝理解它。
 
-### 3.1 七种内置类型
+### 3.1 七种内置类型 ⭐⭐
 
 `null`、`undefined`、`boolean`、`number`、`string`、`symbol`、`object`
 
 - `typeof null === "object"` 是历史遗留 Bug
 - **变量没有类型，值才有类型**
 
-### 3.2 原生函数与封装对象
+### 3.2 原生函数与封装对象 ⭐⭐
 
 原生函数：`String()`、`Number()`、`Boolean()`、`Array()`、`Object()`、`Function()`、`RegExp()`、`Date()`、`Error()`、`Symbol()`
 
@@ -208,7 +271,7 @@ s.valueOf(); // "abc"
 
 > **最佳实践**：不要直接创建封装对象（如 `new String("abc")`），让 JS 自动处理。
 
-### 3.3 抽象操作
+### 3.3 抽象操作 ⭐⭐⭐
 
 | 操作            | 说明                                                      |
 | --------------- | --------------------------------------------------------- |
@@ -228,7 +291,7 @@ JSON.stringify({ a: undefined, b: 1 }); // "{\"b\":1}"（对象中被忽略）
 
 **自定义序列化**：定义 `toJSON()` 方法控制对象如何被序列化。
 
-### 3.4 `==` vs `===`
+### 3.4 `==` vs `===` ⭐⭐⭐
 
 **常见误解**：`==` 检查值，`===` 检查值和类型。
 
@@ -245,18 +308,39 @@ if (a == null) {
 
 **避坑原则**：不要在 `==` 一侧使用 `true/false` 或 `[]/""/0`。
 
-### 3.5 语法细节
+### 3.5 语法细节 ⭐⭐
 
 - **短路逻辑**：`a && b` 返回的不是布尔值，而是 `a` 或 `b` 的值
 - **连等号陷阱**：`var a = b = 42;` 中 `b` 会变成全局变量
 
+#### ASI (自动分号插入) ⭐⭐
+
+JS 会在某些情况下自动插入分号：
+
+```javascript
+// 危险情况
+return;
+{
+  a: 1;
+}
+// 被解析为: return; { a: 1 }; 返回 undefined！
+
+// 正确写法
+return {
+  a: 1,
+};
+```
+
+**规则**：换行符后如果遇到 `)`、`]`、`}`，或者是
+`return`、`throw`、`break`、`continue` 后的换行，会自动插入分号。
+
 ---
 
-## 四、异步与性能
+## 四、异步与性能 ⭐⭐⭐
 
 **核心观点**：异步的本质不是让程序更快，而是处理"现在"与"将来"之间的鸿沟。
 
-### 4.1 事件循环 (Event Loop)
+### 4.1 事件循环 (Event Loop) ⭐⭐⭐
 
 ```
 ┌─────────────────────────────┐
@@ -275,7 +359,7 @@ if (a == null) {
 
 **核心结论**：JS 的异步不是真正的并行，而是"分块执行"。
 
-### 4.2 回调的信任问题
+### 4.2 回调的信任问题 ⭐⭐⭐
 
 **回调地狱的本质**：不是嵌套深，而是**控制反转** (Inversion of Control)。
 
@@ -285,7 +369,7 @@ if (a == null) {
 - 不会不被调用
 - 不会吞掉错误
 
-### 4.3 Promise
+### 4.3 Promise ⭐⭐⭐
 
 > **比喻**：Promise 是"取餐号"，代表一个未来会拿到的值。
 
@@ -295,7 +379,27 @@ if (a == null) {
 2. **错误传播**：异常沿链条传递，不会被吞掉
 3. **控制权回归**：由你决定何时执行 `.then()`
 
-### 4.4 Generator
+#### Promise 组合方法 ⭐⭐⭐
+
+```javascript
+// Promise.all - 全部成功才成功，一个失败就失败
+Promise.all([p1, p2, p3])
+  .then(([r1, r2, r3]) => console.log('全部完成'))
+  .catch((err) => console.log('有一个失败'));
+
+// Promise.race - 第一个完成的决定结果
+Promise.race([p1, p2]).then((first) => console.log('最快的结果'));
+
+// Promise.allSettled - 等待全部完成，无论成功失败
+Promise.allSettled([p1, p2]).then((results) =>
+  results.forEach((r) => console.log(r.status)),
+);
+
+// Promise.any - 第一个成功的，全部失败才失败
+Promise.any([p1, p2]).then((first) => console.log('第一个成功的'));
+```
+
+### 4.4 Generator ⭐⭐
 
 让异步代码看起来像同步：
 
@@ -312,7 +416,7 @@ function* main() {
 
 **终极组合**：Generator（流程控制）+ Promise（异步交付）= `async/await` 的前身
 
-### 4.5 Web Workers
+### 4.5 Web Workers ⭐⭐
 
 在独立线程中运行 JS，处理耗时计算而不阻塞 UI：
 
@@ -331,7 +435,7 @@ onmessage = (e) => {
 
 **限制**：无法访问 DOM，与主线程通过消息传递通信。
 
-### 4.6 微任务 vs 宏任务
+### 4.6 微任务 vs 宏任务 ⭐⭐⭐
 
 | 类型       | 示例                               | 优先级 |
 | ---------- | ---------------------------------- | ------ |
@@ -348,19 +452,60 @@ console.log('4'); // 同步
 
 ---
 
-## 五、ES6+ 与元编程
+## 五、ES6+ 与元编程 ⭐⭐⭐
 
 **核心观点**：ES6 是范式转变，赋予开发者"修改语言底层行为"的能力。
 
-### 5.1 语法进化
+### 5.1 let/const 与 TDZ ⭐⭐⭐
 
-| 特性           | 核心价值                             |
-| -------------- | ------------------------------------ |
-| **解构赋值**   | 模式匹配，强制思考数据结构           |
-| **箭头函数**   | 取消 `this` 动态绑定，回归词法作用域 |
-| **模板字面量** | 标签模板是元编程字符串处理机制       |
+#### 暂时性死区 (Temporal Dead Zone)
 
-### 5.2 Symbol：语言底层的钩子
+```javascript
+console.log(a); // ReferenceError: Cannot access 'a' before initialization
+let a = 1;
+
+// 对比 var
+console.log(b); // undefined（已提升）
+var b = 2;
+```
+
+**TDZ 规则**：`let`/`const` 声明的变量在声明之前的区域称为 TDZ，访问会报错。
+
+### 5.2 解构与展开运算符 ⭐⭐⭐
+
+#### 解构赋值
+
+```javascript
+// 对象解构
+const { a, b: renamed, c = 'default' } = obj;
+
+// 数组解构
+const [first, , third] = arr;
+
+// 嵌套解构
+const {
+  user: { name },
+} = response;
+```
+
+#### 展开/剩余运算符
+
+```javascript
+// 展开数组
+const arr = [1, 2, 3];
+console.log(...arr); // 1 2 3
+const merged = [...arr1, ...arr2];
+
+// 展开对象
+const merged = { ...obj1, ...obj2 };
+
+// 剩余参数
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+```
+
+### 5.3 Symbol：语言底层的钩子 ⭐⭐
 
 | Well-known Symbol    | 作用                       |
 | -------------------- | -------------------------- |
@@ -368,7 +513,7 @@ console.log('4'); // 同步
 | `Symbol.toPrimitive` | 自定义类型转换行为         |
 | `Symbol.hasInstance` | 重定义 `instanceof` 逻辑   |
 
-### 5.3 Proxy & Reflect
+### 5.4 Proxy & Reflect ⭐⭐⭐
 
 **Proxy**：在目标对象前架设拦截层，可拦截 `get`/`set`/`deleteProperty`/`apply`
 等操作。
@@ -387,23 +532,65 @@ const proxy = new Proxy({}, handler);
 
 **Reflect**：标准化底层操作，与 Proxy 配合使用。
 
-### 5.4 迭代器协议
+### 5.5 新数据结构 ⭐⭐
+
+#### Map vs Object
+
+```javascript
+const map = new Map();
+map.set('key', 'value');
+map.set({}, 'object key'); // 可以用对象作为键
+map.get('key'); // 'value'
+map.size; // 2
+```
+
+| 特性   | Object              | Map        |
+| ------ | ------------------- | ---------- |
+| 键类型 | 只能是字符串/Symbol | 任意类型   |
+| 键顺序 | 无保证              | 插入顺序   |
+| 大小   | 手动计算            | `map.size` |
+| 迭代   | 需转换              | 直接迭代   |
+
+#### Set
+
+```javascript
+const set = new Set([1, 2, 2, 3]);
+console.log([...set]); // [1, 2, 3]（自动去重）
+set.has(2); // true
+```
+
+#### WeakMap/WeakSet
+
+- 键必须是对象
+- 弱引用，不阻止垃圾回收
+- 常用于私有数据存储
+
+### 5.6 迭代器协议 ⭐⭐
 
 - **Iterator**：规定数据如何被"消费"
 - **Iterable**：定义 `Symbol.iterator` 使任何数据结构可被遍历
 
-### 5.5 async/await
+### 5.7 async/await ⭐⭐⭐
 
 **提醒**：虽然语法像同步，但底层依然是 Promise，不要忘记异步机制。
+
+```javascript
+// 并行执行（推荐）
+const [a, b] = await Promise.all([fetchA(), fetchB()]);
+
+// 串行执行（较慢）
+const a = await fetchA();
+const b = await fetchB();
+```
 
 ---
 
 ## 总结
 
-| 篇章     | 核心主题     | 关键词                         |
-| -------- | ------------ | ------------------------------ |
-| **上卷** | 作用域与闭包 | 词法作用域、提升、闭包         |
-| **上卷** | this 与原型  | 四种绑定、原型委托、OLOO       |
-| **中卷** | 类型与语法   | 抽象操作、强制转换、`==`       |
-| **中卷** | 异步与性能   | Event Loop、Promise、Generator |
-| **下卷** | ES6+         | Symbol、Proxy、元编程          |
+| 篇章     | 核心主题     | 关键词                                  | 重要性 |
+| -------- | ------------ | --------------------------------------- | ------ |
+| **上卷** | 作用域与闭包 | 词法作用域、提升、闭包、模块模式        | ⭐⭐⭐ |
+| **上卷** | this 与原型  | 四种绑定、原型委托、OLOO                | ⭐⭐⭐ |
+| **中卷** | 类型与语法   | 抽象操作、强制转换、`==`、ASI           | ⭐⭐⭐ |
+| **中卷** | 异步与性能   | Event Loop、Promise、微任务/宏任务      | ⭐⭐⭐ |
+| **下卷** | ES6+         | let/const、解构、Symbol、Proxy、Map/Set | ⭐⭐⭐ |
