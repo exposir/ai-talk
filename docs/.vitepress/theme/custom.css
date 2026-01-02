@@ -1,13 +1,53 @@
-/* 隐藏首页的默认 VitePress 样式 */
-.Layout.home .VPNav,
-.Layout.home .VPNavBar {
-  background: transparent !important;
-  border: none !important;
+/* ========== 浅色模式 - 导航栏毛玻璃效果 ========== */
+.VPNav {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border-bottom: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 首页使用自定义组件时隐藏默认内容 */
-.custom-home-wrapper .VPHome,
-.custom-home-wrapper .VPHomeHero,
-.custom-home-wrapper .VPHomeFeatures {
+.VPNavBar,
+.VPNavBar .wrapper,
+.VPNavBar .container {
+  background: transparent !important;
+}
+
+.VPNavBar .divider,
+.VPNavBar .divider-line {
   display: none !important;
+}
+
+.VPNavBar::after,
+.VPNav::after {
+  display: none !important;
+}
+
+/* ========== 深色模式 - 导航栏毛玻璃效果 ========== */
+.dark .VPNav {
+  background: rgba(13, 17, 23, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border-bottom: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .VPNavBar,
+.dark .VPNavBar .wrapper,
+.dark .VPNavBar .container {
+  background: transparent !important;
+}
+
+/* ========== 浅色模式 - 侧边栏毛玻璃效果 ========== */
+.VPSidebar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+/* ========== 深色模式 - 侧边栏毛玻璃效果 ========== */
+.dark .VPSidebar {
+  background: rgba(13, 17, 23, 0.7) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
 }

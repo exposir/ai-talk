@@ -115,14 +115,21 @@
 </template>
 
 <style scoped>
+/* ========== 浅色模式基础样式 ========== */
 .custom-home {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-  color: #c9d1d9;
+  background: #ffffff;
+  color: #1e293b;
   font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
 }
 
-/* 终端风格头部 */
+/* ========== 深色模式 ========== */
+:global(.dark) .custom-home {
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+/* ========== 终端风格头部 ========== */
 .terminal-header {
   max-width: 800px;
   margin: 0 auto;
@@ -134,10 +141,15 @@
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #21262d;
+  background: #f3f4f6;
   border-radius: 12px 12px 0 0;
-  border: 1px solid #30363d;
+  border: 1px solid #e5e7eb;
   border-bottom: none;
+}
+
+:global(.dark) .terminal-bar {
+  background: #21262d;
+  border-color: #30363d;
 }
 
 .dot {
@@ -159,15 +171,24 @@
 .terminal-title {
   margin-left: auto;
   font-size: 12px;
+  color: #64748b;
+}
+
+:global(.dark) .terminal-title {
   color: #8b949e;
 }
 
 .terminal-content {
-  background: #0d1117;
+  background: #fafafa;
   padding: 30px;
   border-radius: 0 0 12px 12px;
-  border: 1px solid #30363d;
+  border: 1px solid #e5e7eb;
   border-top: none;
+}
+
+:global(.dark) .terminal-content {
+  background: #0d1117;
+  border-color: #30363d;
 }
 
 .typing-line {
@@ -178,17 +199,29 @@
 }
 
 .prompt {
-  color: #58a6ff;
+  color: #3b82f6;
   font-weight: bold;
 }
 
+:global(.dark) .prompt {
+  color: #58a6ff;
+}
+
 .command {
+  color: #16a34a;
+}
+
+:global(.dark) .command {
   color: #7ee787;
 }
 
 .cursor {
-  color: #58a6ff;
+  color: #3b82f6;
   animation: blink 1s step-end infinite;
+}
+
+:global(.dark) .cursor {
+  color: #58a6ff;
 }
 
 @keyframes blink {
@@ -208,7 +241,7 @@
 .output h1 {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #58a6ff, #a371f7, #f778ba);
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -218,13 +251,23 @@
   letter-spacing: -0.02em;
 }
 
+:global(.dark) .output h1 {
+  background: linear-gradient(135deg, #58a6ff, #a371f7, #f778ba);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .tagline {
-  color: #8b949e;
+  color: #64748b;
   font-size: 1.1rem;
   margin-top: 10px;
 }
 
-/* 导航卡片 */
+:global(.dark) .tagline {
+  color: #8b949e;
+}
+
+/* ========== 导航卡片 ========== */
 .nav-cards {
   max-width: 800px;
   margin: 0 auto;
@@ -239,26 +282,48 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: #161b22;
-  border: 1px solid #30363d;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   text-decoration: none;
-  color: #c9d1d9;
+  color: #1e293b;
   transition: all 0.3s ease;
 }
 
+:global(.dark) .card {
+  background: #161b22;
+  border-color: #30363d;
+  color: #c9d1d9;
+}
+
 .card:hover {
-  border-color: #58a6ff;
+  border-color: #3b82f6;
   transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+}
+
+:global(.dark) .card:hover {
+  border-color: #58a6ff;
   box-shadow: 0 8px 30px rgba(88, 166, 255, 0.15);
 }
 
 .card.primary {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  border-color: #16a34a;
+  color: #fff;
+}
+
+:global(.dark) .card.primary {
   background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
   border-color: #238636;
 }
 
 .card.primary:hover {
+  border-color: #22c55e;
+  box-shadow: 0 8px 30px rgba(34, 197, 94, 0.3);
+}
+
+:global(.dark) .card.primary:hover {
   border-color: #3fb950;
   box-shadow: 0 8px 30px rgba(46, 160, 67, 0.3);
 }
@@ -272,12 +337,24 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+  color: #0f172a;
+}
+
+:global(.dark) .card-content h3 {
   color: #f0f6fc;
+}
+
+.card.primary .card-content h3 {
+  color: #fff;
 }
 
 .card-content p {
   margin: 4px 0 0;
   font-size: 0.85rem;
+  color: #64748b;
+}
+
+:global(.dark) .card-content p {
   color: #8b949e;
 }
 
@@ -288,20 +365,29 @@
 .arrow {
   margin-left: auto;
   font-size: 1.2rem;
-  color: #8b949e;
+  color: #94a3b8;
   transition: transform 0.3s;
+}
+
+:global(.dark) .arrow {
+  color: #8b949e;
 }
 
 .card:hover .arrow {
   transform: translateX(4px);
+  color: #3b82f6;
+}
+
+:global(.dark) .card:hover .arrow {
   color: #58a6ff;
 }
 
+.card.primary .arrow,
 .card.primary:hover .arrow {
   color: #fff;
 }
 
-/* 个人信息区 */
+/* ========== 个人信息区 ========== */
 .about-section {
   max-width: 800px;
   margin: 0 auto;
@@ -313,9 +399,14 @@
   align-items: flex-start;
   gap: 20px;
   padding: 24px;
-  background: #161b22;
-  border: 1px solid #30363d;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
+}
+
+:global(.dark) .bio {
+  background: #161b22;
+  border-color: #30363d;
 }
 
 .avatar {
@@ -328,9 +419,13 @@
 }
 
 .greeting {
-  color: #7ee787;
+  color: #16a34a;
   font-size: 0.9rem;
   margin: 0 0 8px;
+}
+
+:global(.dark) .greeting {
+  color: #7ee787;
 }
 
 .info p {
@@ -348,25 +443,37 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #8b949e;
+  color: #64748b;
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s;
 }
 
+:global(.dark) .social-link {
+  color: #8b949e;
+}
+
 .social-link:hover {
+  color: #3b82f6;
+}
+
+:global(.dark) .social-link:hover {
   color: #58a6ff;
 }
 
-/* 页脚 */
+/* ========== 页脚 ========== */
 .custom-footer {
   text-align: center;
   padding: 40px 20px;
-  color: #484f58;
+  color: #94a3b8;
   font-size: 0.85rem;
 }
 
-/* 响应式 */
+:global(.dark) .custom-footer {
+  color: #484f58;
+}
+
+/* ========== 响应式 ========== */
 @media (max-width: 640px) {
   .output h1 {
     font-size: 2rem;
