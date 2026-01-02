@@ -458,24 +458,24 @@ Google 开源的轻量级模型，适合本地部署。
 
 ### 按场景推荐
 
-| 场景           | 推荐模型                                             |
+| 场景           | 推荐模型（按能力排序）                               |
 | -------------- | ---------------------------------------------------- |
 | **复杂推理**   | o3, Claude Opus 4.5, Gemini Deep Think, Grok 4 Heavy |
-| **代码生成**   | Claude Sonnet 4.5, GPT-4o, DeepSeek-V3, Devstral 2   |
+| **代码生成**   | Claude Opus 4.5, o3, Claude Sonnet 4.5, DeepSeek-V3  |
 | **日常对话**   | GPT-4o-mini, Claude Haiku, Gemini Flash, 豆包        |
 | **长文档处理** | Gemini 2.5 Pro (2M), Claude (200K), Kimi (200K)      |
-| **多模态**     | GPT-5, Gemini 3, Qwen3-Omni, 文心 5.0                |
-| **中文优化**   | Qwen3, DeepSeek, 文心, Kimi, 智谱 GLM                |
-| **本地部署**   | Llama 3.1-8B, Qwen2.5-7B, Gemma 2, Phi-4             |
-| **企业私有化** | Qwen, DeepSeek, 盘古, GLM (均支持私有部署)           |
+| **多模态**     | GPT-5, Gemini 3, Claude Opus 4.5, Qwen3-Omni         |
+| **中文优化**   | DeepSeek, Qwen3, Kimi, 智谱 GLM                      |
+| **本地部署**   | Qwen2.5-72B, Llama 3.1-70B, DeepSeek-V3, Phi-4       |
+| **企业私有化** | Qwen, DeepSeek, GLM, 盘古 (均支持私有部署)           |
 
 ### 按成本推荐
 
 | 预算            | 推荐模型                                          |
 | --------------- | ------------------------------------------------- |
 | **免费/低成本** | DeepSeek API, Gemini Flash, GPT-4o-mini, 开源模型 |
-| **中等预算**    | Claude Sonnet, GPT-4o, Gemini Pro                 |
-| **不限预算**    | Claude Opus, o3, GPT-5, Grok 4 Heavy              |
+| **中等预算**    | Claude Sonnet 4.5, GPT-4o, Gemini Pro             |
+| **不限预算**    | Claude Opus 4.5, o3, GPT-5, Grok 4 Heavy          |
 
 ---
 
