@@ -69,6 +69,28 @@ AI 模型、工具和技术的完整指南。
 
 ---
 
+## 🧠 LLM 原理与架构
+
+深入理解大语言模型的核心原理。
+
+- [概述](../llm-internals/README.md) - LLM 原理导览
+- [Transformer 架构](../llm-internals/transformer-architecture.md) - 注意力机制详解 🚧
+- [位置编码](../llm-internals/positional-encoding.md) - RoPE、ALiBi 等 🚧
+- [注意力变体](../llm-internals/attention-variants.md) - MQA、GQA、Flash
+  Attention 🚧
+- [预训练](../llm-internals/pre-training.md) - 语言建模与数据 🚧
+- [微调技术](../llm-internals/fine-tuning.md) - LoRA、QLoRA 等 🚧
+- [对齐技术](../llm-internals/alignment.md) - RLHF、DPO 🚧
+- [GPT 系列](../llm-internals/gpt-series.md) - GPT 架构演进 🚧
+- [开源模型](../llm-internals/open-source-models.md) - LLaMA、Mistral、Qwen 🚧
+- [MoE 架构](../llm-internals/mixture-of-experts.md) - 混合专家模型 🚧
+- [必读论文](../llm-internals/essential-papers.md) - 里程碑论文列表 🚧
+- [Scaling Laws](../llm-internals/scaling-laws.md) - 规模定律 🚧
+- [推理优化](../llm-internals/inference-optimization.md) - KV Cache、量化 🚧
+- [长上下文](../llm-internals/long-context.md) - 上下文扩展技术 🚧
+
+---
+
 ## 🔧 工具与 API
 
 - [AI 开发工具汇总](../tools-and-apis/ai-coding-tools.md) -
