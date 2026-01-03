@@ -402,6 +402,8 @@ Algorithms）。这些操作不直接暴露给开发者，但解释了语言特�
 
 定义了将值从一种类型转换为另一种类型的规则。
 
+##### 核心转换操作
+
 - **7.1.1 ToPrimitive ( input [ , preferredType ] )**：将对象转换为原始值。调用
   `@@toPrimitive` 方法或 `valueOf`/`toString`。
 - **7.1.2 ToBoolean ( argument )**：布尔转换。`undefined`, `null`, `false`,
@@ -409,75 +411,780 @@ Algorithms）。这些操作不直接暴露给开发者，但解释了语言特�
 - **7.1.3 ToNumeric ( value )**：转为 Number 或 BigInt。
 - **7.1.4 ToNumber ( argument )**：转为 Number 类型。
 - **7.1.5 ToIntegerOrInfinity ( argument )**：转为整数或无穷大（用于索引计算）。
+
+##### 整数转换操作 (7.1.6-7.1.12)
+
+| 操作                    | 范围            | 用途                           |
+| ----------------------- | --------------- | ------------------------------ |
+| **7.1.6 ToInt32**       | -2³¹ 到 2³¹-1   | 位运算（`\|`, `&`, `^`）       |
+| **7.1.7 ToUint32**      | 0 到 2³²-1      | `>>>`、数组索引                |
+| **7.1.8 ToInt16**       | -2¹⁵ 到 2¹⁵-1   | Int16Array                     |
+| **7.1.9 ToUint16**      | 0 到 2¹⁶-1      | Uint16Array、String.charCodeAt |
+| **7.1.10 ToInt8**       | -128 到 127     | Int8Array                      |
+| **7.1.11 ToUint8**      | 0 到 255        | Uint8Array                     |
+| **7.1.12 ToUint8Clamp** | 0 到 255 (钳位) | Uint8ClampedArray (Canvas)     |
+
+##### BigInt 与 String 转换
+
 - **7.1.13 ToBigInt ( argument )**：转为 BigInt 类型。
+- **7.1.14 StringToBigInt ( str )**：将字符串精确解析为 BigInt。
+- **7.1.15 ToBigInt64 ( argument )**：转为 64 位有符号 BigInt。
+- **7.1.16 ToBigUint64 ( argument )**：转为 64 位无符号 BigInt。
 - **7.1.17 ToString ( argument )**：转为 String 类型。
+
+##### 对象与属性键转换
+
 - **7.1.18 ToObject ( argument )**：Undefined/Null 会抛错，其他转为 Wrapper
   Object。
 - **7.1.19 ToPropertyKey ( argument )**：转为属性键（String 或 Symbol）。
-- **7.1.20 ToLength ( argument )**：转为 0 到 2^53 -
-  1 之间的整数（用于数组长度）。
-- **7.1.22 ToIndex ( value
-  )**：类似 ToLength 但用于 TypedArray 索引（范围较小）。
+- **7.1.20 ToLength ( argument )**：转为 0 到 2⁵³-1 之间的整数（用于数组长度）。
+- **7.1.21 CanonicalNumericIndexString ( argument
+  )**：检查是否为合法数字索引字符串。
+- **7.1.22 ToIndex ( value )**：类似 ToLength 但用于 TypedArray 索引。
 
 #### 7.2 Testing and Comparison Operations (测试与比较操作)
 
+##### 类型检查操作
+
 - **7.2.1 RequireObjectCoercible ( argument
-  )**：若参数为 null/undefined 则抛错（用于检查 `this`）。
+  )**：若参数为 null/undefined 则抛错。
 - **7.2.2 IsArray ( argument )**：检查是否为数组（包括 Proxy 代理的数组）。
-- **7.2.3 IsCallable ( argument )**：检查是否有 `[[Call]]`
-  内部方法（是否可调用）。
-- **7.2.4 IsConstructor ( argument )**：检查是否有 `[[Construct]]`
-  内部方法（是否可作为构造函数）。
+- **7.2.3 IsCallable ( argument )**：检查是否有 `[[Call]]` 内部方法。
+- **7.2.4 IsConstructor ( argument )**：检查是否有 `[[Construct]]` 内部方法。
 - **7.2.5 IsExtensible ( O )**：检查对象是否可扩展。
 - **7.2.6 IsRegExp ( argument )**：检查是否为正则对象或带有 `@@match` 属性。
-- **7.2.9 SameValue ( x, y )**：严格相等，但 `NaN` 等于 `NaN`，`+0` 不等于
-  `-0`（Object.is）。
-- **7.2.10 SameValueZero ( x, y )**：类似 SameValue，但 `+0` 等于
-  `-0`（Map 键比较）。
+- **7.2.7 IsPropertyKey ( argument
+  )**：检查是否为有效属性键（String 或 Symbol）。
+- **7.2.8 IsStringWellFormedUnicode ( string )**：检查字符串是否为合法 UTF-16。
+
+##### 相等性比较操作
+
+| 操作                       | 对应语法       | NaN 相等性 | +0/-0 区分 |
+| -------------------------- | -------------- | ---------- | ---------- |
+| **7.2.9 SameValue**        | `Object.is()`  | ✅ 相等    | ✅ 区分    |
+| **7.2.10 SameValueZero**   | `Map`/`Set` 键 | ✅ 相等    | ❌ 不区分  |
+| **7.2.13 IsLooselyEqual**  | `==`           | ❌ 不等    | ❌ 不区分  |
+| **7.2.14 IsStrictlyEqual** | `===`          | ❌ 不等    | ❌ 不区分  |
+
 - **7.2.11 SameValueNonNumber ( x, y )**：非数值类型的 SameValue。
 - **7.2.12 IsLessThan ( x, y, LeftFirst )**：抽象关系比较（`<`）。
-- **7.2.13 IsLooselyEqual ( x, y )**：抽象相等比较（`==`）。
-- **7.2.14 IsStrictlyEqual ( x, y )**：严格相等比较（`===`）。
 
 #### 7.3 Operations on Objects (对象操作)
 
+##### 基础对象操作
+
 - **7.3.1 MakeBasicObject ( internalSlotsList
-  )**：创建一个具有指定内部槽的基础对象。
+  )**：创建具有指定内部槽的基础对象。
 - **7.3.2 Get ( O, P )**：获取属性值（`O[P]`）。
+- **7.3.3 GetV ( V, P )**：从可能为原始值的 V 获取属性。
 - **7.3.4 Set ( O, P, V, Throw )**：设置属性值（`O[P] = V`）。
-- **7.3.5 CreateDataProperty ( O, P, V
-  )**：定义数据属性（不调用 Set，直接定义）。
+- **7.3.5 CreateDataProperty ( O, P, V )**：定义数据属性。
+- **7.3.6 CreateMethodProperty ( O, P, V )**：为方法创建不可枚举属性。
+- **7.3.7 CreateDataPropertyOrThrow ( O, P, V )**：创建数据属性，失败则抛错。
+- **7.3.8 CreateNonEnumerableDataPropertyOrThrow**：创建不可枚举数据属性。
 - **7.3.9 DeletePropertyOrThrow ( O, P )**：删除属性，失败时抛错。
+- **7.3.10 GetMethod ( V, P )**：安全获取对象方法（若不存在返回 undefined）。
+- **7.3.11 HasProperty ( O, P )**：检查属性（包括原型链）。
 - **7.3.12 HasOwnProperty ( O, P )**：检查自身属性。
+
+##### 函数调用与构造
+
 - **7.3.13 Call ( F, V [ , argumentsList ] )**：调用函数 `F`，`this` 为 `V`。
-- **7.3.14 Construct ( F [ , argumentsList [ , newTarget ] ] )**：构造函数调用
-  `new F(...)`。
+- **7.3.14 Construct ( F [ , argumentsList [ , newTarget ] ] )**：构造函数调用。
+
+##### 对象完整性与枚举
+
 - **7.3.15 SetIntegrityLevel ( O, level )**：冻结/密封对象 (`freeze`/`seal`)。
+- **7.3.16 TestIntegrityLevel ( O, level )**：检查对象完整性级别。
 - **7.3.17 CreateArrayFromList ( elements )**：从 List 创建数组。
+- **7.3.18 LengthOfArrayLike ( obj )**：获取类数组对象长度。
+- **7.3.19 CreateListFromArrayLike ( obj )**：从类数组创建 List。
 - **7.3.20 Invoke ( V, P [ , argumentsList ] )**：调用对象 `V` 上的方法 `P`。
 - **7.3.21 OrdinaryHasInstance ( C, O )**：默认的 `instanceof` 行为。
-- **7.3.23 EnumerableOwnProperties ( O, kind )**：获取可枚举属性（用于
-  `Object.keys` 等）。
-- **7.3.25 CopyDataProperties**：对象扩展（`Object.assign` 等）。
-- **7.3.35 GroupBy**：数组分组操作。
+- **7.3.22 SpeciesConstructor ( O, defaultConstructor )**：获取 `@@species`
+  构造器。
+- **7.3.23 EnumerableOwnProperties ( O, kind )**：获取可枚举属性。
+- **7.3.24 GetFunctionRealm ( obj )**：获取函数所属 Realm。
+- **7.3.25 CopyDataProperties ( target, source, excludedItems
+  )**：复制数据属性。
+- **7.3.26 PrivateElementFind ( O, P )**：查找私有元素。
+- **7.3.27-7.3.31**：私有字段/方法操作（PrivateGet、PrivateSet 等）。
+- **7.3.32 DefineField ( receiver, fieldRecord )**：定义类字段。
+- **7.3.33 InitializeInstanceElements ( O, constructor )**：初始化实例元素。
+- **7.3.34 AddValueToKeyedGroup ( groups, key, value )**：分组操作辅助。
+- **7.3.35 GroupBy ( items, callback, keyCoercion )**：数组分组操作。
 
 #### 7.4 Operations on Iterator Objects (迭代器操作)
 
-- **7.4.2 GetIteratorDirect ( obj )**：获取 Iterator Record（不调用
-  `[Symbol.iterator]`，直接假定本身是迭代器）。
-- **7.4.4 GetIterator ( obj [ , kind ] )**：获取对象的迭代器（调用
-  `[Symbol.iterator]`）。
+##### 同步迭代器操作
+
+- **7.4.1 Iterator Records**：迭代器记录类型，包含 `[[Iterator]]`,
+  `[[NextMethod]]`, `[[Done]]`。
+- **7.4.2 GetIteratorDirect ( obj )**：直接获取 Iterator Record。
+- **7.4.3 GetIteratorFlattenable ( obj, stringHandling
+  )**：用于 flat 操作的迭代器获取。
+- **7.4.4 GetIterator ( obj [ , kind ] )**：获取对象的迭代器。
+- **7.4.5 GetIteratorFromMethod ( obj, method )**：从指定方法获取迭代器。
 - **7.4.6 IteratorNext ( iteratorRecord [ , value ] )**：调用 `.next()`。
 - **7.4.7 IteratorComplete ( iteratorResult )**：检查 `done` 属性。
 - **7.4.8 IteratorValue ( iteratorResult )**：获取 `value` 属性。
-- **7.4.9 IteratorStep ( iteratorRecord
-  )**：获取下一个 Result，若完成则返回 false。
-- **7.4.11 IteratorClose ( iteratorRecord, completion )**：调用 `.return()`
-  关闭迭代器。
+- **7.4.9 IteratorStep ( iteratorRecord )**：获取下一个 Result。
+- **7.4.10 IteratorStepValue ( iteratorRecord
+  )**：获取下一个值（合并 Step 和 Value）。
+- **7.4.11 IteratorClose ( iteratorRecord, completion )**：关闭迭代器。
+
+##### 异步迭代器操作
+
+- **7.4.12 AsyncIteratorClose ( iteratorRecord, completion )**：异步关闭迭代器。
+- **7.4.13 CreateIteratorFromClosure ( closure, generatorBrand, ...
+  )**：从闭包创建迭代器。
+- **7.4.14 CreateAsyncIteratorFromClosure ( closure, ... )**：创建异步迭代器。
+- **7.4.15 IteratorShallowClone ( iteratorRecord )**：浅克隆迭代器记录。
+
+##### 迭代器辅助操作
+
 - **7.4.16 CreateIteratorResultObject ( value, done )**：创建 `{ value, done }`
   对象。
-- **7.4.17 CreateListIteratorRecord ( list )**：从 List 创建一个简单的迭代器。
-- **7.4.18 IteratorToList ( iteratorRecord )**：消耗迭代器并将值收集为 List。
+- **7.4.17 CreateListIteratorRecord ( list )**：从 List 创建迭代器。
+- **7.4.18 IteratorToList ( iteratorRecord )**：消耗迭代器并收集为 List。
+
+#### 7.5 Operations on Arguments (参数对象操作)
+
+用于处理函数 `arguments` 对象的创建与行为。
+
+- **7.5.1 MakeArgGetter ( name, env
+  )**：为映射到命名参数的 arguments 元素创建 getter。
+- **7.5.2 MakeArgSetter ( name, env
+  )**：为映射到命名参数的 arguments 元素创建 setter。
+
+> [!NOTE] 这些操作仅在非严格模式下的 `arguments` 对象中使用，用于实现
+> `arguments[i]` 与具名参数的双向绑定（如修改 `arguments[0]`
+> 会影响第一个参数变量的值）。
+
+#### 7.6 Operations on ParseNodes (解析节点操作)
+
+用于语法解析和语法树处理的内部操作。
+
+- **7.6.1 ParseText ( sourceText, goalSymbol { , grammarParams }
+  )**：将源文本解析为解析节点（Parse Node）。
+  - 返回一个 Parse Node 或 List of errors
+  - goalSymbol 可以是 `Script`, `Module`, `FunctionBody` 等
+- **7.6.2 Contains ( Symbol )**：检查解析树是否包含特定语法符号。
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│  ParseText 示例流程                                            │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  源代码: "let x = 1 + 2;"                                     │
+│           │                                                   │
+│           ▼                                                   │
+│  ParseText(sourceText, Script)                                │
+│           │                                                   │
+│           ▼                                                   │
+│  ┌─────────────────────────────────────────┐                 │
+│  │  Script                                 │                 │
+│  │    └─ StatementList                     │                 │
+│  │         └─ LexicalDeclaration           │                 │
+│  │              ├─ LetOrConst ("let")      │                 │
+│  │              └─ BindingList             │                 │
+│  │                   └─ LexicalBinding     │                 │
+│  │                        ├─ Identifier    │                 │
+│  │                        └─ Initializer   │                 │
+│  │                             └─ ...      │                 │
+│  └─────────────────────────────────────────┘                 │
+│                      ▲                                        │
+│                      │                                        │
+│              返回 Parse Node                                  │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
+
+#### 7.X 重要抽象操作详解 (Algorithm Steps & V8 Source)
+
+以下是一些最重要的抽象操作的完整算法步骤及
+**V8 引擎 C++ 源码实现**，帮助深入理解 JavaScript 的底层行为。
+
+> [!NOTE] V8 源码来自 [chromium/v8](https://github.com/nickie/v8) 仓库，主要位于
+> `src/objects/` 和 `src/execution/` 目录。以下代码经过简化以突出核心逻辑。
+
+---
+
+##### 7.1.1 ToPrimitive ( input [ , preferredType ] )
+
+将对象转换为原始值。这是理解类型强制转换的核心。
+
+```
+Algorithm Steps:
+
+1. If input is an Object, then
+   a. Let exoticToPrim be ? GetMethod(input, @@toPrimitive).
+   b. If exoticToPrim is not undefined, then
+      i.   If preferredType is not present, let hint be "default".
+      ii.  Else if preferredType is number, let hint be "number".
+      iii. Else, let hint be "string".
+      iv.  Let result be ? Call(exoticToPrim, input, « hint »).
+      v.   If result is not an Object, return result.
+      vi.  Throw a TypeError exception.
+   c. If preferredType is not present, let preferredType be number.
+   d. Return ? OrdinaryToPrimitive(input, preferredType).
+2. Return input.
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 ToPrimitive 实现
+MaybeHandle<Object> Object::ToPrimitive(Isolate* isolate,
+                                        Handle<Object> input,
+                                        ToPrimitiveHint hint) {
+  // 1. 非对象直接返回
+  if (!input->IsJSReceiver()) return input;
+
+  Handle<JSReceiver> receiver = Handle<JSReceiver>::cast(input);
+
+  // 2. 检查 @@toPrimitive 方法
+  Handle<Object> exotic_to_prim;
+  ASSIGN_RETURN_ON_EXCEPTION(
+      isolate, exotic_to_prim,
+      Object::GetMethod(receiver, isolate->factory()->to_primitive_symbol()));
+
+  if (!exotic_to_prim->IsUndefined(isolate)) {
+    // 2b. 调用 @@toPrimitive(hint)
+    Handle<String> hint_string =
+        hint == ToPrimitiveHint::kNumber ? isolate->factory()->number_string()
+      : hint == ToPrimitiveHint::kString ? isolate->factory()->string_string()
+      : isolate->factory()->default_string();
+
+    Handle<Object> result;
+    ASSIGN_RETURN_ON_EXCEPTION(
+        isolate, result,
+        Execution::Call(isolate, exotic_to_prim, receiver, 1, &hint_string));
+
+    if (!result->IsJSReceiver()) return result;
+    THROW_NEW_ERROR(isolate,
+        NewTypeError(MessageTemplate::kCannotConvertToPrimitive));
+  }
+
+  // 3. 使用 OrdinaryToPrimitive
+  return OrdinaryToPrimitive(isolate, receiver,
+      hint == ToPrimitiveHint::kString ? OrdinaryToPrimitiveHint::kString
+                                       : OrdinaryToPrimitiveHint::kNumber);
+}
+```
+
+---
+
+##### 7.1.2 ToBoolean ( argument )
+
+布尔转换规则。这是 JavaScript "truthy/falsy" 概念的规范定义。
+
+```
+Algorithm Steps:
+
+1. If argument is a Boolean, return argument.
+2. If argument is one of undefined, null, +0𝔽, -0𝔽, NaN, 0ℤ, or
+   the empty String "", return false.
+3. Return true.
+```
+
+**V8 C++ 源码** (`src/objects/objects-inl.h`)：
+
+```cpp
+// V8 引擎 ToBoolean 实现 (内联优化)
+bool Object::BooleanValue(Isolate* isolate) {
+  // Smi (小整数)
+  if (IsSmi()) return Smi::ToInt(*this) != 0;
+
+  // HeapObject (堆对象)
+  DCHECK(IsHeapObject());
+  HeapObject obj = HeapObject::cast(*this);
+
+  // Oddball 类型: undefined, null, true, false
+  if (obj.IsOddball()) {
+    return Oddball::cast(obj).to_boolean();
+    // undefined -> false, null -> false
+    // true -> true, false -> false
+  }
+
+  // 空字符串 "" -> false
+  if (obj.IsString()) {
+    return String::cast(obj).length() != 0;
+  }
+
+  // HeapNumber (浮点数): +0, -0, NaN -> false
+  if (obj.IsHeapNumber()) {
+    double value = HeapNumber::cast(obj).value();
+    return value != 0 && !std::isnan(value);
+  }
+
+  // BigInt: 0n -> false
+  if (obj.IsBigInt()) {
+    return BigInt::cast(obj).ToBoolean();
+  }
+
+  // 其他所有对象 -> true
+  return true;
+}
+```
+
+**Falsy 值完整列表**：
+
+| 值              | ToBoolean 结果 |
+| --------------- | -------------- |
+| `undefined`     | `false`        |
+| `null`          | `false`        |
+| `false`         | `false`        |
+| `+0`, `-0`      | `false`        |
+| `NaN`           | `false`        |
+| `""` (空字符串) | `false`        |
+| `0n` (BigInt)   | `false`        |
+| **其他所有值**  | `true`         |
+
+> [!WARNING] `new Boolean(false)` 是一个对象，因此
+> `ToBoolean(new Boolean(false))` 返回 `true`！
+
+---
+
+##### 7.1.4 ToNumber ( argument )
+
+将值转换为 Number 类型。
+
+```
+Algorithm Steps:
+
+1.  If argument is a Number, return argument.
+2.  If argument is either a Symbol or a BigInt, throw a TypeError.
+3.  If argument is undefined, return NaN.
+4.  If argument is null, return +0𝔽.
+5.  If argument is true, return 1𝔽.
+6.  If argument is false, return +0𝔽.
+7.  If argument is a String, return StringToNumber(argument).
+8.  Assert: argument is an Object.
+9.  Let primValue be ? ToPrimitive(argument, number).
+10. Assert: primValue is not an Object.
+11. Return ? ToNumber(primValue).
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 ToNumber 实现
+MaybeHandle<Object> Object::ToNumber(Isolate* isolate, Handle<Object> input) {
+  // 1. 已经是 Number
+  if (input->IsNumber()) return input;
+
+  // 2. Symbol 和 BigInt 抛出 TypeError
+  if (input->IsSymbol()) {
+    THROW_NEW_ERROR(isolate,
+        NewTypeError(MessageTemplate::kSymbolToNumber));
+  }
+  if (input->IsBigInt()) {
+    THROW_NEW_ERROR(isolate,
+        NewTypeError(MessageTemplate::kBigIntToNumber));
+  }
+
+  // 3-6. Oddball: undefined, null, true, false
+  if (input->IsOddball()) {
+    return handle(Oddball::cast(*input).to_number(), isolate);
+    // undefined -> NaN
+    // null -> 0
+    // true -> 1
+    // false -> 0
+  }
+
+  // 7. String -> Number
+  if (input->IsString()) {
+    return String::ToNumber(isolate, Handle<String>::cast(input));
+  }
+
+  // 8-11. Object: 先 ToPrimitive，再递归
+  DCHECK(input->IsJSReceiver());
+  Handle<Object> primitive;
+  ASSIGN_RETURN_ON_EXCEPTION(
+      isolate, primitive,
+      ToPrimitive(isolate, input, ToPrimitiveHint::kNumber));
+  return ToNumber(isolate, primitive);
+}
+```
+
+**转换表**：
+
+| 输入值      | ToNumber 结果   |
+| ----------- | --------------- |
+| `undefined` | `NaN`           |
+| `null`      | `0`             |
+| `true`      | `1`             |
+| `false`     | `0`             |
+| `"123"`     | `123`           |
+| `"123abc"`  | `NaN`           |
+| `""`        | `0`             |
+| `" "`       | `0` (空白字符)  |
+| `[]`        | `0` (→ "" → 0)  |
+| `[1]`       | `1` (→ "1" → 1) |
+| `{}`        | `NaN`           |
+
+---
+
+##### 7.1.17 ToString ( argument )
+
+将值转换为 String 类型。
+
+```
+Algorithm Steps:
+
+1. If argument is a String, return argument.
+2. If argument is a Symbol, throw a TypeError exception.
+3. If argument is undefined, return "undefined".
+4. If argument is null, return "null".
+5. If argument is true, return "true".
+6. If argument is false, return "false".
+7. If argument is a Number, return Number::toString(argument, 10).
+8. If argument is a BigInt, return BigInt::toString(argument, 10).
+9. Assert: argument is an Object.
+10. Let primValue be ? ToPrimitive(argument, string).
+11. Assert: primValue is not an Object.
+12. Return ? ToString(primValue).
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 ToString 实现
+MaybeHandle<String> Object::ToString(Isolate* isolate, Handle<Object> input) {
+  // 1. 已经是 String
+  if (input->IsString()) return Handle<String>::cast(input);
+
+  // 2. Symbol 抛出 TypeError
+  if (input->IsSymbol()) {
+    THROW_NEW_ERROR(isolate,
+        NewTypeError(MessageTemplate::kSymbolToString));
+  }
+
+  // 3-6. Oddball 类型
+  if (input->IsOddball()) {
+    return handle(Oddball::cast(*input).to_string(), isolate);
+    // undefined -> "undefined"
+    // null -> "null"
+    // true -> "true"
+    // false -> "false"
+  }
+
+  // 7. Number -> String
+  if (input->IsNumber()) {
+    return isolate->factory()->NumberToString(input);
+  }
+
+  // 8. BigInt -> String
+  if (input->IsBigInt()) {
+    return BigInt::ToString(isolate, Handle<BigInt>::cast(input));
+  }
+
+  // 9-12. Object: ToPrimitive(hint=string) 然后递归
+  DCHECK(input->IsJSReceiver());
+  Handle<Object> primitive;
+  ASSIGN_RETURN_ON_EXCEPTION(
+      isolate, primitive,
+      ToPrimitive(isolate, input, ToPrimitiveHint::kString));
+  return ToString(isolate, primitive);
+}
+```
+
+> [!NOTE] 对象转字符串时，优先调用 `toString()`，而非 `valueOf()`。这与
+> `ToNumber` 的顺序相反。
+
+---
+
+##### 7.2.9 SameValue ( x, y )
+
+`Object.is()` 的底层实现。比 `===` 更精确。
+
+```
+Algorithm Steps:
+
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, then
+   a. Return Number::sameValue(x, y).
+      // NaN === NaN → true
+      // +0 !== -0 → true
+3. Return SameValueNonNumber(x, y).
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 SameValue 实现
+bool Object::SameValue(Tagged<Object> other) const {
+  // 1. 完全相同的对象引用
+  if (*this == other) return true;
+
+  // 2. Number 类型特殊处理
+  if (IsNumber() && other.IsNumber()) {
+    double x = IsHeapNumber()
+        ? HeapNumber::cast(*this).value()
+        : Smi::ToInt(*this);
+    double y = other.IsHeapNumber()
+        ? HeapNumber::cast(other).value()
+        : Smi::ToInt(other);
+
+    // NaN == NaN -> true (与 === 不同)
+    if (std::isnan(x) && std::isnan(y)) return true;
+
+    // +0 != -0 (与 === 不同)
+    if (x == 0 && y == 0) {
+      return std::signbit(x) == std::signbit(y);
+    }
+
+    return x == y;
+  }
+
+  // 3. 其他类型：BigInt, String 等
+  if (IsBigInt() && other.IsBigInt()) {
+    return BigInt::EqualToBigInt(BigInt::cast(*this), BigInt::cast(other));
+  }
+
+  if (IsString() && other.IsString()) {
+    return String::cast(*this).Equals(String::cast(other));
+  }
+
+  return false;
+}
+```
+
+**与 `===` 的区别**：
+
+```javascript
+// === 的问题
+NaN === NaN; // false ❌
++0 === -0; // true  ❌
+
+// SameValue (Object.is) 的行为
+Object.is(NaN, NaN); // true  ✅
+Object.is(+0, -0); // false ✅
+```
+
+---
+
+##### 7.2.14 IsStrictlyEqual ( x, y )
+
+`===` 运算符的逻辑。
+
+```
+Algorithm Steps:
+
+1. If Type(x) is not Type(y), return false.
+2. If x is a Number, return Number::equal(x, y).
+   // Note: NaN !== NaN, +0 === -0
+3. Return SameValueNonNumber(x, y).
+```
+
+**V8 C++ 源码** (`src/objects/objects-inl.h`)：
+
+```cpp
+// V8 引擎 StrictEquals 实现
+bool Object::StrictEquals(Tagged<Object> that) const {
+  // 1. 直接比较引用（快速路径）
+  if (*this == that) return true;
+
+  // 2. 类型不同
+  if (IsHeapObject() != that.IsHeapObject()) return false;
+
+  if (!IsHeapObject()) {
+    // 都是 Smi，但值不同（引用已检查）
+    return false;
+  }
+
+  HeapObject this_heap = HeapObject::cast(*this);
+  HeapObject that_heap = HeapObject::cast(that);
+
+  // 类型检查
+  InstanceType this_type = this_heap.map().instance_type();
+  InstanceType that_type = that_heap.map().instance_type();
+
+  // HeapNumber 比较
+  if (this_type == HEAP_NUMBER_TYPE) {
+    if (that_type != HEAP_NUMBER_TYPE) return false;
+    double x = HeapNumber::cast(this_heap).value();
+    double y = HeapNumber::cast(that_heap).value();
+    // NaN !== NaN (IEEE 754 标准)
+    return x == y;
+  }
+
+  // String 比较
+  if (IsString(this_type)) {
+    if (!IsString(that_type)) return false;
+    return String::cast(this_heap).Equals(String::cast(that_heap));
+  }
+
+  // BigInt 比较
+  if (this_type == BIGINT_TYPE) {
+    if (that_type != BIGINT_TYPE) return false;
+    return BigInt::EqualToBigInt(
+        BigInt::cast(this_heap), BigInt::cast(that_heap));
+  }
+
+  return false;
+}
+```
+
+---
+
+##### 7.1.1.1 OrdinaryToPrimitive ( O, hint )
+
+当对象没有 `@@toPrimitive` 方法时的默认转换逻辑。
+
+```
+Algorithm Steps:
+
+1. If hint is string, then
+   a. Let methodNames be « "toString", "valueOf" ».
+2. Else,
+   a. Let methodNames be « "valueOf", "toString" ».
+3. For each element name of methodNames, do
+   a. Let method be ? Get(O, name).
+   b. If IsCallable(method) is true, then
+      i.  Let result be ? Call(method, O).
+      ii. If result is not an Object, return result.
+4. Throw a TypeError exception.
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 OrdinaryToPrimitive 实现
+MaybeHandle<Object> JSReceiver::OrdinaryToPrimitive(
+    Isolate* isolate,
+    Handle<JSReceiver> receiver,
+    OrdinaryToPrimitiveHint hint) {
+
+  // 1-2. 根据 hint 确定方法调用顺序
+  Handle<String> method_names[2];
+  if (hint == OrdinaryToPrimitiveHint::kString) {
+    method_names[0] = isolate->factory()->toString_string();  // "toString"
+    method_names[1] = isolate->factory()->valueOf_string();   // "valueOf"
+  } else {
+    method_names[0] = isolate->factory()->valueOf_string();   // "valueOf"
+    method_names[1] = isolate->factory()->toString_string();  // "toString"
+  }
+
+  // 3. 依次尝试调用
+  for (int i = 0; i < 2; i++) {
+    Handle<Object> method;
+    ASSIGN_RETURN_ON_EXCEPTION(
+        isolate, method,
+        JSReceiver::GetProperty(isolate, receiver, method_names[i]));
+
+    if (method->IsCallable()) {
+      Handle<Object> result;
+      ASSIGN_RETURN_ON_EXCEPTION(
+          isolate, result,
+          Execution::Call(isolate, method, receiver, 0, nullptr));
+
+      // 如果结果是原始值，返回
+      if (!result->IsJSReceiver()) return result;
+    }
+  }
+
+  // 4. 两个方法都失败，抛出 TypeError
+  THROW_NEW_ERROR(isolate,
+      NewTypeError(MessageTemplate::kCannotConvertToPrimitive));
+}
+```
+
+---
+
+##### 7.3.21 OrdinaryHasInstance ( C, O )
+
+默认的 `instanceof` 行为。
+
+```
+Algorithm Steps:
+
+1. If IsCallable(C) is false, return false.
+2. If C has [[BoundTargetFunction]] internal slot, then
+   a. Let BC be C.[[BoundTargetFunction]].
+   b. Return ? InstanceofOperator(O, BC).
+3. If O is not an Object, return false.
+4. Let P be ? Get(C, "prototype").
+5. If P is not an Object, throw a TypeError exception.
+6. Repeat,
+   a. Set O to ? O.[[GetPrototypeOf]]().
+   b. If O is null, return false.
+   c. If SameValue(P, O) is true, return true.
+```
+
+**V8 C++ 源码** (`src/objects/objects.cc`)：
+
+```cpp
+// V8 引擎 OrdinaryHasInstance 实现
+Maybe<bool> Object::OrdinaryHasInstance(Isolate* isolate,
+                                        Handle<Object> callable,
+                                        Handle<Object> object) {
+  // 1. 必须是可调用的
+  if (!callable->IsCallable()) return Just(false);
+
+  // 2. 处理 bound function
+  if (callable->IsJSBoundFunction()) {
+    Handle<Object> bound_target(
+        JSBoundFunction::cast(*callable).bound_target_function(), isolate);
+    return Object::InstanceOf(isolate, object, bound_target);
+  }
+
+  // 3. object 必须是 JSReceiver
+  if (!object->IsJSReceiver()) return Just(false);
+
+  // 4. 获取 callable.prototype
+  Handle<Object> prototype;
+  ASSIGN_RETURN_ON_EXCEPTION_VALUE(
+      isolate, prototype,
+      Object::GetProperty(isolate, callable,
+                          isolate->factory()->prototype_string()),
+      Nothing<bool>());
+
+  // 5. prototype 必须是 JSReceiver
+  if (!prototype->IsJSReceiver()) {
+    THROW_NEW_ERROR_RETURN_VALUE(
+        isolate,
+        NewTypeError(MessageTemplate::kInstanceofNonobjectProto, prototype),
+        Nothing<bool>());
+  }
+
+  // 6. 遍历原型链
+  Handle<JSReceiver> receiver = Handle<JSReceiver>::cast(object);
+  while (true) {
+    Handle<Object> proto;
+    ASSIGN_RETURN_ON_EXCEPTION_VALUE(
+        isolate, proto,
+        JSReceiver::GetPrototype(isolate, receiver),
+        Nothing<bool>());
+
+    if (proto->IsNull(isolate)) return Just(false);
+    if (proto->SameValue(*prototype)) return Just(true);
+
+    receiver = Handle<JSReceiver>::cast(proto);
+  }
+}
+```
+
+**原型链遍历示意**：
+
+```javascript
+class Animal {}
+class Dog extends Animal {}
+const dog = new Dog();
+
+dog instanceof Dog; // true
+dog instanceof Animal; // true
+dog instanceof Object; // true
+
+// 内部过程：
+// dog.[[Prototype]] → Dog.prototype ✅ (Dog)
+// Dog.prototype.[[Prototype]] → Animal.prototype ✅ (Animal)
+// Animal.prototype.[[Prototype]] → Object.prototype ✅ (Object)
+// Object.prototype.[[Prototype]] → null (终止)
+```
+
+---
 
 ### 8. Syntax-Directed Operations (语法导向操作)
 
