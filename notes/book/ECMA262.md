@@ -343,10 +343,55 @@ Values)**（即无限精度的实数或整数），而非 ECMAScript 的 Number 
 
 ### 6. ECMAScript Data Types and Values (数据类型与值)
 
-- **6.1 语言类型**：`Undefined`, `Null`, `Boolean`, `String`, `Symbol`,
-  `Numeric` (Number/BigInt), `Object`
-- **6.2 规范类型**：`List`, `Record`, `Completion Record`, `Reference Record`,
-  `Property Descriptor`, `Data Blocks`
+本章定义了 ECMAScript 程序中操作的值（Language
+Types）以及规范算法内部使用的辅助值（Specification Types）。
+
+#### 6.1 ECMAScript Language Types (语言类型)
+
+ECMAScript 程序员直接操作的值的类型。
+
+- **6.1.1 The Undefined Type**：包含唯一值
+  `undefined`。表示未人为赋值的变量状态。
+- **6.1.2 The Null Type**：包含唯一值 `null`。表示有意缺失的对象值。
+- **6.1.3 The Boolean Type**：包含 `true` 和 `false`。
+- **6.1.4 The String
+  Type**：由零个或多个 16 位无符号整数值（Element）组成的有限有序序列。
+  - 规范中的 String 值是不可变的（Immutable）。
+  - 许多操作将其视为 UTF-16 编码，但语言本身不强制要求必须是合法的 Unicode。
+- **6.1.5 The Symbol Type**：表示唯一的、非字符串的对象属性键（Key）。
+- **6.1.6 Numeric Types (数值类型)**：
+  - **6.1.6.1 The Number Type**：基于 IEEE 754-2019
+    binary64（双精度浮点数）。包含 `NaN`、`+∞`、`-∞`、`+0`、`-0`。
+  - **6.1.6.2 The BigInt
+    Type**：表示任意精度的整数。不能与 Number 混合运算（需显式转换）。
+- **6.1.7 The Object
+  Type**：属性的集合。每个对象都有一个唯一的标识（Identity）。包含 Object
+  Internal Methods（如 `[[Get]]`, `[[Set]]`）。
+
+#### 6.2 ECMAScript Specification Types (规范类型)
+
+仅用于规范算法描述的元值（Meta-values），ECMAScript 语言本身无法直接访问这些类型。
+
+- **6.2.2 List and Record**：
+  - **List**：值的有序序列（类似数组，如 `« 1, 2 »`）。
+  - **Record**：命名字段的集合（类似结构体，如 `{ [[Field]]: value }`）。
+- **6.2.4 Completion Record**：用于解释控制流（Control Flow）和语句执行结果。
+  - 包含三个字段：`[[Type]]` (normal, return, throw, break, continue),
+    `[[Value]]`, `[[Target]]`。
+- **6.2.5 Reference Record**：用于解释标识符解析和属性访问（如 `obj.prop` 或
+  `x`）。
+  - 决定了赋值、`typeof`、`delete` 等操作的行为。
+  - 包含：`[[Base]]` (对象或环境记录), `[[ReferencedName]]`, `[[Strict]]` 等。
+- **6.2.6 Property Descriptor**：用于描述对象属性的特性。
+  - **Data Descriptor**：`[[Value]]`, `[[Writable]]`, `[[Enumerable]]`,
+    `[[Configurable]]`.
+  - **Accessor Descriptor**：`[[Get]]`, `[[Set]]`, `[[Enumerable]]`,
+    `[[Configurable]]`.
+- **6.2.9 Data Blocks**：这就好比分配在内存中的二进制块。
+  - 用于描述 `ArrayBuffer` 等背后的原始字节序列。
+  - 分为由垃圾回收管理的（CreateByteDataBlock）和共享的（CreateSharedByteDataBlock）。
+- **Other Types**：还包括 `Set`, `Relation`, `Environment Record`
+  (作用域链基础), `Abstract Closure` (闭包), `PrivateElement` (私有字段) 等。
 
 ### 7. Abstract Operations (抽象操作/内部算法)
 
