@@ -25,6 +25,7 @@
 | 🤖 **AI 模型**  | 业内最新 LLM 和多模态模型 | [模型汇总](./notes/ai-fundamentals/ai-models.md)      |
 | 🔧 **开发工具** | AI 编程助手与开发工具     | [工具汇总](./notes/tools-and-apis/ai-coding-tools.md) |
 | 🏗️ **架构设计** | LLM 应用双引擎分层架构    | [架构笔记](./notes/architecture/)                     |
+| 📚 **案例研究** | 优秀项目工程实践分析      | [Telegram 等](./notes/case-studies/)                  |
 
 ---
 
@@ -37,6 +38,7 @@ ai-talk/
 │   ├── claude-code/          # Claude Code 指南
 │   ├── antigravity/          # Antigravity 指南
 │   ├── architecture/         # 架构设计
+│   ├── case-studies/         # 工程案例研究
 │   ├── ai-fundamentals/      # AI 基础知识
 │   ├── tools-and-apis/       # 工具与 API
 │   └── project-meta/         # 项目规划
