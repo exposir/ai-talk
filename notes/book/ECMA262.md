@@ -319,6 +319,24 @@ cf1.q1 = 'a'; // 实例属性
   `ReturnIfAbrupt(Operation())`。如果操作抛出异常，则直接返回该异常（传播错误）。
 - **`! Operation()`**：断言该操作永远不会返回异常（abrupt completion）。
 
+##### 5.2.6 Mathematical Operations (数学操作)
+
+规范中的数学符号（如 +, -, ×, ÷）通常作用于 **数学值 (Mathematical
+Values)**（即无限精度的实数或整数），而非 ECMAScript 的 Number 或 BigInt 类型。
+
+- 只有当明确提及 Number 或 BigInt 时，才涉及浮点数精度或溢出问题。
+- 转换函数：`𝔽(x)` 将数学值转换为 Number，`ℤ(x)` 将数学值转换为 BigInt。
+
+##### 5.2.7 Value Notation (值表示法)
+
+规范中特定值的表示方式：
+
+- **`null`, `true`, `false`, `undefined`**：对应 ECMAScript 的原始值。
+- **`+∞`, `-∞`**：对应 Number 的 Positive/Negative Infinity。
+- **`+0`, `-0`**：对应 Number 的正负零。
+- **`NaN`**：对应 Number 的 NaN 值。
+- **`"string"`**：表示 String 值（由 Code Units 组成）。
+
 ---
 
 ## 二、核心数据类型与抽象操作 (Chapters 6-9)
