@@ -1,6 +1,8 @@
 # ECMA-262 第 16 版 (2025) 规范目录
 
 > ECMA-262 是 JavaScript 语言的官方标准规范。第 16 版于 2025 年 6 月发布，涵盖了从底层算法约定到高层内置对象的所有定义。
+>
+> [PDF 下载](https://ecma-international.org/wp-content/uploads/ECMA-262_16th_edition_june_2025.pdf)
 
 ---
 
