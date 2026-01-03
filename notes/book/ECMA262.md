@@ -167,6 +167,8 @@ ECMAScript 最初被设计为 **Web 脚本语言**，用于：
 
 #### 4.3 ECMAScript Overview
 
+**类 Java 语法**：ECMAScript 的语法刻意模仿了 Java，但更为宽松，使得它易于作为脚本语言使用（例如变量无需类型声明）。
+
 ##### 4.3.1 Objects (对象)
 
 ECMAScript 是**基于原型**的，而非基于类的语言：
@@ -184,10 +186,12 @@ cf1.q1 = 'a'; // 实例属性
 
 **核心特性**：
 
-- 对象是**属性的集合**，每个属性有决定其行为的特性 (attributes)
-- 属性可以动态添加/删除
-- 原型链实现继承和共享属性
-- ES2015 后支持 `class` 语法糖
+- **对象本质**：对象是**属性的集合**，每个属性有决定其行为的特性 (attributes)。
+- **动态性**：属性可以动态添加/删除。
+- **继承机制**：通过原型链实现继承和共享属性。
+- **原始值**：`Undefined`, `Null`, `Boolean`, `Number`, `BigInt`, `String`,
+  `Symbol`。
+- **内置生态**：定义了大量内置对象（如 `Math`, `JSON`, `Map`）和运算符。
 
 ##### 4.3.2 The Strict Variant (严格模式)
 
@@ -206,21 +210,64 @@ cf1.q1 = 'a'; // 实例属性
 
 #### 4.4 Terms and Definitions (术语与定义)
 
-规范定义了 **42 个核心术语** (4.4.1 - 4.4.42)：
+规范定义了 **42 个核心术语** (4.4.1 -
+4.4.42)，明确了语言的词汇表。为了完整性，以下列出所有术语及其精简定义：
 
-| 术语                | 定义                                                                        |
-| ------------------- | --------------------------------------------------------------------------- |
-| **type**            | 数据值的集合 (见第 6 章)                                                    |
-| **primitive value** | `Undefined`, `Null`, `Boolean`, `Number`, `BigInt`, `Symbol`, `String` 之一 |
-| **object**          | `Object` 类型的成员，属性的集合，有单一原型对象                             |
-| **constructor**     | 创建和初始化对象的函数对象                                                  |
-| **prototype**       | 为其他对象提供共享属性的对象                                                |
-| **ordinary object** | 具有所有对象必须支持的默认行为的对象                                        |
-| **exotic object**   | 不具有一个或多个默认内部方法行为的对象                                      |
-| **standard object** | 本规范定义语义的对象                                                        |
-| **built-in object** | 由实现提供的对象，程序执行即存在                                            |
-| **function**        | 可调用的对象                                                                |
-| **method**          | 作为属性值的函数                                                            |
+| 序号 | 术语 (Terms)                    | 定义 (Definitions)                                               |
+| :--- | :------------------------------ | :--------------------------------------------------------------- | --- |
+| 1    | **implementation-approximated** | 实现近似：由外部定义但有理想化建议的功能                         |
+| 2    | **implementation-defined**      | 实现定义：由具体实现决定细节，但必须文档化                       |
+| 3    | **host-defined**                | 宿主定义：由宿主环境（如浏览器）决定                             |
+| 4    | **type**                        | 数据值的集合 (见第 6 章)                                         |
+| 5    | **primitive value**             | 原始值：Undefined, Null, Boolean, Number, BigInt, Symbol, String |
+| 6    | **object**                      | 对象：属性的集合，具有单一原型                                   |
+| 7    | **constructor**                 | 构造器：用于创建和初始化对象的函数对象                           |
+| 8    | **prototype**                   | 原型：为其他对象提供共享属性的对象                               |
+| 9    | **ordinary object**             | 普通对象：拥有所有默认内部方法行为的对象                         |
+| 10   | **exotic object**               | 异质对象：某些内部方法行为与默认不同的对象 (如 Array, Proxy)     |
+| 11   | **standard object**             | 标准对象：本规范定义了其语义的对象                               |
+| 12   | **built-in object**             | 内置对象：实现提供的、程序开始前就存在的对象                     |
+| 13   | **undefined value**             | 当变量未被赋值时使用的值                                         |
+| 14   | **Undefined type**              | 只有一个值 `undefined` 的类型                                    |
+| 15   | **null value**                  | 代表有意缺失任何对象值的值                                       |
+| 16   | **Null type**                   | 只有一个值 `null` 的类型                                         |
+| 17   | **Boolean value**               | `true` 或 `false`                                                |
+| 18   | **Boolean type**                | 包含 `true` 和 `false` 的类型                                    |
+| 19   | **Boolean object**              | 封装 Boolean 值的对象                                            |
+| 20   | **String value**                | 零个或多个 16 位无符号整数值的有限有序序列                       |
+| 21   | **String type**                 | 所有 String 值的集合                                             |
+| 22   | **String object**               | 封装 String 值的对象                                             |
+| 23   | **Number value**                | IEEE 754-2019 双精度浮点数                                       |
+| 24   | **Number type**                 | 所有 Number 值的集合 (含 NaN, Infinity)                          |
+| 25   | **Number object**               | 封装 Number 值的对象                                             |
+| 26   | **Infinity**                    | 代表无穷大的 Number 值                                           |
+| 27   | **NaN**                         | Not-a-Number (非数字) 的 Number 值                               |
+| 28   | **BigInt value**                | 任意精度的整数                                                   |
+| 29   | **BigInt type**                 | 所有 BigInt 值的集合                                             |
+| 30   | **BigInt object**               | 封装 BigInt 值的对象                                             |
+| 31   | **Symbol value**                | 唯一的、非字符串的 Object 属性键                                 |
+| 32   | **Symbol type**                 | 所有 Symbol 值的集合                                             |
+| 33   | **Symbol object**               | 封装 Symbol 值的对象                                             |
+| 34   | **function**                    | 函数：可以作为子程序调用的对象                                   |
+| 35   | **built-in function**           | 内置函数：由实现提供的函数                                       |
+| 36   | **built-in constructor**        | 内置构造器：由实现提供的构造器                                   |
+| 37   | **property**                    | 属性：键与值及属性特性 (attribute) 的关联                        |
+| 38   | **method**                      | 方法：作为属性值的函数                                           |
+| 39   | **built-in method**             | 内置方法：作为内置对象属性的内置函数                             |
+| 40   | **attribute**                   | 特性：定义属性状态的内部值 (如 Writable)                         |
+| 41   | **own property**                | 自有属性：直接包含在对象自身的属性                               |
+| 42   | **inherited property**          | 继承属性：对象自身没有，涵盖原型链上的属性                       |     |
+
+#### 4.5 Organization of This Specification (规范组织结构)
+
+本规范的章节安排逻辑如下：
+
+- **1-5 章 (基础)**：定义范围、一致性、引用标准、概述及记号约定。
+- **6-9 章 (核心运行时)**：定义数据类型、抽象操作（类型转换等）、执行上下文、环境记录等底层机制。
+- **10-15 章 (语言语法)**：从词法分析到表达式、语句，再到函数、类和模块的完整语法与语义定义。
+- **16-28 章 (标准库)**：详细定义所有内置对象（Global, Map, Promise,
+  Proxy 等）。
+- **附录**：提供文法汇总、Web 浏览器兼容性扩展及历史修正信息。
 
 ### 5. Notational Conventions (记号约定)
 
