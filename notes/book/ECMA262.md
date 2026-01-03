@@ -395,12 +395,89 @@ ECMAScript 程序员直接操作的值的类型。
 
 ### 7. Abstract Operations (抽象操作/内部算法)
 
-| 类别               | 操作                                                              |
-| ------------------ | ----------------------------------------------------------------- |
-| **7.1 类型转换**   | `ToPrimitive`, `ToBoolean`, `ToNumber`, `ToString`, `ToObject` 等 |
-| **7.2 测试与比较** | `IsCallable`, `IsConstructor`, `SameValue`, `IsStrictlyEqual` 等  |
-| **7.3 对象操作**   | `Get`, `Set`, `DefineProperty`, `Call`, `Construct`, `GroupBy` 等 |
-| **7.4 迭代器操作** | `IteratorNext`, `IteratorStep`, `IteratorClose` 等                |
+本章定义了 ECMAScript 规范中大量使用的内部算法（Internal
+Algorithms）。这些操作不直接暴露给开发者，但解释了语言特性的底层行为。
+
+#### 7.1 Type Conversion (类型转换)
+
+定义了将值从一种类型转换为另一种类型的规则。
+
+- **7.1.1 ToPrimitive ( input [ , preferredType ] )**：将对象转换为原始值。调用
+  `@@toPrimitive` 方法或 `valueOf`/`toString`。
+- **7.1.2 ToBoolean ( argument )**：布尔转换。`undefined`, `null`, `false`,
+  `+0`, `-0`, `NaN`, `""` 转为 `false`，其余为 `true`。
+- **7.1.3 ToNumeric ( value )**：转为 Number 或 BigInt。
+- **7.1.4 ToNumber ( argument )**：转为 Number 类型。
+- **7.1.5 ToIntegerOrInfinity ( argument )**：转为整数或无穷大（用于索引计算）。
+- **7.1.13 ToBigInt ( argument )**：转为 BigInt 类型。
+- **7.1.17 ToString ( argument )**：转为 String 类型。
+- **7.1.18 ToObject ( argument )**：Undefined/Null 会抛错，其他转为 Wrapper
+  Object。
+- **7.1.19 ToPropertyKey ( argument )**：转为属性键（String 或 Symbol）。
+- **7.1.20 ToLength ( argument )**：转为 0 到 2^53 -
+  1 之间的整数（用于数组长度）。
+- **7.1.22 ToIndex ( value
+  )**：类似 ToLength 但用于 TypedArray 索引（范围较小）。
+
+#### 7.2 Testing and Comparison Operations (测试与比较操作)
+
+- **7.2.1 RequireObjectCoercible ( argument
+  )**：若参数为 null/undefined 则抛错（用于检查 `this`）。
+- **7.2.2 IsArray ( argument )**：检查是否为数组（包括 Proxy 代理的数组）。
+- **7.2.3 IsCallable ( argument )**：检查是否有 `[[Call]]`
+  内部方法（是否可调用）。
+- **7.2.4 IsConstructor ( argument )**：检查是否有 `[[Construct]]`
+  内部方法（是否可作为构造函数）。
+- **7.2.5 IsExtensible ( O )**：检查对象是否可扩展。
+- **7.2.6 IsRegExp ( argument )**：检查是否为正则对象或带有 `@@match` 属性。
+- **7.2.9 SameValue ( x, y )**：严格相等，但 `NaN` 等于 `NaN`，`+0` 不等于
+  `-0`（Object.is）。
+- **7.2.10 SameValueZero ( x, y )**：类似 SameValue，但 `+0` 等于
+  `-0`（Map 键比较）。
+- **7.2.11 SameValueNonNumber ( x, y )**：非数值类型的 SameValue。
+- **7.2.12 IsLessThan ( x, y, LeftFirst )**：抽象关系比较（`<`）。
+- **7.2.13 IsLooselyEqual ( x, y )**：抽象相等比较（`==`）。
+- **7.2.14 IsStrictlyEqual ( x, y )**：严格相等比较（`===`）。
+
+#### 7.3 Operations on Objects (对象操作)
+
+- **7.3.1 MakeBasicObject ( internalSlotsList
+  )**：创建一个具有指定内部槽的基础对象。
+- **7.3.2 Get ( O, P )**：获取属性值（`O[P]`）。
+- **7.3.4 Set ( O, P, V, Throw )**：设置属性值（`O[P] = V`）。
+- **7.3.5 CreateDataProperty ( O, P, V
+  )**：定义数据属性（不调用 Set，直接定义）。
+- **7.3.9 DeletePropertyOrThrow ( O, P )**：删除属性，失败时抛错。
+- **7.3.12 HasOwnProperty ( O, P )**：检查自身属性。
+- **7.3.13 Call ( F, V [ , argumentsList ] )**：调用函数 `F`，`this` 为 `V`。
+- **7.3.14 Construct ( F [ , argumentsList [ , newTarget ] ] )**：构造函数调用
+  `new F(...)`。
+- **7.3.15 SetIntegrityLevel ( O, level )**：冻结/密封对象 (`freeze`/`seal`)。
+- **7.3.17 CreateArrayFromList ( elements )**：从 List 创建数组。
+- **7.3.20 Invoke ( V, P [ , argumentsList ] )**：调用对象 `V` 上的方法 `P`。
+- **7.3.21 OrdinaryHasInstance ( C, O )**：默认的 `instanceof` 行为。
+- **7.3.23 EnumerableOwnProperties ( O, kind )**：获取可枚举属性（用于
+  `Object.keys` 等）。
+- **7.3.25 CopyDataProperties**：对象扩展（`Object.assign` 等）。
+- **7.3.35 GroupBy**：数组分组操作。
+
+#### 7.4 Operations on Iterator Objects (迭代器操作)
+
+- **7.4.2 GetIteratorDirect ( obj )**：获取 Iterator Record（不调用
+  `[Symbol.iterator]`，直接假定本身是迭代器）。
+- **7.4.4 GetIterator ( obj [ , kind ] )**：获取对象的迭代器（调用
+  `[Symbol.iterator]`）。
+- **7.4.6 IteratorNext ( iteratorRecord [ , value ] )**：调用 `.next()`。
+- **7.4.7 IteratorComplete ( iteratorResult )**：检查 `done` 属性。
+- **7.4.8 IteratorValue ( iteratorResult )**：获取 `value` 属性。
+- **7.4.9 IteratorStep ( iteratorRecord
+  )**：获取下一个 Result，若完成则返回 false。
+- **7.4.11 IteratorClose ( iteratorRecord, completion )**：调用 `.return()`
+  关闭迭代器。
+- **7.4.16 CreateIteratorResultObject ( value, done )**：创建 `{ value, done }`
+  对象。
+- **7.4.17 CreateListIteratorRecord ( list )**：从 List 创建一个简单的迭代器。
+- **7.4.18 IteratorToList ( iteratorRecord )**：消耗迭代器并将值收集为 List。
 
 ### 8. Syntax-Directed Operations (语法导向操作)
 
