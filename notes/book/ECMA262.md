@@ -271,8 +271,53 @@ cf1.q1 = 'a'; // 实例属性
 
 ### 5. Notational Conventions (记号约定)
 
-- **5.1** 文法表示（词法、句法、正则文法）
-- **5.2** 算法约定（抽象操作、运行语义、数学操作、值表示）
+#### 5.1 Syntactic and Lexical Grammars (语法与词法文法)
+
+本规范使用 **上下文无关文法 (Context-Free Grammars)** 来定义语言结构。
+
+- **Lexical Grammar (词法文法)**：定义如何将源文本转换为 **Tokens
+  (输入元素)**。使用 `::` 作为产生式符号。
+- **RegExp Grammar (正则文法)**：定义正则表达式模式的结构。也使用 `::`。
+- **Numeric String Grammar
+  (数字字符串文法)**：定义如何将 String 转换为 Numeric 值。使用 `:::`。
+- **Syntactic Grammar (句法文法)**：定义 Tokens 如何组成句法结构（如 Statements,
+  Expressions）。使用 `:`。
+
+**文法符号说明**：
+
+| 符号        | 含义             | 示例                                                      |
+| :---------- | :--------------- | :-------------------------------------------------------- |
+| **opt**     | 可选符号         | `VariableDeclaration : BindingIdentifier Initializer opt` |
+| **[empty]** | 空产生式         | 表示此处不匹配任何终结符                                  |
+| **{ }**     | 限制性子句       | `[no LineTerminator here]`                                |
+| **one of**  | 从集合中选择一个 | `DecimalDigit :: one of 0 1 2 ... 9`                      |
+| **but not** | 排除特定项       | `Identifier :: IdentifierName but not ReservedWord`       |
+
+#### 5.2 Algorithm Conventions (算法约定)
+
+规范使用算法步骤来描述语义。
+
+- **Abstract Operations (抽象操作)**：规范内部定义的辅助函数（如 `ToNumber`,
+  `GetValue`），非语言暴露接口。
+- **Runtime Semantics (运行语义)**：代码执行时的行为（如 `Evaluation`）。
+- **Static Semantics (静态语义)**：编译期检查（如 `Early Errors`,
+  `VarDeclaredNames`）。
+
+##### 5.2.3 Completion Records (完成记录)
+
+用于表示控制流（如 return, break, throw）的内部数据结构：
+
+| 字段         | 含义                                             |
+| :----------- | :----------------------------------------------- |
+| `[[Type]]`   | `normal`, `return`, `throw`, `break`, `continue` |
+| `[[Value]]`  | 返回值或错误对象                                 |
+| `[[Target]]` | 跳转的目标标签 (label)                           |
+
+**简写符号**：
+
+- **`? Operation()`**：相当于
+  `ReturnIfAbrupt(Operation())`。如果操作抛出异常，则直接返回该异常（传播错误）。
+- **`! Operation()`**：断言该操作永远不会返回异常（abrupt completion）。
 
 ---
 
