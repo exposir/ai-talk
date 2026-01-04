@@ -40,7 +40,7 @@
 
 | 文件                                               | 说明                       |
 | -------------------------------------------------- | -------------------------- |
-| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 ✅    |
+| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 🚧    |
 | [client-architecture.md](./client-architecture.md) | 客户端架构与 TDLib 设计 🚧 |
 | [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧          |
 | [security.md](./security.md)                       | 安全模型与加密实现 🚧      |
@@ -189,8 +189,7 @@ Telegram 是现代软件工程的典范，也是**极致效率**的代表：
 - **角色**：不写 UI 代码，但设计了 MTProto 和 TDLib 核心架构
 - **特点**：数学和密码学专家，所有客户端的技术基石
 - **社交媒体**：
-  - 🐦 Twitter/X:
-    [@Kolja_Durov](https://twitter.com/Kolja_Durov)（保持低调，较少活跃）
+  - 🐦 Twitter/X: [@Kolja_Durov](https://twitter.com/Kolja_Durov)（保持低调，较少活跃）
 
 ## 核心团队与开发模式
 
@@ -210,8 +209,7 @@ Telegram 的开发模式在全球科技界都是异类：**30 人精英团队 + 
 
 ### 招聘逻辑：Contest.com
 
-Telegram
-**不发招聘广告**，而是通过举办高额奖金的编程竞赛筛选全球顶尖 1% 的开发者：
+Telegram **不发招聘广告**，而是通过举办高额奖金的编程竞赛筛选全球顶尖 1% 的开发者：
 
 - **竞赛平台**：[Contest.com](https://contest.com/)
 - **奖金**：通常 $100,000 - $500,000
@@ -390,8 +388,7 @@ Telegram 的'特种部队'模式给 AI 团队的借鉴：
 
 - [Contest.com](https://contest.com/) - Telegram 官方编程竞赛平台
 - [Pavel Durov's Channel](https://t.me/durov) - 创始人频道，偶尔会提到团队故事
-- [Telegram Desktop GitHub](https://github.com/telegramdesktop/tdesktop) - 查看 John
-  Preston 的提交历史
+- [Telegram Desktop GitHub](https://github.com/telegramdesktop/tdesktop) - 查看 John Preston 的提交历史
 
 ---
 
@@ -417,18 +414,17 @@ Telegram 的'特种部队'模式给 AI 团队的借鉴：
 
 #### GitHub 组织
 
-- **TelegramMessenger**:
-  [github.com/telegrammessenger](https://github.com/telegrammessenger)
+- **TelegramMessenger**: [github.com/telegrammessenger](https://github.com/telegrammessenger)
   - 16 个仓库，包括 iOS 客户端、Mini Apps SDK 等
 - **TelegramOrg**: [github.com/TelegramOrg](https://github.com/TelegramOrg)
   - 统一的官方客户端组织
-- **telegramdesktop**:
-  [github.com/telegramdesktop](https://github.com/telegramdesktop)
+- **telegramdesktop**: [github.com/telegramdesktop](https://github.com/telegramdesktop)
   - Desktop 版本专用组织
 
 ## 客户端生态
 
-Telegram 采取**'客户端完全开源，服务器闭源'**的策略，这在主流 IM 应用中极为罕见。与 WhatsApp、WeChat 等不同，Telegram 坚持在不同平台上使用**原生语言**开发，换取极致性能和流畅体验。
+Telegram 采取**'客户端完全开源，服务器闭源'**的策略，这在主流 IM 应用中极为罕见。与 WhatsApp、WeChat 等不同，Telegram
+坚持在不同平台上使用**原生语言**开发，换取极致性能和流畅体验。
 
 ### 开源策略的意义
 
@@ -443,8 +439,7 @@ Telegram 采取**'客户端完全开源，服务器闭源'**的策略，这在�
 
 #### 1. 移动端：原生开发的极致体验
 
-Telegram 拒绝使用 React
-Native 或 Flutter 等跨平台框架，坚持用原生语言开发，换来了业界最流畅的聊天体验。
+Telegram 拒绝使用 React Native 或 Flutter 等跨平台框架，坚持用原生语言开发，换来了业界最流畅的聊天体验。
 
 **Telegram for iOS**
 
@@ -588,8 +583,7 @@ TDLib 是所有 Telegram 客户端背后的**'统一大脑'**，用 C++ 编写�
 - **文档**：[TDLib Documentation](https://core.telegram.org/tdlib)
 - **示例**：[TDLib Examples](https://github.com/tdlib/td/tree/master/example)
 - **多语言绑定**：
-  - Python:
-    [python-telegram](https://github.com/alexander-akhmetov/python-telegram)
+  - Python: [python-telegram](https://github.com/alexander-akhmetov/python-telegram)
   - Node.js: [tdl](https://github.com/Bannerets/tdl)
   - Go: [go-tdlib](https://github.com/zelenin/go-tdlib)
 
@@ -688,7 +682,7 @@ Telegram 的客户端策略给我们的启示：
 **融资与估值**：
 
 - **累计融资**：40 亿美元+（ICO + 债券 + 债务融资）
-- **当前估值**：300-400 亿美元（2025 年）[^valuation]
+- **当前估值**：300-400 亿美元（2025 年）[^valuation][^valuation]
 - **早期资金**：主要由 Pavel Durov 个人资金支持（出售 VKontakte 股份）
 
 ## 学习资源
@@ -805,107 +799,43 @@ Telegram 的客户端策略给我们的启示：
 
 ### 用户数据
 
-- [Telegram messenger global MAU 2014-2025 -
-  Statista](https://www.statista.com/statistics/234038/telegram-messenger-mau-
-  users/)
+- [Telegram messenger global MAU 2014-2025 - Statista](https://www.statista.com/statistics/234038/telegram-messenger-mau-users/)
 - [Telegram Users Statistics 2026 - DemandSage](https://www.demandsage.com/telegram-statistics/)
 - [How Many People Use Telegram in 2026? - Backlinko](https://backlinko.com/telegram-users)
-- [Telegram Statistics 2025 - Digital Web
-  Solutions](https://www.digitalwebsolutions.com/blog/telegram-users-
-  statistics/)
+- [Telegram Statistics 2025 - Digital Web Solutions](https://www.digitalwebsolutions.com/blog/telegram-users-statistics/)
 - [Telegram Revenue and Usage Statistics - Business of Apps](https://www.businessofapps.com/data/telegram-statistics/)
 
 ### 营收与财务
 
 - [Telegram Revenue Hits $1B - Resourcera](https://resourcera.com/data/social/telegram-revenue/)
 - [How Telegram hit $1B revenue - Latka](https://getlatka.com/companies/telegram-messenger)
-- [Telegram Posts 150% Revenue Growth, $540M Profit in 2024 -
-  AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-
-  growth-540-million-profit-2024-2505/)
-- [Telegram global IAP revenue -
-  Statista](https://www.statista.com/statistics/1342640/telegram-in-app-
-  revenue/)
-- [Telegram Tracks for First Profitable Year - Yahoo
-  Finance](https://finance.yahoo.com/news/telegram-tracks-first-
-  profitable-1-160522206.html)
+- [Telegram Posts 150% Revenue Growth, $540M Profit in 2024 - AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/)
+- [Telegram global IAP revenue - Statista](https://www.statista.com/statistics/1342640/telegram-in-app-revenue/)
+- [Telegram Tracks for First Profitable Year - Yahoo Finance](https://finance.yahoo.com/news/telegram-tracks-first-profitable-1-160522206.html)
 
 ### Premium 订阅
 
-- [Telegram Premium tops 1 million subscribers -
-  TechCrunch](https://techcrunch.com/2022/12/06/telegram-premium-tops-1-million-
-  subscribers/)
-- [Telegram Premium subscribers worldwide 2022-2024 -
-  Statista](https://www.statista.com/statistics/1344164/telegram-paying-
-  subscribers/)
+- [Telegram Premium tops 1 million subscribers - TechCrunch](https://techcrunch.com/2022/12/06/telegram-premium-tops-1-million-subscribers/)
+- [Telegram Premium subscribers worldwide 2022-2024 - Statista](https://www.statista.com/statistics/1344164/telegram-paying-subscribers/)
 - [Telegram Statistics in 2025 - RichAds Blog](https://richads.com/blog/telegram-statistics/)
 
 ### 团队与文化
 
-- [Telegram Team Size Analysis -
-  Startuppedia](https://startuppedia.in/trending/trending/pavel-durov-led-
-  telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-
-  working-remotely-serving-over-1-billion-users-10589688)
+- [Telegram Team Size Analysis - Startuppedia](https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688)
 - [Pavel Durov Interview with Tucker Carlson](https://www.youtube.com/watch?v=1RjB7ez4fYg)
 
-[^team-size]:
-    [Startuppedia](https://startuppedia.in/trending/trending/pavel-
-    durov-led-telegram-is-now-a-30-billion-company-that-operates-with-
-    just-30-employees-working-remotely-serving-over-1-billion-
-    users-10589688) 对团队规模与估值的汇总。
-
-[^valuation]:
-    [Startuppedia](https://startuppedia.in/trending/trending/pavel-
-    durov-led-telegram-is-now-a-30-billion-company-that-operates-with-
-    just-30-employees-working-remotely-serving-over-1-billion-
-    users-10589688) 对估值区间的引用。
-
-[^mau]:
-    [Statista](https://www.statista.com/statistics/234038/telegram-
-    messenger-mau-users/) 与
-    [Business of Apps](https://www.businessofapps.com/data/telegram-statistics/)
-    的 MAU 数据汇总。
-
-[^mau-series]:
-    [Statista](https://www.statista.com/statistics/234038/telegram-
-    messenger-mau-users/) 的 MAU 历史曲线。
-
-[^dau-est]:
-    [DemandSage](https://www.demandsage.com/telegram-statistics/) 与 [Business
-    of Apps](https://www.businessofapps.com/data/telegram-
-    statistics/) 的 DAU 估算整理。
-
-[^daily-growth]:
-    [DemandSage](https://www.demandsage.com/telegram-statistics/)
-    的日增用户估算整理。
-
-[^demographics]:
-    [DemandSage](https://www.demandsage.com/telegram-statistics/) 与
-    [Backlinko](https://backlinko.com/telegram-users) 的用户分布汇总。
-
-[^revenue-series]:
-    [Resourcera](https://resourcera.com/data/social/telegram- revenue/) 与
-    [Latka](https://getlatka.com/companies/telegram- messenger) 的营收历年整理。
-
-[^revenue]:
-    [AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-
-    growth-540-million-profit-2024-2505/) 与 [Yahoo
-    Finance](https://finance.yahoo.com/news/telegram-tracks-first-
-    profitable-1-160522206.html) 的营收与盈利报道汇总。
-
-[^profit]:
-    [AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-
-    growth-540-million-profit-2024-2505/) 的利润数据整理。
-
-[^premium]:
-    [TechCrunch](https://techcrunch.com/2022/12/06/telegram-premium-
-    tops-1-million-subscribers/) 与
-    [Statista](https://www.statista.com/statistics/1344164/telegram- paying-
-    subscribers/) 的订阅用户数据。
-
-[^funding]:
-    [Latka](https://getlatka.com/companies/telegram-messenger) 与
-    [Resourcera](https://resourcera.com/data/social/telegram-revenue/)
-    的融资信息整理。
+[^team-size]: [Startuppedia](https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688) 对团队规模与估值的汇总。
+[^valuation]: [Startuppedia](https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688) 对估值区间的引用。
+[^mau]: [Statista](https://www.statista.com/statistics/234038/telegram-messenger-mau-users/) 与 [Business of Apps](https://www.businessofapps.com/data/telegram-statistics/) 的 MAU 数据汇总。
+[^mau-series]: [Statista](https://www.statista.com/statistics/234038/telegram-messenger-mau-users/) 的 MAU 历史曲线。
+[^dau-est]: [DemandSage](https://www.demandsage.com/telegram-statistics/) 与 [Business of Apps](https://www.businessofapps.com/data/telegram-statistics/) 的 DAU 估算整理。
+[^daily-growth]: [DemandSage](https://www.demandsage.com/telegram-statistics/) 的日增用户估算整理。
+[^demographics]: [DemandSage](https://www.demandsage.com/telegram-statistics/) 与 [Backlinko](https://backlinko.com/telegram-users) 的用户分布汇总。
+[^revenue-series]: [Resourcera](https://resourcera.com/data/social/telegram-revenue/) 与 [Latka](https://getlatka.com/companies/telegram-messenger) 的营收历年整理。
+[^revenue]: [AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/) 与 [Yahoo Finance](https://finance.yahoo.com/news/telegram-tracks-first-profitable-1-160522206.html) 的营收与盈利报道汇总。
+[^profit]: [AInvest](https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/) 的利润数据整理。
+[^premium]: [TechCrunch](https://techcrunch.com/2022/12/06/telegram-premium-tops-1-million-subscribers/) 与 [Statista](https://www.statista.com/statistics/1344164/telegram-paying-subscribers/) 的订阅用户数据。
+[^funding]: [Latka](https://getlatka.com/companies/telegram-messenger) 与 [Resourcera](https://resourcera.com/data/social/telegram-revenue/) 的融资信息整理。
 
 ---
 
