@@ -1006,9 +1006,171 @@ class ChatMessageBubbleItemNode: ASDisplayNode {
 
 ---
 
-## 8. 性能优化技巧
+## 8. UIKit 重写控制器
 
-### 8.1 列表倒置技巧
+Telegram 对系统 UIKit 组件的行为不满意，**从零重写了多个核心控制器**。
+
+### 8.1 自定义控制器列表
+
+```swift
+// 自研控制器 vs 系统控制器
+NavigationController      // 替代 UINavigationController
+TabBarController          // 替代 UITabBarController
+AlertController           // 替代 UIAlertController
+ActionSheetController     // 替代 UIAlertController (ActionSheet)
+ContextMenuController     // 替代 UIContextMenuInteraction
+SearchDisplayController   // 替代 UISearchController
+```
+
+### 8.2 重写原因
+
+| 系统控制器的问题        | Telegram 的解决方案 |
+| ----------------------- | ------------------- |
+| 不同 iOS 版本行为不一致 | 自实现确保一致性    |
+| 无法完全控制动画曲线    | 自定义 Spring 动画  |
+| 手势冲突难以解决        | 自实现手势识别      |
+| 不支持复杂自定义转场    | 完全自定义转场动画  |
+
+### 8.3 NavigationController 实现
+
+```swift
+// submodules/Display/Source/NavigationController.swift
+
+open class NavigationController: ViewController {
+    public private(set) var viewControllers: [ViewController] = []
+
+    // 自定义转场动画
+    private var transitionCoordinator: NavigationTransitionCoordinator?
+
+    // 手势返回
+    private var interactivePopGestureRecognizer: UIPanGestureRecognizer?
+
+    public func pushViewController(_ controller: ViewController, animated: Bool) {
+        let previousController = viewControllers.last
+        viewControllers.append(controller)
+
+        if animated {
+            // 自定义 Spring 动画
+            let animation = SpringAnimation(
+                duration: 0.5,
+                dampingRatio: 1.0,
+                initialVelocity: 0
+            )
+
+            transitionCoordinator = NavigationTransitionCoordinator(
+                from: previousController,
+                to: controller,
+                animation: animation
+            )
+            transitionCoordinator?.animate()
+        } else {
+            displayController(controller)
+        }
+    }
+
+    public func popViewController(animated: Bool) -> ViewController? {
+        guard viewControllers.count > 1 else { return nil }
+
+        let poppedController = viewControllers.removeLast()
+        let targetController = viewControllers.last!
+
+        if animated {
+            transitionCoordinator = NavigationTransitionCoordinator(
+                from: poppedController,
+                to: targetController,
+                animation: SpringAnimation(duration: 0.35, dampingRatio: 1.0)
+            )
+            transitionCoordinator?.animateReverse()
+        }
+
+        return poppedController
+    }
+
+    // 交互式手势返回
+    @objc private func handlePopGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: view)
+        let progress = translation.x / view.bounds.width
+
+        switch gesture.state {
+        case .began:
+            transitionCoordinator?.beginInteractiveTransition()
+        case .changed:
+            transitionCoordinator?.updateInteractiveTransition(progress: progress)
+        case .ended:
+            let velocity = gesture.velocity(in: view).x
+            if progress > 0.5 || velocity > 500 {
+                transitionCoordinator?.finishInteractiveTransition()
+                _ = popViewController(animated: false)
+            } else {
+                transitionCoordinator?.cancelInteractiveTransition()
+            }
+        default:
+            break
+        }
+    }
+}
+```
+
+### 8.4 AlertController 实现
+
+```swift
+// submodules/Display/Source/AlertController.swift
+
+public class AlertController: ViewController {
+    private let contentNode: AlertContentNode
+    private let dimNode: ASDisplayNode
+
+    public init(
+        title: String?,
+        message: String?,
+        actions: [AlertAction]
+    ) {
+        contentNode = AlertContentNode(title: title, message: message, actions: actions)
+        dimNode = ASDisplayNode()
+        dimNode.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+
+        super.init()
+    }
+
+    public func present(in controller: ViewController) {
+        controller.addChild(self)
+        controller.view.addSubview(view)
+
+        // 自定义弹出动画
+        contentNode.alpha = 0
+        contentNode.transform = CATransform3DMakeScale(1.2, 1.2, 1)
+        dimNode.alpha = 0
+
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 0
+        ) {
+            self.contentNode.alpha = 1
+            self.contentNode.transform = CATransform3DIdentity
+            self.dimNode.alpha = 1
+        }
+    }
+
+    public func dismiss() {
+        UIView.animate(withDuration: 0.2) {
+            self.contentNode.alpha = 0
+            self.contentNode.transform = CATransform3DMakeScale(0.9, 0.9, 1)
+            self.dimNode.alpha = 0
+        } completion: { _ in
+            self.view.removeFromSuperview()
+            self.removeFromParent()
+        }
+    }
+}
+```
+
+---
+
+## 9. 性能优化技巧
+
+### 9.1 列表倒置技巧
 
 ```swift
 // 聊天列表使用倒置滚动 - 新消息从底部出现
@@ -1028,7 +1190,7 @@ class ChatHistoryListNode: ListView {
 }
 ```
 
-### 8.2 图片异步解码
+### 9.2 图片异步解码
 
 ```swift
 // ImageNode 使用 Signal 异步加载
@@ -1061,7 +1223,7 @@ class ImageNode: ASDisplayNode {
 }
 ```
 
-### 8.3 进程间数据同步
+### 9.3 进程间数据同步
 
 ```swift
 // 使用 Darwin Notify 在 App 和 Extension 间同步
@@ -1105,7 +1267,7 @@ class InterprocessNotification {
 
 ---
 
-## 9. 源码学习路径
+## 10. 源码学习路径
 
 1. **入门**：从 `Telegram/` 目录开始，理解应用入口
 2. **UI 框架**：深入 `Display/` 模块，理解 Node 体系

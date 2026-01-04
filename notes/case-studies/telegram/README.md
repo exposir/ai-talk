@@ -38,14 +38,25 @@
 
 ## 文档目录
 
-| 文件                                               | 说明                       |
-| -------------------------------------------------- | -------------------------- |
-| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 ✅    |
-| [client-architecture.md](./client-architecture.md) | 客户端架构与 TDLib 设计 ✅ |
-| [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧          |
-| [security.md](./security.md)                       | 安全模型与加密实现 🚧      |
-| [optimization.md](./optimization.md)               | 性能优化与核心算法 🚧      |
-| [lessons.md](./lessons.md)                         | 工程经验与 AI 应用启示 🚧  |
+### 核心文档
+
+| 文件                                               | 说明                           |
+| -------------------------------------------------- | ------------------------------ |
+| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 ✅        |
+| [client-architecture.md](./client-architecture.md) | 客户端架构总览与 TDLib 设计 ✅ |
+| [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧              |
+| [security.md](./security.md)                       | 安全模型与加密实现 🚧          |
+| [optimization.md](./optimization.md)               | 性能优化与核心算法 🚧          |
+| [lessons.md](./lessons.md)                         | 工程经验与 AI 应用启示 🚧      |
+
+### 客户端架构深度解析
+
+| 文件                                                 | 平台       | 说明                                                            |
+| ---------------------------------------------------- | ---------- | --------------------------------------------------------------- |
+| [ios-architecture.md](./ios-architecture.md)         | 🍎 iOS     | AsyncDisplayKit 定制、SwiftSignalKit、Postbox、MtProtoKit 等 ✅ |
+| [android-architecture.md](./android-architecture.md) | 🤖 Android | Canvas 手绘、JNI 原生层、动画系统、性能分级等 ✅                |
+| [web-z-architecture.md](./web-z-architecture.md)     | 🌐 Web Z   | Teact 框架、GramJS、状态管理、虚拟滚动等 ✅                     |
+| [web-k-architecture.md](./web-k-architecture.md)     | 🌐 Web K   | 无框架 DOM、自实现 MTProto、AES-IGE 加密等 ✅                   |
 
 ## 历年增长数据
 
