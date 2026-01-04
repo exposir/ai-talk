@@ -40,7 +40,7 @@
 
 | 文件                                               | 说明                       |
 | -------------------------------------------------- | -------------------------- |
-| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 🚧    |
+| [protocol.md](./protocol.md)                       | MTProto 协议深度解析 ✅    |
 | [client-architecture.md](./client-architecture.md) | 客户端架构与 TDLib 设计 ✅ |
 | [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧          |
 | [security.md](./security.md)                       | 安全模型与加密实现 🚧      |
