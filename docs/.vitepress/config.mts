@@ -13,9 +13,9 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '文档目录', link: '/guide/' },
-      { text: 'Claude Code', link: '/claude-code/' },
-      { text: 'Antigravity', link: '/antigravity/' },
-      { text: '架构设计', link: '/architecture/' },
+      { text: 'Claude Code', link: '/claude-code/README' },
+      { text: 'Antigravity', link: '/antigravity/README' },
+      { text: '架构设计', link: '/architecture/README' },
     ],
 
     sidebar: {
@@ -23,7 +23,7 @@ export default defineConfig({
         {
           text: 'Claude Code',
           items: [
-            { text: '概述', link: '/claude-code/' },
+            { text: '概述', link: '/claude-code/README' },
             { text: '基础使用', link: '/claude-code/basic-usage' },
             { text: '斜杠命令', link: '/claude-code/slash-commands' },
             { text: '快捷键', link: '/claude-code/shortcuts' },
@@ -42,7 +42,7 @@ export default defineConfig({
         {
           text: 'Antigravity',
           items: [
-            { text: '概述', link: '/antigravity/' },
+            { text: '概述', link: '/antigravity/README' },
             { text: '总览', link: '/antigravity/overview' },
             { text: '快速开始', link: '/antigravity/getting-started' },
             { text: '开发模式', link: '/antigravity/development-modes' },
@@ -59,7 +59,7 @@ export default defineConfig({
       '/architecture/': [
         {
           text: '架构设计',
-          items: [{ text: '概述', link: '/architecture/' }],
+          items: [{ text: '概述', link: '/architecture/README' }],
         },
       ],
       '/project-meta/': [

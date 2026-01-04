@@ -10,7 +10,7 @@
 
 Anthropic 终端 AI 编程助手完整使用指南。
 
-- [概述](../claude-code/index.md)
+- [概述](../claude-code/README.md)
 - [基础使用](../claude-code/basic-usage.md)
 - [斜杠命令](../claude-code/slash-commands.md)
 - [快捷键](../claude-code/shortcuts.md)
@@ -27,7 +27,7 @@ Anthropic 终端 AI 编程助手完整使用指南。
 
 Google Agent-First IDE 使用指南。
 
-- [概述](../antigravity/index.md)
+- [概述](../antigravity/README.md)
 - [总览](../antigravity/overview.md)
 - [快速开始](../antigravity/getting-started.md)
 - [开发模式](../antigravity/development-modes.md)
@@ -45,7 +45,7 @@ Google Agent-First IDE 使用指南。
 
 LLM 应用双引擎分层架构设计。
 
-- [概述](../architecture/index.md)
+- [概述](../architecture/README.md)
 - [架构设计 2025 v1](../architecture/design-2025-v1.md)
 - [架构设计 2025 增强版](../architecture/design-2025-enhanced.md)
 - [使用指南](../architecture/usage-guide.md)
@@ -62,7 +62,7 @@ LLM 应用双引擎分层架构设计。
 
 小团队高效能的典范 - 30 人团队支撑 9 亿+ 用户。
 
-- [概述](../case-studies/telegram/index.md) - 学习框架和资源
+- [概述](../case-studies/telegram/README.md) - 学习框架和资源
 - [MTProto 协议](../case-studies/telegram/protocol.md) - 移动优先加密协议设计 🚧
 - [客户端架构](../case-studies/telegram/client-architecture.md) - TDLib 跨平台复用 🚧
 - [工程经验](../case-studies/telegram/lessons.md) - 小团队做大产品的秘诀 🚧
@@ -97,7 +97,7 @@ AI 模型、工具和技术的完整指南。
 
 深入理解大语言模型的核心原理。
 
-- [概述](../llm-internals/index.md) - LLM 原理导览
+- [概述](../llm-internals/README.md) - LLM 原理导览
 - [Transformer 架构](../llm-internals/transformer-architecture.md) - 注意力机制详解 🚧
 - [位置编码](../llm-internals/positional-encoding.md) - RoPE、ALiBi 等 🚧
 - [注意力变体](../llm-internals/attention-variants.md) - MQA、GQA、Flash
