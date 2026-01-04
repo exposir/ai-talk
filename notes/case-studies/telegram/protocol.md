@@ -1,6 +1,6 @@
 # MTProto 协议深度解析
 
-> 🚧 **撰写中** - 深入分析 Telegram 自研的移动优先加密协议
+> 深入分析 Telegram 自研的移动优先加密协议
 
 ## 概述
 
@@ -452,8 +452,6 @@ MTProto 2.0 使用以下密码学原语：
 | **RSA-2048**       | 密钥交换、身份验证               |
 | **SHA-256**        | 哈希计算（MTProto 1.0 用 SHA-1） |
 | **Diffie-Hellman** | 生成 Authorization Key           |
-
-🚧 以下内容说明 IGE 模式的工作原理及选择理由：
 
 #### IGE（Infinite Garble Extension）模式详解
 
