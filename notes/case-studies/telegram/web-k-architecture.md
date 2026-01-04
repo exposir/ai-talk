@@ -29,7 +29,7 @@ Z 采用完全不同的技术路线：**零框架依赖**，纯原生 TypeScript
 
 ## 📊 架构可视化
 
-### 1. 系统总体架构
+### 系统总体架构
 
 ```mermaid
 graph TB
@@ -116,7 +116,7 @@ graph TB
 
 ---
 
-### 2. 组件层次结构
+### 组件层次结构
 
 ```mermaid
 graph TD
@@ -204,7 +204,7 @@ graph TD
 
 ---
 
-### 3. MTProto 认证流程时序图
+### MTProto 认证流程时序图
 
 ```mermaid
 sequenceDiagram
@@ -251,7 +251,7 @@ sequenceDiagram
 
 ---
 
-### 4. 消息发送流程时序图
+### 消息发送流程时序图
 
 ```mermaid
 sequenceDiagram
@@ -307,7 +307,7 @@ sequenceDiagram
 
 ---
 
-### 5. 消息接收流程时序图
+### 消息接收流程时序图
 
 ```mermaid
 sequenceDiagram
@@ -351,7 +351,7 @@ sequenceDiagram
 
 ---
 
-### 6. IndexedDB 存储架构图
+### IndexedDB 存储架构图
 
 ```mermaid
 graph TB
@@ -423,7 +423,7 @@ graph TB
 
 ---
 
-### 7. 事件系统流程图
+### 事件系统流程图
 
 ```mermaid
 graph LR
@@ -478,7 +478,7 @@ graph LR
 
 ---
 
-### 8. 虚拟滚动工作原理图
+### 虚拟滚动工作原理图
 
 ```mermaid
 graph TD
@@ -549,7 +549,7 @@ sequenceDiagram
 
 ---
 
-### 9. TL 序列化流程图
+### TL 序列化流程图
 
 ```mermaid
 graph LR
@@ -588,7 +588,7 @@ graph LR
 
 ---
 
-### 10. 类继承关系图
+### 类继承关系图
 
 ```mermaid
 classDiagram
@@ -663,7 +663,7 @@ classDiagram
 
 ---
 
-### 11. 数据流状态图
+### 数据流状态图
 
 ```mermaid
 stateDiagram-v2
@@ -699,7 +699,7 @@ stateDiagram-v2
 
 ---
 
-### 12. 模块依赖关系图
+### 模块依赖关系图
 
 ```mermaid
 graph TB
@@ -760,14 +760,17 @@ graph TB
 
 ## Web Z vs Web K 核心差异
 
-| 维度         | Web Z (telegram-tt)     | Web K (tweb)       |
-| ------------ | ----------------------- | ------------------ |
-| **UI 框架**  | Teact (自研 React-like) | 无框架（原生 DOM） |
-| **MTProto**  | GramJS (第三方)         | 完全自实现         |
-| **组件模式** | 函数式 + Hooks          | 类式 (Class-based) |
-| **状态管理** | 类 Redux                | 发布-订阅模式      |
-| **构建产物** | 较大                    | 更小               |
-| **首屏速度** | 较慢                    | ⚡ 更快            |
+| 维度         | Web Z (telegram-tt)     | Web K (tweb)              |
+| ------------ | ----------------------- | ------------------------- |
+| **UI 框架**  | Teact (自研 React-like) | 无框架（原生 DOM）        |
+| **MTProto**  | GramJS (第三方)         | 完全自实现                |
+| **组件模式** | 函数式 + Hooks          | 类式 (Class-based)        |
+| **状态管理** | 类 Redux                | 发布-订阅模式             |
+| **构建产物** | 较大                    | 更小                      |
+| **首屏速度** | 较慢                    | ⚡ 更快                   |
+| **DOM 操作** | VDOM 抽象               | 直接操作原生 DOM          |
+| **事件绑定** | JSX 属性绑定            | addEventListener 原生绑定 |
+| **代码风格** | 声明式                  | 命令式                    |
 
 ---
 
@@ -776,75 +779,36 @@ graph TB
 ```text
 tweb/
 ├── src/
-│   ├── components/               # UI 组件（Class-based）
+│   ├── components/               # UI 组件（混合架构：Class-based .ts + Solid .tsx）
 │   │   ├── chat/                     # 聊天相关组件
-│   │   │   ├── bubbles.ts                # 消息气泡管理
-│   │   │   ├── chat.ts                   # 聊天容器
-│   │   │   ├── input.ts                  # 输入框
-│   │   │   ├── topbar.ts                 # 顶部栏
-│   │   │   └── selection.ts              # 选择管理
 │   │   ├── sidebarLeft/              # 左侧边栏
-│   │   │   ├── index.ts                  # 入口
-│   │   │   ├── tabs/                     # 标签页
-│   │   │   └── chatFolders.ts            # 文件夹
 │   │   ├── sidebarRight/             # 右侧边栏
 │   │   ├── popups/                   # 弹窗组件
-│   │   ├── emoticonsDropdown/        # 表情选择器
-│   │   └── avatar.ts                 # 头像组件
+│   │   ├── mediaEditor/              # 图片/视频编辑器 📸
+│   │   ├── stories/                  # 动态 (Stories) 📸
+│   │   ├── solidJsTabs/              # Solid.js 实现的标签页
+│   │   ├── buttonTsx.tsx             # Solid 组件示例
+│   │   └── ...
 │   │
 │   ├── lib/                      # 核心库
-│   │   ├── mtproto/                  # MTProto 协议实现 ⭐
-│   │   │   ├── mtproto.ts                # 核心入口
-│   │   │   ├── networker.ts              # 网络请求管理
-│   │   │   ├── authorizer.ts             # 认证授权
-│   │   │   ├── dcConfigurator.ts         # 数据中心配置
-│   │   │   ├── transports/               # 传输层
-│   │   │   │   ├── websocket.ts              # WebSocket
-│   │   │   │   └── http.ts                   # HTTP 降级
-│   │   │   ├── tl/                       # TL 序列化
-│   │   │   │   ├── schema.ts                 # TL Schema
-│   │   │   │   ├── serialization.ts          # 序列化
-│   │   │   │   └── deserialization.ts        # 反序列化
-│   │   │   └── crypto/                   # 加密模块
-│   │   │       ├── aesIge.ts                 # AES-IGE
-│   │   │       ├── sha256.ts                 # SHA-256
-│   │   │       └── rsa.ts                    # RSA
-│   │   │
+│   │   ├── mtproto/                  # MTProto 协议实现 (Worker based)
+│   │   │   ├── mtproto.worker.ts         # Worker 入口
+│   │   │   ├── networker.ts              # 网络层
+│   │   │   └── ...
 │   │   ├── appManagers/              # 业务管理器
-│   │   │   ├── appMessagesManager.ts     # 消息管理
-│   │   │   ├── appChatsManager.ts        # 聊天管理
-│   │   │   ├── appUsersManager.ts        # 用户管理
-│   │   │   ├── appPeersManager.ts        # Peer 管理
-│   │   │   └── appDialogsManager.ts      # 会话管理
-│   │   │
 │   │   ├── storages/                 # 存储层
-│   │   │   ├── storage.ts                # 存储抽象
-│   │   │   ├── session.ts                # 会话存储
-│   │   │   └── filters.ts                # 过滤器存储
-│   │   │
-│   │   ├── richTextProcessor/        # 富文本处理
-│   │   └── lottieLoader/             # Lottie 动画
+│   │   ├── solidjs/                  # Solid.js 集成桥接 (defineSolidElement)
+│   │   ├── rlottie/                  # RLottie WASM 绑定
+│   │   └── serviceWorker/            # PWA 相关
 │   │
 │   ├── helpers/                  # 工具函数
-│   │   ├── dom/                      # DOM 操作
-│   │   │   ├── setInnerHTML.ts
-│   │   │   ├── attachClickEvent.ts
-│   │   │   └── ripple.ts
-│   │   ├── scrollable.ts             # 滚动组件
-│   │   ├── mediaSizes.ts             # 媒体尺寸
-│   │   └── schedulers.ts             # 调度器
-│   │
 │   ├── scss/                     # 样式
-│   │   ├── style.scss                # 主样式
-│   │   ├── partials/                 # 分片样式
-│   │   └── tgico.scss                # 图标字体
-│   │
+│   ├── solid/                    # Solid.js 核心 (packages/solid)
+│   ├── sw.ts                     # Service Worker 入口
 │   └── index.ts                  # 应用入口
 │
-├── public/
-│   └── assets/                   # 静态资源
-│
-└── webpack.config.ts
+├── public/                       # 静态资源
+└── vite.config.ts                # 构建配置
 ```
 
 ---
@@ -2167,22 +2131,813 @@ export function throttle<T extends (...args: any[]) => any>(
 
 ---
 
-## 9. Web K vs Web Z 设计模式对比
+---
 
-| 模式         | Web K                  | Web Z             |
-| ------------ | ---------------------- | ----------------- |
-| **组件模型** | Class + 手动生命周期   | Function + Hooks  |
-| **状态管理** | 发布-订阅 + Manager 类 | 类 Redux 全局状态 |
-| **DOM 操作** | 直接操作               | VDOM 抽象         |
-| **事件绑定** | addEventListener       | JSX 属性          |
-| **MTProto**  | 自实现                 | GramJS            |
-| **构建产物** | 更小                   | 较大              |
-| **首屏速度** | 更快                   | 较慢              |
-| **代码风格** | 命令式                 | 声明式            |
+## 9. Service Worker 与 PWA
+
+Web K 实现了完整的 PWA (Progressive Web App) 功能。
+
+### 9.1 Service Worker 架构
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│                      Service Worker                           │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │                    sw.ts 入口                           │  │
+│  │  • 缓存策略管理                                         │  │
+│  │  • 离线资源回退                                         │  │
+│  │  • 推送通知处理                                         │  │
+│  └────────────────────────────────────────────────────────┘  │
+│                                                               │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │              src/lib/serviceWorker/                     │  │
+│  │  • 与主线程通信                                         │  │
+│  │  • 消息推送注册                                         │  │
+│  │  • 缓存版本管理                                         │  │
+│  └────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### 9.2 缓存策略
+
+```typescript
+// sw.ts (简化示例)
+
+const CACHE_NAME = 'tweb-v1';
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/main.js',
+  '/style.css',
+  // ... 静态资源列表
+];
+
+// 安装时预缓存
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_ASSETS);
+    }),
+  );
+});
+
+// 网络优先，失败回退缓存
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // 克隆并缓存
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, clone);
+        });
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      }),
+  );
+});
+```
+
+### 9.3 Web Push 通知
+
+```typescript
+// 推送通知注册
+async function registerPush(): Promise<void> {
+  const registration = await navigator.serviceWorker.ready;
+
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: VAPID_PUBLIC_KEY,
+  });
+
+  // 向 Telegram 服务器注册
+  const token = JSON.stringify({
+    endpoint: subscription.endpoint,
+    keys: {
+      p256dh: btoa(
+        String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!)),
+      ),
+      auth: btoa(
+        String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!)),
+      ),
+    },
+  });
+
+  await mtproto.invokeApi('account.registerDevice', {
+    token_type: 10, // WebPush
+    token,
+  });
+}
+```
 
 ---
 
-## 10. 源码学习路径
+## 10. Web Workers 多线程架构
+
+Web K 使用 Web Workers 将繁重任务从主线程分离。
+
+### 10.1 Worker 架构图
+
+```mermaid
+graph LR
+    subgraph "主线程 Main Thread"
+        UI[UI 渲染]
+        Events[事件处理]
+    end
+
+    subgraph "Shared Worker"
+        MTProto_W[MTProto Worker]
+        Crypto_W[加密 Worker]
+    end
+
+    subgraph "Dedicated Workers"
+        Lottie_W[Lottie Worker]
+        Opus_W[Opus Worker]
+        WebP_W[WebP Worker]
+    end
+
+    UI <-->|postMessage| MTProto_W
+    UI <-->|postMessage| Crypto_W
+    UI <-->|postMessage| Lottie_W
+    UI <-->|postMessage| Opus_W
+    UI <-->|postMessage| WebP_W
+
+    style MTProto_W fill:#e74c3c
+    style UI fill:#3498db
+```
+
+### 10.2 Shared Worker 通信
+
+```typescript
+// 使用 Shared Worker 处理 MTProto
+// 支持多标签页共享同一连接
+
+class MTProtoWorkerClient {
+  private worker: SharedWorker;
+  private callbacks: Map<number, Function> = new Map();
+  private requestId = 0;
+
+  constructor() {
+    this.worker = new SharedWorker('./mtproto.worker.js');
+    this.worker.port.onmessage = this.onMessage.bind(this);
+    this.worker.port.start();
+  }
+
+  private onMessage(event: MessageEvent) {
+    const { id, result, error } = event.data;
+    const callback = this.callbacks.get(id);
+    if (callback) {
+      this.callbacks.delete(id);
+      if (error) {
+        callback(null, error);
+      } else {
+        callback(result);
+      }
+    }
+  }
+
+  public invokeApi<T>(method: string, params: object): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const id = ++this.requestId;
+      this.callbacks.set(id, (result: T, error?: Error) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+
+      this.worker.port.postMessage({ id, method, params });
+    });
+  }
+}
+
+// 禁用 Shared Worker (调试用)
+// URL: ?noSharedWorker=1
+```
+
+---
+
+## 11. WASM 模块集成
+
+Web K 使用 WebAssembly 实现性能敏感功能。
+
+### 11.1 WASM 模块列表
+
+| 模块             | 用途            | 源项目     |
+| ---------------- | --------------- | ---------- |
+| **rlottie**      | Lottie 动画渲染 | Samsung    |
+| **opus**         | Opus 音频编解码 | opus-codec |
+| **libwebp**      | WebP 图片编解码 | Google     |
+| **cryptography** | 加密加速        | spalt08    |
+
+### 11.2 rlottie 动画渲染
+
+```typescript
+// src/lib/rlottie/
+
+interface RLottiePlayer {
+  init(canvas: HTMLCanvasElement, data: object): void;
+  play(): void;
+  pause(): void;
+  stop(): void;
+  setSpeed(speed: number): void;
+  goToAndStop(frame: number): void;
+  destroy(): void;
+}
+
+class LottieLoader {
+  private workers: Worker[] = [];
+  private queue: Map<string, LottieJob> = new Map();
+  private maxWorkers = navigator.hardwareConcurrency || 4;
+
+  constructor() {
+    this.initWorkers();
+  }
+
+  private initWorkers(): void {
+    for (let i = 0; i < this.maxWorkers; i++) {
+      const worker = new Worker('./rlottie.worker.js');
+      worker.onmessage = this.onWorkerMessage.bind(this, i);
+      this.workers.push(worker);
+    }
+  }
+
+  public async loadAnimation(
+    container: HTMLElement,
+    tgsUrl: string,
+  ): Promise<RLottiePlayer> {
+    // 1. 下载 .tgs 文件 (gzip 压缩的 JSON)
+    const response = await fetch(tgsUrl);
+    const compressed = await response.arrayBuffer();
+
+    // 2. 解压 (pako)
+    const json = pako.inflate(new Uint8Array(compressed), { to: 'string' });
+    const animationData = JSON.parse(json);
+
+    // 3. 创建 Canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = animationData.w;
+    canvas.height = animationData.h;
+    container.appendChild(canvas);
+
+    // 4. 发送到 Worker 渲染
+    return this.createPlayer(canvas, animationData);
+  }
+}
+```
+
+### 11.3 Opus 音频录制
+
+```typescript
+// src/lib/opusDecodeController.ts
+
+class OpusRecorder {
+  private mediaRecorder: MediaRecorder | null = null;
+  private opusWorker: Worker;
+
+  constructor() {
+    this.opusWorker = new Worker('./opus.worker.js');
+  }
+
+  public async startRecording(): Promise<void> {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    // 使用 opus-recorder 库
+    this.opusWorker.postMessage({
+      command: 'init',
+      config: {
+        sampleRate: 48000,
+        numberOfChannels: 1,
+        encoderBitRate: 32000,
+        encoderApplication: 2049, // VOIP
+      },
+    });
+
+    const audioContext = new AudioContext({ sampleRate: 48000 });
+    const source = audioContext.createMediaStreamSource(stream);
+    const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+    processor.onaudioprocess = (e) => {
+      const inputData = e.inputBuffer.getChannelData(0);
+      this.opusWorker.postMessage({
+        command: 'encode',
+        buffers: [inputData.buffer],
+      });
+    };
+
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+  }
+
+  public stopRecording(): Promise<Blob> {
+    return new Promise((resolve) => {
+      this.opusWorker.onmessage = (e) => {
+        if (e.data.command === 'done') {
+          const blob = new Blob([e.data.buffer], { type: 'audio/ogg' });
+          resolve(blob);
+        }
+      };
+      this.opusWorker.postMessage({ command: 'finish' });
+    });
+  }
+}
+```
+
+---
+
+## 12. Solid.js 集成
+
+Web K 近期引入了 Solid.js 用于部分新组件开发。
+
+### 12.1 混合架构
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                     Web K 组件架构                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌──────────────────────┐    ┌──────────────────────────┐  │
+│   │   原生 Class 组件     │    │    Solid.js 组件         │  │
+│   │   (主体架构)          │    │    (新特性)              │  │
+│   │                      │    │                          │  │
+│   │  • Chat              │    │  • 新 UI 组件            │  │
+│   │  • Bubbles           │    │  • 响应式表单            │  │
+│   │  • Sidebar           │    │  • 动态列表              │  │
+│   └──────────────────────┘    └──────────────────────────┘  │
+│              │                           │                   │
+│              └───────────┬───────────────┘                   │
+│                          │                                   │
+│                  ┌───────▼───────┐                          │
+│                  │  RootScope    │                          │
+│                  │  (事件总线)    │                          │
+│                  └───────────────┘                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 12.2 Solid.js 组件示例
+
+```typescript
+// src/lib/solidjs/ 下的组件
+
+import { createSignal, createEffect, onCleanup } from 'solid-js';
+
+// 响应式组件示例
+function MessageInput(props: { peerId: PeerId }) {
+  const [text, setText] = createSignal('');
+  const [isSending, setIsSending] = createSignal(false);
+
+  const handleSend = async () => {
+    if (!text().trim() || isSending()) return;
+
+    setIsSending(true);
+    try {
+      await appMessagesManager.sendMessage(props.peerId, { message: text() });
+      setText('');
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // 订阅外部事件
+  createEffect(() => {
+    const handler = () => setText('');
+    rootScope.addEventListener('chat_changed', handler);
+    onCleanup(() => rootScope.removeEventListener('chat_changed', handler));
+  });
+
+  return (
+    <div class="message-input">
+      <input
+        value={text()}
+        onInput={(e) => setText(e.currentTarget.value)}
+        placeholder="Type a message..."
+        disabled={isSending()}
+      />
+      <button onClick={handleSend} disabled={isSending()}>
+        Send
+      </button>
+    </div>
+  );
+}
+```
+
+---
+
+## 13. 构建系统 (Vite)
+
+Web K 使用 Vite 作为构建工具。
+
+### 13.1 构建配置
+
+```typescript
+// vite.config.ts (简化版)
+
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+
+export default defineConfig({
+  plugins: [solidPlugin()],
+
+  build: {
+    target: 'esnext',
+    minify: 'terser',
+    sourcemap: true, // 生产环境也保留 source map
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['pako', 'big-integer'],
+          mtproto: ['./src/lib/mtproto/index.ts'],
+          rlottie: ['./src/lib/rlottie/index.ts'],
+        },
+      },
+    },
+  },
+
+  worker: {
+    format: 'es', // Worker 使用 ES Module
+  },
+
+  server: {
+    port: 8080,
+    proxy: {
+      '/api': {
+        target: 'https://venus.web.telegram.org',
+        changeOrigin: true,
+      },
+    },
+  },
+});
+```
+
+### 13.2 开发命令
+
+```bash
+# 安装依赖
+pnpm install
+
+# 开发模式
+pnpm start      # 启动 http://localhost:8080
+
+# 生产构建
+node build      # 输出到 public/
+
+# Docker 开发
+docker-compose up tweb.develop
+
+# Docker 生产
+docker-compose up tweb.production
+```
+
+---
+
+## 14. 国际化 (i18n) 系统
+
+### 14.1 语言包架构
+
+```typescript
+// src/lib/langPack.ts
+
+interface LangPackString {
+  key: string;
+  value: string;
+  pluralRules?: {
+    zero?: string;
+    one?: string;
+    two?: string;
+    few?: string;
+    many?: string;
+    other: string;
+  };
+}
+
+class LangPack {
+  private strings: Map<string, LangPackString> = new Map();
+  private currentLang = 'en';
+
+  public async loadLanguage(langCode: string): Promise<void> {
+    // 从服务器获取语言包
+    const langPack = await mtproto.invokeApi('langpack.getLangPack', {
+      lang_pack: 'web',
+      lang_code: langCode,
+    });
+
+    for (const string of langPack.strings) {
+      this.strings.set(string.key, string);
+    }
+
+    this.currentLang = langCode;
+    rootScope.dispatchEvent('lang_changed');
+  }
+
+  public get(key: string, args?: Record<string, string | number>): string {
+    const str = this.strings.get(key);
+    if (!str) return key;
+
+    let value = str.value;
+
+    // 替换参数 {name}
+    if (args) {
+      for (const [k, v] of Object.entries(args)) {
+        value = value.replace(`{${k}}`, String(v));
+      }
+    }
+
+    return value;
+  }
+
+  // 复数形式
+  public getPlural(
+    key: string,
+    count: number,
+    args?: Record<string, string | number>,
+  ): string {
+    const str = this.strings.get(key);
+    if (!str?.pluralRules) return this.get(key, args);
+
+    const rule = new Intl.PluralRules(this.currentLang).select(count);
+    const template = str.pluralRules[rule] || str.pluralRules.other;
+
+    return template.replace('{count}', String(count));
+  }
+}
+
+export const langPack = new LangPack();
+
+// 使用
+// langPack.get('Chat.Members', { count: 5 })
+// langPack.getPlural('Messages.Count', 3)
+```
+
+### 14.2 语言检测
+
+```typescript
+// src/lib/tinyld/ - 语言检测
+
+import { detect } from 'tinyld';
+
+// 检测消息语言
+function detectMessageLanguage(text: string): string {
+  return detect(text); // 返回 ISO 语言代码
+}
+```
+
+---
+
+## 15. 音视频通话 (Calls)
+
+### 15.1 通话架构
+
+```mermaid
+sequenceDiagram
+    participant A as 用户 A
+    participant S as Telegram Server
+    participant B as 用户 B
+
+    A->>S: phone.requestCall
+    S->>B: updatePhoneCall (ringing)
+    B->>S: phone.acceptCall
+    S->>A: updatePhoneCall (accepted)
+
+    Note over A,B: SRTP 密钥交换
+
+    A->>S: phone.confirmCall
+    S->>B: 完整通话参数
+
+    Note over A,B: 直连或 relay
+
+    A<-->B: WebRTC (P2P / Relay)
+```
+
+### 15.2 WebRTC 集成
+
+```typescript
+// src/lib/calls/
+
+class CallController {
+  private peerConnection: RTCPeerConnection | null = null;
+  private localStream: MediaStream | null = null;
+
+  public async initiateCall(userId: UserId): Promise<void> {
+    // 1. 获取本地媒体
+    this.localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
+    });
+
+    // 2. 创建 PeerConnection
+    this.peerConnection = new RTCPeerConnection({
+      iceServers: [
+        { urls: 'stun:stun.telegram.org:443' },
+        // Telegram relay servers
+      ],
+    });
+
+    // 3. 添加本地轨道
+    this.localStream.getTracks().forEach((track) => {
+      this.peerConnection!.addTrack(track, this.localStream!);
+    });
+
+    // 4. 创建 Offer
+    const offer = await this.peerConnection.createOffer();
+    await this.peerConnection.setLocalDescription(offer);
+
+    // 5. 发送到 Telegram 服务器
+    await mtproto.invokeApi('phone.requestCall', {
+      user_id: userId,
+      protocol: {
+        min_layer: 92,
+        max_layer: 92,
+        udp_p2p: true,
+        udp_reflector: true,
+        library_versions: ['5.0.0'],
+      },
+      // ... encryption parameters
+    });
+  }
+}
+```
+
+---
+
+## 16. HLS 流媒体
+
+Web K 支持 HLS 直播流播放。
+
+```typescript
+// src/lib/hls/
+
+class HLSPlayer {
+  private video: HTMLVideoElement;
+  private hls: Hls | null = null;
+
+  constructor(video: HTMLVideoElement) {
+    this.video = video;
+  }
+
+  public async loadStream(url: string): Promise<void> {
+    if (Hls.isSupported()) {
+      this.hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+      });
+
+      this.hls.loadSource(url);
+      this.hls.attachMedia(this.video);
+
+      this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        this.video.play();
+      });
+    } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari 原生支持
+      this.video.src = url;
+      this.video.play();
+    }
+  }
+
+  public destroy(): void {
+    this.hls?.destroy();
+    this.hls = null;
+  }
+}
+```
+
+---
+
+## 17. 密码锁 (Passcode)
+
+Web K 支持本地密码锁保护。
+
+```typescript
+// src/lib/passcode/
+
+class PasscodeManager {
+  private isLocked = false;
+  private passcodeHash: string | null = null;
+
+  public async setPasscode(passcode: string): Promise<void> {
+    // 使用 PBKDF2 派生密钥
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await this.deriveKey(passcode, salt);
+
+    // 存储哈希 (不存储原始密码)
+    this.passcodeHash = await this.hashKey(key);
+    localStorage.setItem('passcode_salt', btoa(String.fromCharCode(...salt)));
+    localStorage.setItem('passcode_hash', this.passcodeHash);
+  }
+
+  public async verifyPasscode(passcode: string): Promise<boolean> {
+    const saltStr = localStorage.getItem('passcode_salt');
+    if (!saltStr) return false;
+
+    const salt = new Uint8Array([...atob(saltStr)].map((c) => c.charCodeAt(0)));
+    const key = await this.deriveKey(passcode, salt);
+    const hash = await this.hashKey(key);
+
+    return hash === this.passcodeHash;
+  }
+
+  private async deriveKey(
+    passcode: string,
+    salt: Uint8Array,
+  ): Promise<CryptoKey> {
+    const encoder = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(passcode),
+      'PBKDF2',
+      false,
+      ['deriveBits', 'deriveKey'],
+    );
+
+    return crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt,
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+  }
+
+  public lock(): void {
+    this.isLocked = true;
+    rootScope.dispatchEvent('passcode_locked');
+  }
+
+  public unlock(): void {
+    this.isLocked = false;
+    rootScope.dispatchEvent('passcode_unlocked');
+  }
+}
+```
+
+---
+
+## 18. 调试与开发
+
+### 18.1 调试参数
+
+| 参数               | 说明               | 示例                      |
+| ------------------ | ------------------ | ------------------------- |
+| `test=1`           | 使用测试 DC        | `localhost:8080/?test=1`  |
+| `debug=1`          | 启用详细日志       | `localhost:8080/?debug=1` |
+| `noSharedWorker=1` | 禁用 Shared Worker | 方便调试 MTProto          |
+| `http=1`           | 强制 HTTP 传输     | 绕过 WebSocket            |
+
+### 18.2 全局调试函数
+
+```javascript
+// 在浏览器控制台可用
+
+// 查看所有图标
+showIconLibrary();
+
+// 获取 Manager 实例 (绑定到 window)
+appMessagesManager;
+appUsersManager;
+appChatsManager;
+
+// 源码映射
+// 生产环境也包含 source map，方便调试
+```
+
+### 18.3 本地存储快照
+
+```bash
+# 使用快照工具保存/恢复 IndexedDB 状态
+cd snapshot-server
+npm install
+npm start
+
+# 访问 http://localhost:3000 管理快照
+```
+
+---
+
+## 19. 核心依赖库
+
+注：大多数依赖在 `package.json` 中定义为 `devDependencies`，构建时打包。
+
+| 依赖/模块        | 包名 (npm)                            | 用途                    |
+| :--------------- | :------------------------------------ | :---------------------- |
+| **Solid.js**     | `solid-js`                            | 响应式 UI 库            |
+| **Vite**         | `vite`                                | 构建工具                |
+| **Cryptography** | `@cryptography/aes`, `sha1`, `sha256` | 加密算法实现            |
+| **BigInt**       | `big-integer`                         | MTProto 大数运算        |
+| **Pako**         | `pako`                                | Gzip 压缩/解压          |
+| **HLS**          | `hls.js`                              | 流媒体播放              |
+| **Media**        | `mp4-muxer`, `fast-png`               | 视频/图片处理           |
+| **WebCrypto**    | `@peculiar/webcrypto`                 | Web Crypto API Polyfill |
+| **Language**     | `tinyld`                              | 语言检测                |
+| **Testing**      | `vitest`                              | 单元测试                |
+
+---
+
+## 20. 源码学习路径
 
 1. **入门**：从 `src/index.ts` 开始，理解应用启动流程
 2. **MTProto**：深入 `src/lib/mtproto/`，理解协议实现
@@ -2190,6 +2945,10 @@ export function throttle<T extends (...args: any[]) => any>(
 4. **组件**：阅读 `src/components/chat/bubbles.ts`，理解 DOM 组件模式
 5. **滚动**：分析 `src/helpers/scrollable.ts`，学习虚拟滚动
 6. **事件**：查看 `src/lib/rootScope.ts`，理解发布-订阅模式
+7. **Worker**：研究 `sw.ts` 和 `src/lib/serviceWorker/`，理解 PWA 实现
+8. **WASM**：查看 `src/lib/rlottie/` 和 `src/lib/webp/`，理解 WASM 集成
+9. **通话**：分析 `src/lib/calls/`，学习 WebRTC 实现
+10. **Solid**：查看 `src/lib/solidjs/` 和 `src/solid/`，理解混合架构
 
 ---
 

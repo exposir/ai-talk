@@ -149,18 +149,14 @@ sequenceDiagram
 ```text
 telegram-tt/
 ├── src/
-│   ├── api/                      # API 层
-│   │   ├── gramjs/                   # GramJS MTProto 实现
+│   ├── @types/                  # 全局类型扩展
+│   ├── api/                      # API 层 (业务封装)
+│   │   ├── gramjs/                   # GramJS 业务集成
 │   │   │   ├── apiBuilders/              # API 请求构建器
-│   │   │   ├── methods/                  # 高级封装方法
-│   │   │   │   ├── auth.ts                   # 认证相关
-│   │   │   │   ├── chats.ts                  # 聊天操作
-│   │   │   │   ├── messages.ts               # 消息操作
-│   │   │   │   └── users.ts                  # 用户操作
-│   │   │   ├── gramjsBuilders.ts         # GramJS 配置
-│   │   │   └── worker/                   # Web Worker 入口
-│   │   │       └── provider.ts
-│   │   └── types/                    # TypeScript 类型定义
+│   │   │   ├── methods/                  # 业务方法封装 (Auth/Chats/Msgs)
+│   │   │   ├── worker/                   # Web Worker 通信适配
+│   │   │   └── provider.ts               # Provider 定义
+│   │   └── types/                    # API 类型定义
 │   │
 │   ├── components/               # UI 组件 (Teact JSX)
 │   │   ├── common/                   # 通用组件
@@ -201,13 +197,13 @@ telegram-tt/
 │   │   └── useVirtualBackdrop.ts
 │   │
 │   ├── lib/                      # 核心库
-│   │   ├── teact/                    # Teact 框架核心
-│   │   │   ├── teact.ts                  # 核心 API
-│   │   │   ├── teactn.ts                 # 带状态连接
-│   │   │   └── reconciliation.ts         # 调和算法
+│   │   ├── teact/                    # Teact 框架 core
+│   │   │   ├── teact.ts                  # 核心 API (createElement, Component)
+│   │   │   ├── teact-dom.ts              # DOM 渲染器 (render, patch)
+│   │   │   └── teactn.tsx                # 全局状态管理 (Global State)
 │   │   ├── rlottie/                  # RLottie WASM 绑定
 │   │   ├── webp/                     # WebP WASM 解码
-│   │   └── gramjs/                   # GramJS 核心
+│   │   └── gramjs/                   # GramJS 核心库 (Vendored)
 │   │
 │   ├── util/                     # 工具函数
 │   │   ├── buildClassName.ts
@@ -215,22 +211,217 @@ telegram-tt/
 │   │   ├── schedulers.ts
 │   │   └── signals.ts
 │   │
+│   ├── assets/                   # 静态资源与本地化
+│   │   ├── localization/             # 语言包与初始文案
+│   │   ├── icons/                    # 图标资源
+│   │   └── fonts/                    # 字体资源
+│   │
+│   ├── bundles/                  # 代码分割入口
+│   │   ├── auth.ts                  # 登录/注册相关
+│   │   ├── calls.ts                 # 通话功能模块
+│   │   ├── extra.ts                 # 次要功能集合
+│   │   ├── main.ts                  # 主应用入口
+│   │   └── stars.ts                 # Stars/付费相关
+│   │
+│   ├── serviceWorker/            # PWA/离线与推送
+│   │   ├── assetCache.ts             # 资源缓存策略
+│   │   ├── download.ts               # 下载管理
+│   │   ├── pushNotification.ts       # 推送通知
+│   │   ├── share.ts                  # Web Share 集成
+│   │   └── index.ts                  # SW 入口
+│   │
 │   ├── styles/                   # 全局样式
 │   │   ├── _variables.scss
 │   │   ├── _mixins.scss
 │   │   └── index.scss
 │   │
+│   ├── types/                    # 业务类型定义
+│   ├── config.ts                 # 全局配置与常量
+│   ├── limits.ts                 # 运行时限制与阈值
+│   ├── versionNotification.txt   # 版本提示文案
+│   ├── index.html                # 页面模板
 │   └── index.tsx                 # 应用入口
 │
 ├── public/
+│   ├── site.webmanifest          # PWA manifest
+│   ├── favicon.svg               # 站点图标
+│   ├── icon-192x192.png          # 安装图标
+│   ├── notification.mp3          # 通知音效
 │   ├── rlottie/                  # WASM 文件
 │   │   └── rlottie-wasm.wasm
 │   └── opus/                     # Opus 编码器
 │
 ├── webpack.config.ts             # Webpack 配置
 ├── tsconfig.json                 # TypeScript 配置
-└── package.json
+└── package.json                  # 依赖管理 (React 为 devDependency 用于兼容)
 ```
+
+---
+
+### 1.1 代码分割入口（bundles）
+
+`src/bundles/` 定义拆包入口，用于按功能加载主包与功能模块：
+
+- `auth.ts`：登录/注册流程与初始加载
+- `main.ts`：主应用入口与核心路由
+- `calls.ts`：通话相关 UI 与依赖
+- `stars.ts`：Stars/付费能力
+- `extra.ts`：次要功能集合
+
+### 1.2 Service Worker 与 PWA
+
+`src/serviceWorker/` 负责离线缓存、下载管理、推送通知与分享：
+
+- `assetCache.ts`：静态资源与版本缓存策略
+- `download.ts`：下载任务与断点处理
+- `pushNotification.ts`：推送通知事件处理
+- `share.ts`：Web Share 与分享分发
+- `index.ts`：Service Worker 入口
+
+`public/` 中的 `site.webmanifest` 与图标资源配合 PWA 安装与离线体验。
+
+### 1.3 本地化与语言包
+
+`src/assets/localization/`
+存放初始文案与 fallback 语言包，与运行时语言包缓存结合，支持多语言切换与离线回退。
+
+### 1.4 配置与限制参数
+
+- `src/config.ts`：环境变量、缓存 key、并发限制、功能开关
+- `src/limits.ts`：阈值/分页/限流等运行时参数
+- `src/versionNotification.txt`：版本提示文案
+
+这些参数共同控制多账号上限、缓存分区、分页大小与刷新周期等。
+
+### 1.5 公共资源与媒体
+
+`public/` 中包含通知音效、图标、manifest 与兼容性资源； `src/assets/`
+管理应用内图标、字体、背景与品牌素材。
+
+---
+
+### 1.6 Service Worker 细节（按文件）
+
+**入口与路由**（`src/serviceWorker/index.ts`）：
+
+- `install`：`skipWaiting()` 立即接管。
+- `activate`：`clearAssetCache()` + `clients.claim()`，并用 `pause(3000)`
+  兜底，规避 iOS 上可能的 UI 卡顿。
+- `fetch`：仅处理当前 scope 内请求；路由规则：
+  - `/progressive/` → `respondForProgressive`
+  - `/download/` → `respondForDownload`
+  - `/share/` → `respondForShare`
+  - `*.wasm` / `*.html` → network-first
+  - 资源 hash 命中（`/[\da-f]{20}.*\.(js|css|woff2?|svg|png|jpg|jpeg|tgs|json|wasm)$/`）→
+    cache-first
+- 事件：`push` / `notificationclick` / `message` 交由对应 handler。
+
+**缓存策略**（`src/serviceWorker/assetCache.ts`）：
+
+- `respondWithCacheNetworkFirst`：先走网络，失败则回退缓存；成功会写入缓存。
+- `respondWithCache`：cache-first，命中错误响应会删除缓存并回源。
+- `withTimeout`：统一 3s 超时防卡死。
+- `ASSET_CACHE_NAME` 来自 `src/config.ts`。
+
+**通知处理**（`src/serviceWorker/pushNotification.ts`）：
+
+- push data 解析后生成 `NotificationData` （含 `chatId` / `messageId` /
+  `isSilent`）。
+- `mute === True` 时直接忽略。
+- 通过 `tag` 合并同一聊天通知；支持 `playNotificationSound`。
+- 点击通知：
+  - 若存在窗口 client：`focusMessage` 并尝试聚焦窗口。
+  - 无窗口则 `openWindow(appUrl)` 并缓存点击数据，等待 `clientReady`。
+- 通过 `showMessageNotification` / `closeMessageNotifications`
+  与客户端协作，解决“本地已展示通知不重复显示”的问题。
+- `sync` 事件更新 `lastSyncAt`，用于“首批通知不分组”的逻辑。
+
+**下载与分片**（`src/serviceWorker/download.ts`）：
+
+- 先请求小片段探测 `fullSize` 与 `mimeType`。
+- 使用 `ReadableStream` 分片拉取（1MB/片，队列长度 8）并拼接输出。
+- 写入 `Content-Disposition` 触发浏览器下载。
+
+**渐进式媒体**（`src/serviceWorker/progressive.ts`）：
+
+- 对 Range 请求做分片，默认 0.5MB/片；仅缓存前 2MB。
+- Safari 特殊优化：`bytes=0-1` 时返回 206 + headers。
+- 使用多账号缓存分区（`MEDIA_PROGRESSIVE_CACHE_NAME_${accountSlot}`）。
+- 通过 `postMessage` 回调客户端请求真实文件片段。
+
+**分享**（`src/serviceWorker/share.ts`）：
+
+- 处理 `POST` FormData（`title/text/url/files`），通过 `clientReady`
+  机制把分享内容投递到主页面。
+
+---
+
+### 1.7 Bundles 代码分割（按入口）
+
+**入口职责**（`src/bundles/*.ts`）：
+
+- `auth.ts`：只暴露登录/注册相关组件（`AuthCode` / `AuthPassword` /
+  `AuthRegister`）。
+- `main.ts`：主 UI 容器（`Main` / `LockScreen`），并在 DEBUG 下输出加载日志。
+- `calls.ts`：通话组件，Safari/iOS 首次点击时初始化音效。
+- `extra.ts`：大量 modal / 工具组件的延迟加载集合。
+- `stars.ts`：Stars、礼物与支付相关 modal。
+
+**使用方式**：主入口按业务触发 `import()` 这些 bundles，实现功能级拆包。
+
+---
+
+### 1.8 本地化与语言包加载
+
+**初始文案**（`src/assets/localization/initialKeys.ts`）：
+
+- 定义登录态最小语言键集合，用于首屏可用性与快速渲染。
+
+**初始 fallback**（`src/assets/localization/initialStrings.ts`）：
+
+- 由脚本生成（`dev/generateInitialLangFallback.ts`），保证最早期英文可用。
+
+**完整 fallback**（`src/assets/localization/fallback.strings`）：
+
+- 提供更广覆盖的默认英文字符串，用于语言包缺失/失败场景。
+
+**缓存与 key**：语言包缓存 key 与版本号在 `src/config.ts` 中定义。
+
+---
+
+### 1.9 全局配置与运行时阈值
+
+**配置入口**（`src/config.ts`）：
+
+- `APP_CODE_NAME` / `APP_NAME`、`PRODUCTION_URL`、`BASE_URL` 等环境与入口配置。
+- 调试开关 `DEBUG/DEBUG_MORE`，以及 `DEBUG_LOG_FILENAME`。
+- 多账号上限 `MULTIACCOUNT_MAX_SLOTS`。
+- 缓存 key：`GLOBAL_STATE_CACHE_PREFIX`、`LANG_CACHE_NAME`、 `MEDIA_CACHE_NAME`
+  等。
+- 请求并发：`DOWNLOAD_WORKERS` / `UPLOAD_WORKERS`。
+- 列表切片：`MESSAGE_LIST_SLICE` / `CHAT_LIST_SLICE` 等。
+- 刷新周期与去抖：`APP_CONFIG_REFETCH_INTERVAL` / `DRAFT_DEBOUNCE`。
+
+**默认限制**（`src/limits.ts`）：
+
+- 定义 `DEFAULT_LIMITS` 与 `DEFAULT_APP_CONFIG`，用于没有后端配置时的兜底。
+- 包含上传分片、收藏、文件夹、频道、反应数等限制。
+
+---
+
+### 1.10 入口模板与运行时引导
+
+**HTML 模板**（`src/index.html`）：
+
+- CSP 由 `htmlWebpackPlugin.options.csp` 注入。
+- 多端 Web App meta、manifest 与图标配置。
+- `redirect.js` 与 `compatTest.js` 作为早期引导脚本。
+- `noscript` 兜底展示视频与提示文案。
+
+**公共资源**（`public/`）：
+
+- `site*.webmanifest` 与多尺寸图标用于安装与桌面图标。
+- `notification.mp3` 等音效用于通知/通话。
 
 ---
 

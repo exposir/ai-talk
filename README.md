@@ -29,6 +29,12 @@
 | 📚 **案例研究** | 优秀项目工程实践分析      | [Telegram 等](./notes/case-studies/)                  |
 | 📰 **新闻观察** | 每日新闻总结与趋势分析    | [新闻汇总](./notes/news/daily-news.md)               |
 
+Telegram 深入阅读：
+
+- [服务端架构](./notes/case-studies/telegram/server-architecture.md)
+- [安全模型](./notes/case-studies/telegram/security.md)
+- [性能优化](./notes/case-studies/telegram/optimization.md)
+
 ---
 
 ## 📁 项目结构

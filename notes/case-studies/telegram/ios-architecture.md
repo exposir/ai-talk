@@ -103,28 +103,40 @@ nicedayc/
 
 ### 1.2 模块分类
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│                        App Category                             │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐ │
-│  │ TelegramUI  │ │TelegramCore │ │  Postbox    │ │ Display  │ │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
-├────────────────────────────────────────────────────────────────┤
-│                        VoIP Category                            │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐              │
-│  │TelegramVoip │ │ TelegramCall│ │   WebRTC    │              │
-│  └─────────────┘ └─────────────┘ └─────────────┘              │
-├────────────────────────────────────────────────────────────────┤
-│                        Watch Category                           │
-│  ┌─────────────┐ ┌─────────────┐                               │
-│  │ WatchCommon │ │ WatchApp    │                               │
-│  └─────────────┘ └─────────────┘                               │
-├────────────────────────────────────────────────────────────────┤
-│                       3rd-party                                 │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐          │
-│  │SQLCipher │ │ Lottie   │ │ RLottie  │ │  ffmpeg  │          │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘          │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "App Category"
+        direction TB
+        UI[TelegramUI]
+        CORE[TelegramCore]
+        DB[(Postbox)]
+        DISP[Display]
+    end
+
+    subgraph "VoIP Category"
+        direction TB
+        VOIP[TelegramVoip]
+        CALL[TelegramCall]
+        WEBRTC[WebRTC]
+    end
+
+    subgraph "Watch Category"
+        direction TB
+        WCOM[WatchCommon]
+        WAPP[WatchApp]
+    end
+
+    subgraph "3rd-party"
+        direction TB
+        SQL[SQLCipher]
+        LOT[Lottie]
+        RLOT[RLottie]
+        FFMPEG[ffmpeg]
+    end
+
+    UI --> CORE & DISP
+    CORE --> DB
+    VOIP --> CALL & WEBRTC
 ```
 
 ---
@@ -733,43 +745,32 @@ class EncryptedDatabase {
 
 ### 6.1 架构图
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                      TelegramCore                           │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │                   Account                            │   │
-│  │  • 管理授权状态                                      │   │
-│  │  • 调度 API 请求                                     │   │
-│  └────────────────────────┬────────────────────────────┘   │
-└───────────────────────────┼─────────────────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                      MtProtoKit                              │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │                  MTContext                           │   │
-│  │  • 管理数据中心配置                                  │   │
-│  │  • 维护授权密钥                                      │   │
-│  │  • 调度连接                                          │   │
-│  └────────────────────────┬────────────────────────────┘   │
-│                           │                                  │
-│  ┌────────────────────────▼────────────────────────────┐   │
-│  │                  MTProto                             │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌────────────┐   │   │
-│  │  │ Encryption  │  │ Serializer  │  │   ACK      │   │   │
-│  │  │ AES-256-IGE │  │  TL-Binary  │  │ Management │   │   │
-│  │  └─────────────┘  └─────────────┘  └────────────┘   │   │
-│  └────────────────────────┬────────────────────────────┘   │
-│                           │                                  │
-│  ┌────────────────────────▼────────────────────────────┐   │
-│  │                  MTTransport                         │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌────────────┐   │   │
-│  │  │     TCP     │  │    HTTP     │  │  WebSocket │   │   │
-│  │  │  (主要)     │  │   (降级)    │  │  (可选)    │   │   │
-│  │  └─────────────┘  └─────────────┘  └────────────┘   │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "TelegramCore"
+        ACCOUNT[Account<br/>• 授权管理<br/>• 请求调度]
+    end
+
+    subgraph "MtProtoKit"
+        direction TB
+        CONTEXT[MTContext<br/>• DC 配置<br/>• 密钥维护]
+
+        subgraph "MTProto"
+            ENCRYPT[Encryption<br/>AES-256-IGE]
+            SERIAL[Serializer<br/>TL-Binary]
+            ACK[ACK Management]
+        end
+
+        subgraph "MTTransport"
+            TCP[TCP<br/>(主要)]
+            HTTP[HTTP<br/>(降级)]
+            WS[WebSocket<br/>(可选)]
+        end
+    end
+
+    ACCOUNT --> CONTEXT
+    CONTEXT --> MTProto
+    MTProto --> MTTransport
 ```
 
 ### 6.2 MTContext 实现

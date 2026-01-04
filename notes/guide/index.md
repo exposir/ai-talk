@@ -65,6 +65,9 @@ LLM 应用双引擎分层架构设计。
 - [概述](../case-studies/telegram/README.md) - 学习框架和资源
 - [MTProto 协议](../case-studies/telegram/protocol.md) - 移动优先加密协议设计 🚧
 - [客户端架构](../case-studies/telegram/client-architecture.md) - TDLib 跨平台复用 🚧
+- [服务端架构](../case-studies/telegram/server-architecture.md) - 架构推测与实现 🚧
+- [安全模型](../case-studies/telegram/security.md) - 加密与威胁模型 🚧
+- [性能优化](../case-studies/telegram/optimization.md) - 核心优化策略 🚧
 - [工程经验](../case-studies/telegram/lessons.md) - 小团队做大产品的秘诀 🚧
 
 ---

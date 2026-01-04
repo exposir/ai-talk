@@ -644,29 +644,29 @@ public class AndroidUtilities {
 
 ### 5.1 架构图
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                       Java Layer                             │
-│                                                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
-│  │MessagesCtrl │  │  MediaCtrl  │  │NotificationsCtrl    │ │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘ │
-└─────────┼────────────────┼───────────────────┼─────────────┘
-          │                │                   │
-          │  JNI Bridge    │                   │
-          ▼                ▼                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Native Layer (C++)                      │
-│                                                              │
-│  ┌─────────────────┐  ┌─────────────┐  ┌─────────────────┐ │
-│  │     tgnet       │  │   tgcalls   │  │    rlottie      │ │
-│  │  (MTProto)      │  │  (WebRTC)   │  │   (动画)        │ │
-│  └────────┬────────┘  └──────┬──────┘  └────────┬────────┘ │
-│           │                  │                   │          │
-│  ┌────────▼───────────────────▼───────────────────▼───────┐ │
-│  │                    OpenSSL / BoringSSL                  │ │
-│  └─────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "Java Layer"
+        MSG[MessagesCtrl]
+        MEDIA[MediaCtrl]
+        NOTIFY[NotificationsCtrl]
+    end
+
+    subgraph "Native Layer (C++)"
+        direction TB
+        TGNET[tgnet<br/>(MTProto)]
+        CALLS[tgcalls<br/>(WebRTC)]
+        RLOT[rlottie<br/>(Animation)]
+
+        SSL[OpenSSL / BoringSSL]
+    end
+
+    MSG -.->|JNI| TGNET
+    MEDIA -.->|JNI| CALLS & RLOT
+    NOTIFY -.->|JNI| TGNET
+
+    TGNET --> SSL
+    CALLS --> SSL
 ```
 
 ### 5.2 tgnet 网络层
