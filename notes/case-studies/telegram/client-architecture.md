@@ -27,6 +27,8 @@ Telegram 的不同平台客户端并非简单的 '换皮'，而是针对该平�
 
 ### 🍎 iOS (The Flagship) — 源码级深度解析
 
+> **📖 深度解析**：[iOS 前端架构深度解析](./ios-architecture.md) - 事无巨细地分析 AsyncDisplayKit 定制、SwiftSignalKit、Postbox 存储、MtProtoKit 等实现
+
 iOS 版通常被视为 Telegram 的旗舰体验，其流畅度业界闻名。整个项目超过
 **200 万行代码**，包含 **200+ 个子模块**，是 iOS 工程的教科书级实现。
 
@@ -372,6 +374,8 @@ ContextMenuController     // 替代 UIContextMenuInteraction
 > - [MTProto 协议文档](https://core.telegram.org/mtproto)
 
 ### 🤖 Android (Official vs X) — 源码级深度解析
+
+> **📖 深度解析**：[Android 前端架构深度解析](./android-architecture.md) - 事无巨细地分析自定义 View/Canvas 手绘、JNI 原生层、动画系统、性能分级等实现
 
 Android 生态存在著名的 **'双客户端'** 策略：**官方版** (DrKLO/Telegram) 和
 **Telegram X** (TGX-Android/Telegram-X)，展示了两种截然不同的架构思路。
