@@ -25,6 +25,9 @@
 - Markdown 以 80 字符换行，使用单引号；见 `.prettierrc`。
 - 目录与 Markdown 文件使用 `kebab-case`（例如
   `notes/ai-fundamentals/prompt-engineering.md`）。
+- 目录入口统一使用 `README.md`（大写），其余文件保持小写与短横线。
+- VitePress 使用 `README.md` 作为入口页时，导航/侧边栏链接写成
+  `/dir/README`；如需 `/dir/` 根路径，新增 `index.md` 或配置 `rewrites`。
 - 标题层级清晰，代码块必须标注语言。
 
 ## 测试指南
@@ -45,6 +48,7 @@
 
 - 新增或重命名文档时同步更新 `notes/guide/index.md` 与 `README.md`。
 - 避免新增应用代码或运行时配置文件；这是文档项目。
+- 详细规范见 `notes/project-meta/project-standards.md`。
 
 ## Agent 专用说明
 
