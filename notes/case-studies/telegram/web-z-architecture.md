@@ -2,6 +2,13 @@
 
 > 事无巨细地剖析 Telegram Web Z 的前端工程实现，适合前端开发者深度学习
 
+**📚 相关文档**：
+
+- [← 返回 Telegram 客户端架构总览](./client-architecture.md)
+- [Web K 架构深度解析 →](./web-k-architecture.md)
+
+---
+
 ## 概述
 
 **Web Z** (也称 Web A / telegram-tt) 是 Telegram 在 2019 年 Lightweight Client
