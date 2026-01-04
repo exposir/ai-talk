@@ -745,25 +745,490 @@ public class TelegramManager {
 > - [TDLib](https://github.com/tdlib/td)
 > - [Reproducible Builds 指南](https://core.telegram.org/reproducible-builds)
 
-### 🌐 Web (K & Z)
+### 🌐 Web (K & Z) — 源码级深度解析
 
-Telegram Web 不仅仅是网页，更是 **WebAssembly (WASM)**
-的教科书级应用。由于历史原因（Lightweight Client Contest），存在两个官方版本。
+Telegram Web 不仅仅是网页应用，更是 **WebAssembly (WASM)** 和现代 Web
+API 的教科书级实现。由于历史原因（2019 年 Lightweight Client
+Contest），存在两个独立开发的官方版本。
 
-- **Web Z (Z 版本)**：
-  - **框架**：**Teact**（自研的类 React 框架，更轻量，去除了 React 的兼容性包袱） +
-    TypeScript。
-  - **协议**：自定义 MTProto JS 实现。
-- **Web K (K 版本)**：
-  - **框架**：原生 TypeScript，无重型框架依赖，架构更接近 'Vanilla JS'。
-- **WASM 的深度应用**：
-  - **加密解密**：AES-IGE、SHA-256 等高频加密操作编译为 WASM 模块，性能接近原生代码。
-  - **媒体处理**：Opus 音频编码器、RLottie 动画渲染器均运行在 WASM 中，解决了 JS 处理二进制数据的性能瓶颈。
+---
+
+#### 2.3.1 版本概览
+
+| 特性         | Web Z (A)                    | Web K                |
+| ------------ | ---------------------------- | -------------------- |
+| **访问地址** | `web.telegram.org/a` 或 `/z` | `web.telegram.org/k` |
+| **框架**     | Teact (自研)                 | 原生 TypeScript      |
+| **MTProto**  | GramJS (定制版)              | 自实现               |
+| **代码量**   | ~68% TypeScript              | ~95% TypeScript      |
+| **开发者**   | Ajaxy (比赛冠军)             | morethanwords        |
+| **特点**     | 更现代的 UI、更多动画        | 更轻量、加载更快     |
+
+---
+
+#### 2.3.2 Web Z (Telegram Web A) 架构
+
+**仓库**：`Ajaxy/telegram-tt` / `TelegramOrg/Telegram-web-z`
+
+##### 2.3.2.1 Teact：自研的 React 替代品
+
+Teact 是专为 Telegram Web 开发的**零依赖**、**高性能**
+UI 框架，重新实现了 React 的核心范式。
+
+**为什么不用 React？**
+
+| React 的问题             | Teact 的解决方案     |
+| ------------------------ | -------------------- |
+| 包体积大 (~45KB gzipped) | 极致轻量 (~3KB)      |
+| 兼容性代码多             | 只保留现代浏览器支持 |
+| 调度器开销               | 简化的同步渲染       |
+| 合成事件系统             | 直接使用原生事件     |
+
+**Teact 核心 API**：
+
+```typescript
+// src/lib/teact/teact.ts
+// Teact 实现了与 React 几乎相同的 API
+
+// 函数式组件
+const ChatMessage: FC<Props> = ({ message, isOwn }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = useCallback(() => {
+    // 处理点击
+  }, []);
+
+  return (
+    <div
+      className={buildClassName('message', isOwn && 'own')}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+    >
+      <MessageContent message={message} />
+      {isHovered && <MessageActions />}
+    </div>
+  );
+};
+
+// Hooks 支持
+export {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+  memo,
+};
+```
+
+**Teact 的独特优化**：
+
+```typescript
+// 细粒度响应式更新
+// 使用 signals 模式避免不必要的重渲染
+
+import { createSignal } from '../util/signals';
+
+const [getUnreadCount, setUnreadCount] = createSignal(0);
+
+// 组件只在 signal 变化时更新
+const Badge: FC = () => {
+  const count = useSignal(getUnreadCount);
+  return count > 0 ? <span className="badge">{count}</span> : null;
+};
+```
+
+##### 2.3.2.2 GramJS：MTProto JavaScript 实现
+
+Web Z 使用定制版的 **GramJS** 处理与 Telegram 服务器的通信。
+
+```typescript
+// src/api/gramjs/gramjsBuilders.ts
+// GramJS 配置和初始化
+
+import { TelegramClient } from 'telegram';
+import { StringSession } from 'telegram/sessions';
+
+const client = new TelegramClient(
+  new StringSession(savedSession),
+  API_ID,
+  API_HASH,
+  {
+    connectionRetries: 5,
+    useWSS: true, // WebSocket Secure
+  },
+);
+
+// 发送消息
+async function sendMessage(chatId: string, text: string) {
+  await client.sendMessage(chatId, { message: text });
+}
+
+// 接收更新
+client.addEventHandler((update) => {
+  if (update instanceof Api.UpdateNewMessage) {
+    handleNewMessage(update.message);
+  }
+});
+```
+
+**GramJS 的核心特性**：
+
+- 基于 **Telethon** (Python) 移植
+- 支持 **MTProto 2.0** 协议
+- **自动 DC 迁移**（跨数据中心切换）
+- **会话持久化** (StringSession / localStorage)
+
+##### 2.3.2.3 项目结构
+
+```text
+telegram-tt/  (Web Z)
+├── src/
+│   ├── api/
+│   │   ├── gramjs/           # GramJS MTProto 实现
+│   │   │   ├── apiBuilders/      # API 请求构建器
+│   │   │   ├── methods/          # 高级 API 方法
+│   │   │   └── gramjsBuilders.ts
+│   │   └── types/            # TypeScript 类型定义
+│   ├── components/           # UI 组件
+│   │   ├── common/               # 通用组件
+│   │   ├── middle/               # 聊天区域
+│   │   ├── left/                 # 左侧面板
+│   │   └── right/                # 右侧面板
+│   ├── lib/
+│   │   ├── teact/            # Teact 框架核心
+│   │   ├── rlottie/          # RLottie WASM 绑定
+│   │   └── webp/             # WebP WASM 解码器
+│   ├── global/               # 全局状态管理
+│   ├── hooks/                # 自定义 Hooks
+│   └── util/                 # 工具函数
+├── public/
+│   ├── rlottie/              # RLottie WASM 文件
+│   └── opus/                 # Opus WASM 编码器
+└── webpack.config.ts
+```
+
+---
+
+#### 2.3.3 Web K 架构
+
+**仓库**：`morethanwords/tweb` / `TelegramOrg/Telegram-web-k`
+
+##### 2.3.3.1 零框架依赖
+
+Web K 采用**纯 TypeScript + 原生 DOM API**，不依赖任何 UI 框架。
+
+```typescript
+// src/components/chat/bubbles.ts
+// 直接操作 DOM 的消息渲染
+
+export default class ChatBubbles {
+  private container: HTMLElement;
+  private bubbleGroups: Map<number, BubbleGroup> = new Map();
+
+  constructor(container: HTMLElement) {
+    this.container = container;
+  }
+
+  public renderMessage(message: Message) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+
+    // 根据消息类型渲染不同内容
+    if (message.media) {
+      this.renderMedia(bubble, message.media);
+    } else {
+      this.renderText(bubble, message.message);
+    }
+
+    // 添加时间戳和状态
+    this.appendMeta(bubble, message);
+
+    this.container.appendChild(bubble);
+  }
+
+  private renderText(bubble: HTMLElement, text: string) {
+    const content = document.createElement('div');
+    content.className = 'message-content';
+    content.innerHTML = this.parseEntities(text);
+    bubble.appendChild(content);
+  }
+}
+```
+
+##### 2.3.3.2 自实现 MTProto
+
+Web K 完全**从零实现** MTProto 协议，不依赖 GramJS：
+
+```typescript
+// src/lib/mtproto/mtproto.ts
+// MTProto 核心实现
+
+export class MTProto {
+  private networker: Networker;
+  private authorizer: Authorizer;
+
+  async invokeApi<T>(method: string, params: object): Promise<T> {
+    // 1. 构建 TL 对象
+    const serialized = TLSerialization.serialize(method, params);
+
+    // 2. 加密（AES-256-IGE）
+    const encrypted = await this.encrypt(serialized);
+
+    // 3. 通过 WebSocket 发送
+    const response = await this.networker.send(encrypted);
+
+    // 4. 解密并反序列化
+    const decrypted = await this.decrypt(response);
+    return TLDeserialization.deserialize<T>(decrypted);
+  }
+
+  private async encrypt(data: Uint8Array): Promise<Uint8Array> {
+    // 使用 WASM 加速的 AES-IGE
+    return cryptoWorker.aesEncryptIge(data, this.authKey, this.msgKey);
+  }
+}
+```
+
+##### 2.3.3.3 Web Workers 架构
+
+Web K 大量使用 **Web Workers** 将计算密集型任务移出主线程：
+
+```text
+┌─────────────────────────────────────────────────────┐
+│                   Main Thread                        │
+│  UI 渲染 + 事件处理 + DOM 操作                       │
+└──────────────────────┬──────────────────────────────┘
+                       │ postMessage
+         ┌─────────────┼─────────────┐
+         ▼             ▼             ▼
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ MTProto     │ │ Crypto      │ │ Media       │
+│ Worker      │ │ Worker      │ │ Worker      │
+│             │ │             │ │             │
+│ • 序列化    │ │ • AES-IGE   │ │ • 图片解码   │
+│ • 反序列化  │ │ • SHA-256   │ │ • 视频处理   │
+│ • 压缩      │ │ • RSA       │ │ • 音频编码   │
+└─────────────┘ └─────────────┘ └─────────────┘
+                       │
+                       ▼ WASM
+              ┌─────────────────┐
+              │ WebAssembly     │
+              │ • rlottie.wasm  │
+              │ • opus.wasm     │
+              │ • crypto.wasm   │
+              └─────────────────┘
+```
+
+---
+
+#### 2.3.4 WebAssembly 深度应用
+
+两个 Web 版本都大量使用 WASM 来突破 JavaScript 的性能瓶颈。
+
+##### 2.3.4.1 加密模块
+
+```typescript
+// 加密操作使用 WASM 加速
+// 对于 AES-IGE（Telegram 特有的加密模式），WASM 比纯 JS 快 10x+
+
+// src/lib/crypto/crypto.worker.ts
+import init, { aes_ige_encrypt, aes_ige_decrypt } from './crypto.wasm';
+
+await init(); // 初始化 WASM 模块
+
+export function aesEncryptIge(
+  data: Uint8Array,
+  key: Uint8Array,
+  iv: Uint8Array,
+): Uint8Array {
+  return aes_ige_encrypt(data, key, iv);
+}
+
+// 性能对比
+// 纯 JS: ~5ms / 1KB
+// WASM:  ~0.5ms / 1KB
+// Web Crypto API (AES-CBC): ~0.1ms / 1KB (但不支持 IGE 模式)
+```
+
+##### 2.3.4.2 RLottie 动画渲染
+
+Telegram 的动画贴纸使用 **Lottie 格式**，通过 **RLottie** (C++ → WASM) 渲染：
+
+```typescript
+// src/lib/rlottie/rlottie.ts
+// RLottie WASM 绑定
+
+class RLottiePlayer {
+  private worker: Worker;
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+
+  constructor(canvas: HTMLCanvasElement, animationData: string) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d')!;
+    this.worker = new Worker('rlottie.worker.js');
+
+    // 发送动画数据到 Worker
+    this.worker.postMessage({
+      type: 'init',
+      data: animationData,
+      width: canvas.width,
+      height: canvas.height,
+    });
+  }
+
+  play() {
+    this.worker.onmessage = (e) => {
+      if (e.data.type === 'frame') {
+        // 将 WASM 渲染的帧绘制到 Canvas
+        const imageData = new ImageData(
+          new Uint8ClampedArray(e.data.buffer),
+          this.canvas.width,
+          this.canvas.height,
+        );
+        this.ctx.putImageData(imageData, 0, 0);
+      }
+    };
+
+    this.worker.postMessage({ type: 'play' });
+  }
+}
+```
+
+**RLottie 渲染流程**：
+
+```text
+Lottie JSON → RLottie WASM (C++ 渲染) → RGBA Buffer → Canvas
+```
+
+##### 2.3.4.3 Opus 音频编码
+
+语音消息录制使用 **Opus** 编码器（WASM 编译）：
+
+```typescript
+// 语音消息录制
+const recorder = new OpusMediaRecorder(stream, {
+  mimeType: 'audio/ogg; codecs=opus',
+});
+
+// WASM Opus 编码器配置
+// 比特率: 32kbps (语音最佳)
+// 采样率: 48000Hz
+// 通道数: 1 (单声道)
+```
+
+---
+
+#### 2.3.5 PWA 功能
+
+两个 Web 版本都是完整的 **Progressive Web App**：
+
+| 功能           | 实现方式                                |
+| -------------- | --------------------------------------- |
+| **离线支持**   | Service Worker 缓存静态资源             |
+| **推送通知**   | Web Push API + Firebase Cloud Messaging |
+| **安装到桌面** | `manifest.json` + beforeinstallprompt   |
+| **后台同步**   | Background Sync API                     |
+| **分享目标**   | Web Share Target API                    |
+
+```json
+// manifest.json
+{
+  "name": "Telegram Web",
+  "short_name": "Telegram",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2481cc",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192" },
+    { "src": "icon-512.png", "sizes": "512x512" }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [{ "name": "file", "accept": ["image/*", "video/*"] }]
+    }
+  }
+}
+```
+
+---
+
+#### 2.3.6 性能优化策略
+
+| 策略                 | 实现细节                           |
+| -------------------- | ---------------------------------- |
+| **虚拟滚动**         | 只渲染可见区域的消息，DOM 节点复用 |
+| **图片懒加载**       | IntersectionObserver + 占位符      |
+| **WASM 预加载**      | 关键 WASM 模块在空闲时预加载       |
+| **代码分割**         | 动态 import() 按需加载功能模块     |
+| **IndexedDB 缓存**   | 消息、媒体、用户数据本地持久化     |
+| **WebSocket 连接池** | 复用连接，减少握手开销             |
+
+**虚拟滚动实现**：
+
+```typescript
+// 虚拟滚动核心逻辑
+class VirtualScroll {
+  private items: Message[];
+  private itemHeight = 50; // 预估高度
+  private buffer = 5; // 上下缓冲区
+
+  getVisibleRange(scrollTop: number, viewportHeight: number) {
+    const startIndex = Math.max(
+      0,
+      Math.floor(scrollTop / this.itemHeight) - this.buffer,
+    );
+    const endIndex = Math.min(
+      this.items.length,
+      Math.ceil((scrollTop + viewportHeight) / this.itemHeight) + this.buffer,
+    );
+
+    return { startIndex, endIndex };
+  }
+
+  // 只渲染可见范围内的消息
+  render(range: { startIndex: number; endIndex: number }) {
+    const fragment = document.createDocumentFragment();
+
+    for (let i = range.startIndex; i < range.endIndex; i++) {
+      fragment.appendChild(this.renderMessage(this.items[i]));
+    }
+
+    // 使用 transform 定位，避免重排
+    this.container.style.transform = `translateY(${range.startIndex * this.itemHeight}px)`;
+    this.container.innerHTML = '';
+    this.container.appendChild(fragment);
+  }
+}
+```
+
+---
+
+#### 2.3.7 Web Z vs Web K：选择指南
+
+| 考量因素         | Web Z                  | Web K    |
+| ---------------- | ---------------------- | -------- |
+| **首次加载速度** | 较慢（Teact + GramJS） | ⚡ 更快  |
+| **动画流畅度**   | ⭐⭐⭐⭐⭐             | ⭐⭐⭐⭐ |
+| **功能完整度**   | ⭐⭐⭐⭐⭐             | ⭐⭐⭐⭐ |
+| **内存占用**     | 较高                   | 较低     |
+| **移动端体验**   | 更好                   | 良好     |
+| **开发友好度**   | React 式 (Teact)       | 原生 DOM |
+
+---
 
 > **🔗 源码参考**：
 >
-> - Web Z 源码 <https://github.com/Ajaxy/telegram-tt>
-> - Web K 源码 <https://github.com/morethanwords/tweb>
+> - [Web Z (Telegram-tt)](https://github.com/Ajaxy/telegram-tt)
+> - [Web K (tweb)](https://github.com/morethanwords/tweb)
+> - [GramJS](https://github.com/nicedayc/gramjs)
+> - [RLottie](https://github.com/nicedayc/nicedayc)
 
 ---
 
