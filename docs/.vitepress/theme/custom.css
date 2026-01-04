@@ -1,10 +1,10 @@
 /* ========== 浅色模式 - 导航栏毛玻璃效果 ========== */
 .VPNav {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
-  border-bottom: none !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06) !important;
 }
 
 .VPNavBar,
@@ -25,11 +25,11 @@
 
 /* ========== 深色模式 - 导航栏毛玻璃效果 ========== */
 .dark .VPNav {
-  background: rgba(13, 17, 23, 0.1) !important;
+  background: rgba(13, 17, 23, 0.75) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
-  border-bottom: none !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  border-bottom: 1px solid rgba(240, 246, 252, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
 }
 
 .dark .VPNavBar,
@@ -40,14 +40,16 @@
 
 /* ========== 浅色模式 - 侧边栏毛玻璃效果 ========== */
 .VPSidebar {
-  background: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-right: 1px solid rgba(15, 23, 42, 0.06) !important;
 }
 
 /* ========== 深色模式 - 侧边栏毛玻璃效果 ========== */
 .dark .VPSidebar {
-  background: rgba(13, 17, 23, 0.7) !important;
+  background: rgba(13, 17, 23, 0.88) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-right: 1px solid rgba(240, 246, 252, 0.08) !important;
 }

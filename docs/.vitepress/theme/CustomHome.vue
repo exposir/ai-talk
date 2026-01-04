@@ -1,3 +1,7 @@
+<script setup>
+import { withBase } from 'vitepress';
+</script>
+
 <template>
   <div class="custom-home">
     <!-- 终端风格头部 -->
@@ -26,7 +30,7 @@
 
     <!-- 快速导航卡片 -->
     <section class="nav-cards">
-      <a href="/ai-talk/guide/" class="card primary">
+      <a :href="withBase('/guide/')" class="card primary">
         <div class="card-icon">📖</div>
         <div class="card-content">
           <h3>文档目录</h3>
@@ -35,7 +39,7 @@
         <span class="arrow">→</span>
       </a>
 
-      <a href="/ai-talk/claude-code/" class="card">
+      <a :href="withBase('/claude-code/README')" class="card">
         <div class="card-icon">📘</div>
         <div class="card-content">
           <h3>Claude Code</h3>
@@ -44,7 +48,7 @@
         <span class="arrow">→</span>
       </a>
 
-      <a href="/ai-talk/antigravity/" class="card">
+      <a :href="withBase('/antigravity/README')" class="card">
         <div class="card-icon">📗</div>
         <div class="card-content">
           <h3>Antigravity</h3>
@@ -53,7 +57,7 @@
         <span class="arrow">→</span>
       </a>
 
-      <a href="/ai-talk/ai-fundamentals/ai-models" class="card">
+      <a :href="withBase('/ai-fundamentals/ai-models')" class="card">
         <div class="card-icon">🤖</div>
         <div class="card-content">
           <h3>AI 模型</h3>
@@ -62,7 +66,7 @@
         <span class="arrow">→</span>
       </a>
 
-      <a href="/ai-talk/tools-and-apis/ai-coding-tools" class="card">
+      <a :href="withBase('/tools-and-apis/ai-coding-tools')" class="card">
         <div class="card-icon">🔧</div>
         <div class="card-content">
           <h3>开发工具</h3>
@@ -71,7 +75,7 @@
         <span class="arrow">→</span>
       </a>
 
-      <a href="/ai-talk/architecture/" class="card">
+      <a :href="withBase('/architecture/README')" class="card">
         <div class="card-icon">🏗️</div>
         <div class="card-content">
           <h3>架构设计</h3>
@@ -249,6 +253,54 @@
   padding: 0.1em 0;
   line-height: 1.2;
   letter-spacing: -0.02em;
+}
+
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.glitch::before {
+  transform: translate(2px, -1px);
+  text-shadow: -2px 0 #22c55e;
+  animation: glitch-shift 3s infinite;
+}
+
+.glitch::after {
+  transform: translate(-2px, 1px);
+  text-shadow: 2px 0 #ef4444;
+  animation: glitch-shift 3s infinite reverse;
+}
+
+@keyframes glitch-shift {
+  0%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+  20% {
+    clip-path: inset(0 0 60% 0);
+  }
+  40% {
+    clip-path: inset(40% 0 0 0);
+  }
+  60% {
+    clip-path: inset(10% 0 50% 0);
+  }
+  80% {
+    clip-path: inset(50% 0 10% 0);
+  }
 }
 
 :global(.dark) .output h1 {
