@@ -1227,17 +1227,124 @@ class VirtualScroll {
 >
 > - [Web Z (Telegram-tt)](https://github.com/Ajaxy/telegram-tt)
 > - [Web K (tweb)](https://github.com/morethanwords/tweb)
-> - [GramJS](https://github.com/nicedayc/gramjs)
+> - [GramJS](https://github.com/nicedayc/nicedayc)
 > - [RLottie](https://github.com/nicedayc/nicedayc)
 
 ---
 
-## 3. TDLib：通用客户端引擎
+## 3. Desktop (tdesktop) — C++/Qt 跨平台客户端
+
+Telegram Desktop 是 Telegram 在 Windows、macOS、Linux 上的统一客户端，代号
+**tdesktop**。
+
+---
+
+### 3.1 技术栈
+
+| 组件         | 技术选型                   |
+| ------------ | -------------------------- |
+| **编程语言** | C++ (~97.5%)               |
+| **UI 框架**  | Qt 6 / Qt 5.15 (LGPL)      |
+| **构建系统** | CMake                      |
+| **加密**     | OpenSSL                    |
+| **媒体处理** | FFmpeg                     |
+| **音频**     | OpenAL Soft + Opus         |
+| **通话**     | WebRTC                     |
+| **崩溃报告** | Google Breakpad / Crashpad |
+
+---
+
+### 3.2 项目结构
+
+```text
+tdesktop/
+├── Telegram/
+│   ├── SourceFiles/
+│   │   ├── core/                 # 核心基础设施
+│   │   ├── data/                 # 数据模型
+│   │   ├── mtproto/              # MTProto 协议实现
+│   │   ├── storage/              # 本地存储
+│   │   ├── ui/                   # UI 组件
+│   │   ├── window/               # 窗口管理
+│   │   ├── history/              # 聊天历史
+│   │   ├── calls/                # 语音/视频通话
+│   │   └── main/                 # 入口点
+│   └── Resources/                # 资源文件
+├── cmake/                        # CMake 配置
+└── Telegram/lib_*/               # 内部库
+```
+
+---
+
+### 3.3 Qt 框架使用
+
+```cpp
+// Telegram/SourceFiles/ui/widgets/buttons.cpp
+// 自定义按钮组件示例
+
+class RippleButton : public RpWidget {
+public:
+    void paintEvent(QPaintEvent *e) override {
+        QPainter p(this);
+
+        // 绘制背景
+        p.fillRect(rect(), _backgroundColor);
+
+        // 绘制涟漪动画（Material Design 风格）
+        if (_ripple) {
+            _ripple->paint(p, 0, 0, width());
+        }
+
+        // 绘制图标和文本
+        paintIcon(p);
+        paintText(p);
+    }
+
+private:
+    std::unique_ptr<RippleAnimation> _ripple;
+    QColor _backgroundColor;
+};
+```
+
+---
+
+### 3.4 macOS 原生适配
+
+tdesktop 在 macOS 上使用 **原生 UIKit 组件** 而非 Qt，以获得更好的系统集成：
+
+- 原生触控板手势
+- 系统菜单栏集成
+- Spotlight 搜索集成
+- iCloud 文档同步
+
+---
+
+### 3.5 与移动端的差异
+
+| 特性         | Desktop                | iOS/Android                 |
+| ------------ | ---------------------- | --------------------------- |
+| **协议实现** | 直接实现 MTProto       | iOS 自实现 / Android 自实现 |
+| **UI 框架**  | Qt                     | Texture / 自定义 View       |
+| **多账户**   | 完整支持（切换标签页） | 完整支持                    |
+| **后台运行** | 常驻系统托盘           | 受系统限制                  |
+
+---
+
+> **🔗 源码参考**：
+>
+> - [Telegram Desktop (tdesktop)](https://github.com/telegramdesktop/tdesktop)
+> - [构建指南](https://github.com/nicedayc/nicedayc/blob/dev/docs/building-cmake.md)
+
+---
+
+## 4. TDLib：通用客户端引擎
 
 **TDLib (Telegram Database Library)**
-是 Telegram 开放给第三方开发者的'核武器'。它将复杂的 MTProto协议、本地存储、网络同步封装成了一个黑盒。
+是 Telegram 开放给第三方开发者的 "核武器"。它将复杂的 MTProto 协议、本地存储、网络同步封装成一个跨平台黑盒。
 
-### 架构图解
+---
+
+### 4.1 架构图解
 
 ```text
 ┌───────────────────────────────────────────────┐
@@ -1262,35 +1369,250 @@ class VirtualScroll {
     └───────────────────────────────────────┘
 ```
 
-### 核心设计：Actor Model
+---
+
+### 4.2 核心设计：Actor Model
 
 TDLib 的高性能源于其内部实现的 **Actor 并发模型**：
 
-1.  **无锁并发**：每个 Actor 都是独立的执行单元，拥有私有状态。Actor 之间**绝不共享内存**，只通过消息传递交互。
-2.  **避免死锁**：由于消除了共享状态和锁竞争，TDLib 几乎彻底杜绝了多线程编程中常见的死锁问题。
-3.  **高吞吐量**：这种模型非常适合处理大量的并发网络请求（如同时加载成百上千个聊天会话）。
-
-### 开发者接口
-
-TDLib 对外暴露极其简单的接口，类似于 Redux 的单向数据流：
-
-- **`send(function)`**：发送请求（如 `sendMessage`, `getChats`）。
-- **`receive()`**：轮询获取更新（Updates），所有数据变更（新消息、用户上线）都通过此接口异步推送。
-
-> **🔗 官方文档**：
->
-> - TDLib 核心概念 <https://core.telegram.org/tdlib>
-> - GitHub 仓库 <https://github.com/tdlib/td>
+1. **无锁并发**：每个 Actor 独立执行，拥有私有状态，**绝不共享内存**
+2. **避免死锁**：消除共享状态和锁竞争
+3. **高吞吐量**：适合处理大量并发网络请求
 
 ---
 
-## 4. 总结：Telegram 的工程启示
+### 4.3 跨平台支持
 
-1.  **掌控核心技术栈**：为了极致体验，不惜维护定制版的 UI 框架（iOS
-    Texture 改版）和 Web 框架（Teact）。
-2.  **性能至上**：将繁重的计算（加密、布局、媒体处理）从主线程剥离，利用 C++ /
-    WASM / Background Threads 解决。
-3.  **开放与透明**：通过开源客户端代码和支持可复现构建，建立了极高的安全信任度。
+TDLib 支持几乎所有主流平台：
+
+| 平台               | 支持状态    |
+| ------------------ | ----------- |
+| **Android**        | ✅ 原生 JNI |
+| **iOS / macOS**    | ✅ 原生     |
+| **Windows**        | ✅          |
+| **Linux**          | ✅          |
+| **Web (WASM)**     | ✅ 实验性   |
+| **watchOS / tvOS** | ✅          |
+
+---
+
+### 4.4 语言绑定
+
+TDLib 提供多种接口方式：
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│                    TDLib Core (C++)                      │
+└────────────────────────┬────────────────────────────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│   Native    │  │    JSON     │  │    .NET     │
+│   C++ API   │  │  Interface  │  │  C++/CLI    │
+└─────────────┘  └──────┬──────┘  └─────────────┘
+                        │
+         ┌──────────────┼──────────────┐
+         ▼              ▼              ▼
+    ┌─────────┐   ┌─────────┐   ┌─────────┐
+    │ Python  │   │  Swift  │   │ Kotlin  │
+    │ pytdlib │   │TDLibKit │   │  ktd    │
+    └─────────┘   └─────────┘   └─────────┘
+```
+
+**JSON 接口**（推荐大多数场景）：
+
+```json
+// 发送请求
+{
+  "@type": "sendMessage",
+  "chat_id": 123456789,
+  "input_message_content": {
+    "@type": "inputMessageText",
+    "text": {
+      "@type": "formattedText",
+      "text": "Hello, World!"
+    }
+  },
+  "@extra": "request_id_001"  // 用于匹配响应
+}
+
+// 接收响应
+{
+  "@type": "message",
+  "id": 987654321,
+  "chat_id": 123456789,
+  "@extra": "request_id_001"
+}
+```
+
+---
+
+### 4.5 各语言集成示例
+
+**Python (pytdlib / aiotdlib)**:
+
+```python
+from aiotdlib import Client
+
+async def main():
+    async with Client(api_id=API_ID, api_hash=API_HASH) as client:
+        # 发送消息
+        await client.send_message(
+            chat_id=123456789,
+            text="Hello from Python!"
+        )
+
+        # 监听新消息
+        async for update in client.updates():
+            if update.type == "updateNewMessage":
+                print(f"New message: {update.message.text}")
+```
+
+**Swift (TDLibKit)**:
+
+```swift
+import TDLibKit
+
+let client = TDLibClient()
+
+// 发送消息
+try await client.sendMessage(
+    chatId: 123456789,
+    inputMessageContent: .inputMessageText(
+        .init(text: FormattedText(text: "Hello from Swift!"))
+    )
+)
+
+// 监听更新
+for await update in client.updates {
+    if case .updateNewMessage(let message) = update {
+        print("New message: \(message.content)")
+    }
+}
+```
+
+**Kotlin (ktd / libtd-ktx)**:
+
+```kotlin
+import kotlinx.coroutines.flow.collect
+
+val client = TelegramClient(apiId, apiHash)
+
+// 发送消息
+client.sendMessage(
+    chatId = 123456789,
+    inputMessageContent = InputMessageText(
+        text = FormattedText(text = "Hello from Kotlin!")
+    )
+)
+
+// 使用 Flow 监听更新
+client.updates.collect { update ->
+    when (update) {
+        is UpdateNewMessage -> println("New: ${update.message}")
+    }
+}
+```
+
+---
+
+### 4.6 多账户支持
+
+TDLib 原生支持多账户：
+
+```cpp
+// 每个账户使用独立的 TDLib 实例和数据目录
+
+TdClient account1("./data/account_1");
+TdClient account2("./data/account_2");
+TdClient account3("./data/account_3");
+
+// 并行处理更新
+account1.receive();  // 独立的事件循环
+account2.receive();
+account3.receive();
+```
+
+---
+
+### 4.7 知名第三方客户端
+
+基于 TDLib 构建的优秀客户端：
+
+| 客户端         | 平台          | 特点                             |
+| -------------- | ------------- | -------------------------------- |
+| **Unigram**    | Windows (UWP) | 微软应用商店最佳 Telegram 客户端 |
+| **Telegram X** | Android       | 官方实验性客户端                 |
+| **64Gram**     | Desktop       | 功能增强版 tdesktop              |
+| **Nekogram**   | Android       | 隐私增强版                       |
+| **Kotatogram** | Desktop       | 自定义功能丰富                   |
+
+---
+
+> **🔗 官方文档**：
+>
+> - [TDLib 核心概念](https://core.telegram.org/tdlib)
+> - [TDLib GitHub](https://github.com/tdlib/td)
+> - [TDLib JSON 接口](https://core.telegram.org/tdlib/docs/td__json__client_8h.html)
+
+---
+
+## 5. 总结：Telegram 的工程启示
+
+### 5.1 核心设计原则
+
+1. **掌控核心技术栈**：不惜维护定制版框架（iOS Texture、Web
+   Teact），确保极致体验
+2. **性能至上**：将计算密集型任务（加密、布局、媒体）从主线程剥离到 C++ / WASM /
+   Workers
+3. **开放与透明**：开源客户端代码 + 可复现构建，建立安全信任
+4. **Native First**：拒绝跨平台框架，为每个平台深度优化
+
+---
+
+### 5.2 跨平台策略对比
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    Telegram 技术栈全景                       │
+├─────────────┬───────────────────────────────────────────────┤
+│   iOS       │ Swift/ObjC + 定制 Texture + MtProtoKit        │
+├─────────────┼───────────────────────────────────────────────┤
+│   Android   │ Java + 自定义 View + JNI (tgnet/voip)         │
+├─────────────┼───────────────────────────────────────────────┤
+│   Desktop   │ C++ + Qt + 直接实现 MTProto                   │
+├─────────────┼───────────────────────────────────────────────┤
+│   Web Z     │ TypeScript + Teact + GramJS                   │
+├─────────────┼───────────────────────────────────────────────┤
+│   Web K     │ TypeScript + 原生 DOM + 自实现 MTProto        │
+├─────────────┼───────────────────────────────────────────────┤
+│  第三方      │ 任意语言 + TDLib (JSON/Native)                │
+└─────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+### 5.3 与竞品架构对比
+
+| 维度           | Telegram       | WhatsApp             | Signal          |
+| -------------- | -------------- | -------------------- | --------------- |
+| **开源客户端** | ✅ 全部开源    | ❌ 闭源              | ✅ 全部开源     |
+| **协议层**     | MTProto (自研) | 基于 Signal Protocol | Signal Protocol |
+| **跨平台策略** | Native First   | React Native (部分)  | Native          |
+| **第三方 SDK** | TDLib          | ❌ 无                | libsignal       |
+| **可复现构建** | ✅ 支持        | ❌ 不支持            | ✅ 支持         |
+| **E2E 加密**   | 仅 Secret Chat | 默认启用             | 默认启用        |
+
+---
+
+### 5.4 对开发者的启示
+
+1. **不要过度依赖第三方**：Telegram 自研 UI 框架、协议层、响应式库，获得了完全控制权
+2. **性能是功能**：极致的滚动流畅度和启动速度本身就是核心竞争力
+3. **开源建立信任**：在隐私敏感领域，开源是最好的安全审计
+4. **模块化设计**：200+ 子模块的 iOS 项目证明了良好架构的重要性
+5. **渐进式复杂度**：TDLib 对新手友好，但高级用户可以深入定制
 
 ---
 
