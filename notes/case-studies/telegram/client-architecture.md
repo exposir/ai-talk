@@ -371,34 +371,379 @@ ContextMenuController     // 替代 UIContextMenuInteraction
 > - [Texture 官方文档](https://texturegroup.org/)
 > - [MTProto 协议文档](https://core.telegram.org/mtproto)
 
-### 🤖 Android (Official vs X)
+### 🤖 Android (Official vs X) — 源码级深度解析
 
-Android 生态存在著名的 '双客户端' 策略，展示了两种不同的架构思路。
+Android 生态存在著名的 **'双客户端'** 策略：**官方版** (DrKLO/Telegram) 和
+**Telegram X** (TGX-Android/Telegram-X)，展示了两种截然不同的架构思路。
 
-#### 官方版 (Telegram for Android)
+---
 
-- **定位**：稳定、兼容性好、功能最全。
-- **架构**：
-  - **语言**：Java (主要) + C++ (JNI)。
-  - **核心**：直接实现 MTProto，UI 层大量使用自定义 View。
-  - **可复现构建 (Reproducible Builds)**：
-    - Telegram 是少数支持 Android 可复现构建的主流 App。
-    - 用户可以使用 Docker 环境，基于公开源码编译出与 Google
-      Play 一模一样的 APK。
-    - 验证工具：`apkdiff.py`
-      可对比自编译包与官方包的二进制差异（通常仅签名不同）。
+#### 2.2.1 官方版 (Telegram for Android)
 
-#### Telegram X
+**定位**：稳定、兼容性最广、功能最全，是 Telegram 的主力 Android 客户端。
 
-- **定位**：实验性、更现代、动画更多。
-- **架构**：**基于 TDLib**。
-- **设计目标**：验证 TDLib 在 Android 上的性能，并尝试通过 C++ 共享更多逻辑。
-- **交互**：拥有更流畅的手势操作和即时夜间模式切换。
+**语言组成**：Java (~94%) + C++ (JNI, ~5%) + 其他 (~1%)
+
+##### 2.2.1.1 项目结构
+
+```text
+Telegram/  (DrKLO/Telegram)
+├── TMessagesProj/
+│   ├── jni/                      # C++ 原生代码
+│   │   ├── tgnet/                    # MTProto 网络层
+│   │   ├── voip/                     # VoIP 通话引擎
+│   │   ├── image.cpp                 # 图片处理
+│   │   ├── video.cpp                 # 视频处理
+│   │   └── ffmpeg/                   # FFmpeg 集成
+│   └── src/main/java/org/telegram/
+│       ├── messenger/                # 核心业务逻辑
+│       │   ├── MessageObject.java        # 消息数据模型
+│       │   ├── MessagesController.java   # 消息管理器
+│       │   ├── ConnectionsManager.java   # 连接管理
+│       │   └── NotificationCenter.java   # 事件总线
+│       ├── ui/                       # UI 层
+│       │   ├── ChatActivity.java         # 聊天界面
+│       │   ├── DialogsActivity.java      # 会话列表
+│       │   ├── Cells/                    # 自定义 Cell 组件
+│       │   └── Components/               # 自定义 UI 组件
+│       └── tgnet/                    # Java 层网络封装
+```
+
+---
+
+##### 2.2.1.2 UI 哲学：极致的自定义 View
+
+Telegram
+Android 的 UI 层采用了**极端的自定义策略**：几乎所有复杂组件都**直接继承 View 并重写
+`onDraw()`**，使用 `Canvas` API 手动绘制。
+
+**为什么不用标准 Android 组件？**
+
+| 标准方案       | Telegram 做法              | 理由                              |
+| -------------- | -------------------------- | --------------------------------- |
+| `TextView`     | 自定义 `Canvas.drawText()` | 精确控制文本渲染、支持复杂富文本  |
+| `ImageView`    | 自定义绘制 + 异步解码      | 控制内存、支持渐进式加载          |
+| `RecyclerView` | 自研 `RecyclerListView`    | 更精细的滚动/动画控制             |
+| XML 布局       | Java 代码动态布局          | 运行时灵活调整、减少 inflate 开销 |
+
+**核心绘制示例**：
+
+```java
+// org/telegram/ui/Cells/ChatMessageCell.java
+// 消息气泡的绘制逻辑（简化版）
+@Override
+protected void onDraw(Canvas canvas) {
+    // 1. 绘制气泡背景
+    canvas.drawPath(bubblePath, bubblePaint);
+
+    // 2. 绘制头像（圆形裁剪）
+    if (avatarImage != null) {
+        avatarImage.draw(canvas);
+    }
+
+    // 3. 绘制消息文本
+    if (textLayout != null) {
+        canvas.save();
+        canvas.translate(textX, textY);
+        textLayout.draw(canvas);  // StaticLayout 文本
+        canvas.restore();
+    }
+
+    // 4. 绘制时间戳
+    canvas.drawText(timeString, timeX, timeY, timePaint);
+
+    // 5. 绘制双勾（已读状态）
+    if (isRead) {
+        canvas.drawPath(checkPath, checkPaint);
+    }
+}
+```
+
+**自研 RecyclerListView**：
+
+```java
+// org/telegram/ui/Components/RecyclerListView.java
+public class RecyclerListView extends RecyclerView {
+    // 扩展功能：
+    // 1. 内置点击/长按事件处理
+    // 2. 快速滚动指示器
+    // 3. 空状态视图支持
+    // 4. 节头吸顶效果
+    // 5. 滑动删除/置顶手势
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface OnItemLongClickListener {
+        boolean onItemClick(View view, int position);
+    }
+}
+```
+
+---
+
+##### 2.2.1.3 JNI 原生层：性能关键路径
+
+Telegram 将所有**性能敏感**的操作下沉到 C++ 层，通过 JNI 调用：
+
+```text
+┌─────────────────────────────────────────────────────┐
+│                   Java Layer                         │
+│  ConnectionsManager.java ←→ MessagesController.java │
+└──────────────────────┬──────────────────────────────┘
+                       │ JNI
+┌──────────────────────▼──────────────────────────────┐
+│                   C++ Layer                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
+│  │   tgnet     │  │   voip      │  │  ffmpeg     │  │
+│  │ (MTProto)   │  │ (libtgvoip) │  │ (媒体处理)   │  │
+│  └─────────────┘  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────────────────────┘
+```
+
+**tgnet 模块**（C++ MTProto 实现）：
+
+```cpp
+// jni/tgnet/ConnectionsManager.cpp
+void ConnectionsManager::sendRequest(TLObject *request, ...) {
+    // 1. 序列化 TL 对象
+    NativeByteBuffer *buffer = request->serialize();
+
+    // 2. 加密（AES-256-IGE）
+    encryptBuffer(buffer, authKey);
+
+    // 3. 发送到服务器
+    connection->sendData(buffer);
+}
+```
+
+**VoIP 模块**（语音/视频通话）：
+
+```cpp
+// jni/voip/VoIPController.cpp
+class VoIPController {
+    // 音频处理链
+    AudioInput* audioInput;        // 麦克风输入
+    EchoCanceller* echoCanceller;  // 回声消除 (WebRTC AEC)
+    NoiseSuppressor* noiseSuppressor;  // 噪声抑制
+    OpusEncoder* encoder;          // Opus 编码
+
+    // 网络层
+    JitterBuffer* jitterBuffer;    // 抖动缓冲
+    PacketReassembler* reassembler;
+};
+```
+
+**性能收益**：
+
+- **网络请求**：C++ 直接操作 socket，避免 Java GC 影响
+- **加密运算**：AES-NI 指令集加速，比 Java 快 10x+
+- **媒体处理**：FFmpeg 硬件解码支持
+
+---
+
+##### 2.2.1.4 动画系统：CubicBezierInterpolator
+
+Telegram 的流畅动画源于自研的时间插值器系统：
+
+```java
+// org/telegram/ui/Components/CubicBezierInterpolator.java
+public class CubicBezierInterpolator implements Interpolator {
+
+    // 预定义的常用曲线
+    public static final CubicBezierInterpolator EASE_OUT =
+        new CubicBezierInterpolator(0, 0, 0.58, 1.0);
+    public static final CubicBezierInterpolator EASE_OUT_QUINT =
+        new CubicBezierInterpolator(0.23, 1, 0.32, 1);
+    public static final CubicBezierInterpolator DEFAULT =
+        new CubicBezierInterpolator(0.25, 0.1, 0.25, 1.0);
+
+    private final double cx, bx, ax;
+    private final double cy, by, ay;
+
+    @Override
+    public float getInterpolation(float t) {
+        return (float) solve(t, 1e-6);  // 贝塞尔曲线求解
+    }
+}
+```
+
+**实际动画应用**：
+
+```java
+// 消息发送动画示例
+ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+animator.setInterpolator(CubicBezierInterpolator.EASE_OUT_QUINT);
+animator.setDuration(350);
+animator.addUpdateListener(animation -> {
+    float progress = (float) animation.getAnimatedValue();
+    messageCell.setTranslationY(startY + (endY - startY) * progress);
+    messageCell.setAlpha(progress);
+});
+animator.start();
+```
+
+---
+
+##### 2.2.1.5 设备性能分级
+
+Telegram 根据设备能力动态调整 UI 复杂度：
+
+```java
+// org/telegram/messenger/SharedConfig.java
+public class SharedConfig {
+    public static final int PERFORMANCE_CLASS_LOW = 0;
+    public static final int PERFORMANCE_CLASS_AVERAGE = 1;
+    public static final int PERFORMANCE_CLASS_HIGH = 2;
+
+    public static int getDevicePerformanceClass() {
+        int cpuCount = Runtime.getRuntime().availableProcessors();
+        int memoryClass = getMemoryClass();
+
+        if (cpuCount <= 2 || memoryClass <= 100) {
+            return PERFORMANCE_CLASS_LOW;
+        } else if (cpuCount <= 4 || memoryClass <= 160) {
+            return PERFORMANCE_CLASS_AVERAGE;
+        } else {
+            return PERFORMANCE_CLASS_HIGH;
+        }
+    }
+}
+```
+
+**分级策略**：
+
+| 性能等级    | 动画 | 模糊效果 | 阴影 | 粒子效果 |
+| ----------- | ---- | -------- | ---- | -------- |
+| **LOW**     | 简化 | 禁用     | 简单 | 禁用     |
+| **AVERAGE** | 标准 | 低质量   | 标准 | 减少     |
+| **HIGH**    | 完整 | 高质量   | 实时 | 完整     |
+
+---
+
+##### 2.2.1.6 可复现构建 (Reproducible Builds)
+
+Telegram 是少数支持可复现构建的主流 App，用户可验证 Google
+Play 版本与开源代码一致：
+
+```bash
+# 使用 Docker 构建（官方推荐）
+docker build -t telegram-build .
+docker run --rm -v $(pwd)/output:/output telegram-build
+
+# 对比 APK
+python3 apkdiff.py \
+    official_telegram.apk \
+    self_built_telegram.apk
+
+# 输出：仅签名不同，代码完全一致
+# Differences found only in: META-INF/
+```
+
+---
+
+#### 2.2.2 Telegram X (Challegram)
+
+**定位**：实验性客户端，探索 TDLib 在 Android 上的最佳实践。
+
+**内部代号**：`Challegram`（从包名 `org.thunderdog.challegram` 可见）
+
+**语言组成**：Java (~95.5%) + Kotlin (~2.2%) + C++ (~2.3%)
+
+##### 2.2.2.1 架构对比
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    官方版 vs Telegram X                      │
+├─────────────────────────────┬───────────────────────────────┤
+│       官方版 (DrKLO)         │        Telegram X             │
+├─────────────────────────────┼───────────────────────────────┤
+│  Java 直接实现 MTProto      │  依赖 TDLib (C++) 处理所有协议 │
+│  自定义 View 手动绘制        │  更多使用标准 Android 组件     │
+│  完全控制每个细节            │  专注于 UI/UX 创新            │
+│  更大的 APK 体积             │  更小的纯 Java 代码量          │
+│  更复杂的维护                │  协议更新由 TDLib 统一处理     │
+└─────────────────────────────┴───────────────────────────────┘
+```
+
+##### 2.2.2.2 TDLib 集成方式
+
+```java
+// Telegram X 与 TDLib 的交互
+// 使用预编译的 Java 包装层
+
+import org.drinkless.td.libcore.telegram.TdApi;
+import org.drinkless.td.libcore.telegram.Client;
+
+public class TelegramManager {
+    private Client client;
+
+    public void initialize() {
+        client = Client.create(
+            this::handleUpdate,   // 接收服务器推送
+            this::handleException,
+            this::handleException
+        );
+    }
+
+    // 发送消息
+    public void sendMessage(long chatId, String text) {
+        TdApi.SendMessage request = new TdApi.SendMessage();
+        request.chatId = chatId;
+        request.inputMessageContent = new TdApi.InputMessageText(
+            new TdApi.FormattedText(text, null), false, false
+        );
+
+        client.send(request, result -> {
+            if (result instanceof TdApi.Message) {
+                // 发送成功
+            }
+        });
+    }
+
+    // 处理服务器推送
+    private void handleUpdate(TdApi.Object update) {
+        if (update instanceof TdApi.UpdateNewMessage) {
+            // 新消息到达
+        } else if (update instanceof TdApi.UpdateChatReadInbox) {
+            // 已读状态更新
+        }
+        // ... 更多事件类型
+    }
+}
+```
+
+##### 2.2.2.3 Telegram X 的 UI 特色
+
+| 特性             | 实现方式                            |
+| ---------------- | ----------------------------------- |
+| **即时主题切换** | 无需重启，实时应用颜色变更          |
+| **更流畅的手势** | 自定义 `GestureDetector` + 弹性动画 |
+| **实验性功能**   | 功能开关系统，A/B 测试新特性        |
+| **更激进的动画** | 使用更多 Spring/Physics 动画        |
+
+---
+
+#### 2.2.3 官方版 vs X：选择指南
+
+| 考量因素             | 官方版     | Telegram X   |
+| -------------------- | ---------- | ------------ |
+| **稳定性**           | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐     |
+| **功能完整度**       | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐     |
+| **动画流畅度**       | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐   |
+| **内存占用**         | 较高       | 较低         |
+| **更新频率**         | 最快       | 滞后         |
+| **第三方客户端参考** | 复杂       | 简单 (TDLib) |
+
+---
 
 > **🔗 源码参考**：
 >
-> - Telegram Android <https://github.com/DrKLO/Telegram>
-> - Reproducible Builds 指南 <https://core.telegram.org/reproducible-builds>
+> - [Telegram Android (官方)](https://github.com/DrKLO/Telegram)
+> - [Telegram X](https://github.com/TGX-Android/Telegram-X)
+> - [TDLib](https://github.com/tdlib/td)
+> - [Reproducible Builds 指南](https://core.telegram.org/reproducible-builds)
 
 ### 🌐 Web (K & Z)
 
