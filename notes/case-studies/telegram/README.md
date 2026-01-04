@@ -34,6 +34,17 @@
 - **地区**：亚洲占 38%（约 3.61 亿用户）
 - **全球渗透率**：11.53% 世界人口，18.13% 社交媒体用户
 
+## 文档目录
+
+| 文件                                               | 说明                |
+| -------------------------------------------------- | ------------------- |
+| [protocol.md](./protocol.md)                       | MTProto 协议设计 🚧 |
+| [client-architecture.md](./client-architecture.md) | 客户端架构分析 🚧   |
+| [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧   |
+| [algorithms.md](./algorithms.md)                   | 核心算法实现 🚧     |
+| [performance.md](./performance.md)                 | 性能优化技巧 🚧     |
+| [lessons.md](./lessons.md)                         | 工程经验总结 🚧     |
+
 ## 历年增长数据
 
 ### 用户增长历程
@@ -680,17 +691,6 @@ Telegram 的客户端策略给我们的启示：
 - [Telegram Architecture Analysis](https://core.telegram.org/techfaq)
 - [Security Whitepaper](https://core.telegram.org/security)
 - [开源贡献指南](https://core.telegram.org/contribute)
-
-## 文档目录
-
-| 文件                                               | 说明                |
-| -------------------------------------------------- | ------------------- |
-| [protocol.md](./protocol.md)                       | MTProto 协议设计 🚧 |
-| [client-architecture.md](./client-architecture.md) | 客户端架构分析 🚧   |
-| [server-architecture.md](./server-architecture.md) | 服务端架构推测 🚧   |
-| [algorithms.md](./algorithms.md)                   | 核心算法实现 🚧     |
-| [performance.md](./performance.md)                 | 性能优化技巧 🚧     |
-| [lessons.md](./lessons.md)                         | 工程经验总结 🚧     |
 
 ## 值得学习的点
 
