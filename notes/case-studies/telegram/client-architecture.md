@@ -4,12 +4,15 @@
 
 ## 1. 工程哲学：Native First
 
-在 React Native、Flutter 等跨平台框架盛行的今天，Telegram 始终坚持 **'Native First'（原生优先）** 的工程哲学。
+在 React Native、Flutter 等跨平台框架盛行的今天，Telegram 始终坚持 **'Native
+First'（原生优先）** 的工程哲学。
 
 **为什么不选择跨平台框架？**
 
-- 考量维度：**启动速度**；Native 实现的优势：毫秒级冷启动；跨平台框架的痛点：需要加载 JS Bundle 或 Dart VM
-- 考量维度：**滚动性能**；Native 实现的优势：60fps / 120fps 丝般顺滑；跨平台框架的痛点：复杂列表容易掉帧
+- 考量维度：**启动速度**；Native 实现的优势：毫秒级冷启动；跨平台框架的痛点：需要加载 JS
+  Bundle 或 Dart VM
+- 考量维度：**滚动性能**；Native 实现的优势：60fps /
+  120fps 丝般顺滑；跨平台框架的痛点：复杂列表容易掉帧
 - 考量维度：**内存占用**；Native 实现的优势：极低（C++ 核心优化）；跨平台框架的痛点：较高，易触发 OOM
 - 考量维度：**UI 细节**；Native 实现的优势：完美贴合平台规范（iOS 模糊、Android 涟漪）；跨平台框架的痛点：难以做到像素级还原
 - 考量维度：**电池续航**；Native 实现的优势：高效利用硬件特性；跨平台框架的痛点：CPU 占用较高
@@ -22,27 +25,351 @@ Telegram 团队认为，**只有榨干每个平台的原生特性，才能提供
 
 Telegram 的不同平台客户端并非简单的 '换皮'，而是针对该平台特性重新设计的工程艺术品。
 
-### 🍎 iOS (The Flagship)
+### 🍎 iOS (The Flagship) — 源码级深度解析
 
-iOS 版通常被视为 Telegram 的旗舰体验，其流畅度业界闻名。
+iOS 版通常被视为 Telegram 的旗舰体验，其流畅度业界闻名。整个项目超过
+**200 万行代码**，包含 **200+ 个子模块**，是 iOS 工程的教科书级实现。
 
-- **语言**：Objective-C（核心历史代码）+ Swift（新功能）
-- **核心组件**：
-  - **MTProtoKit**：完全重写的 Objective-C 网络层，非 TDLib。专为 iOS 的后台机制和网络特性优化。
-  - **AsyncDisplayKit (Texture) 的魔改版**：
-    - Telegram 并未直接使用官方 Texture，而是维护了一个**深度定制的分支**。
-    - **核心精简**：只保留了核心的 Node 系统（约 35% 代码），去除了 Flexbox 布局引擎、Yoga 引擎和 ASTableNode
-      等重量级组件。
-    - **手动布局**：为了极致性能，Telegram 摒弃了自动布局，大量使用手动计算 Frame
-      的方式，配合 `asyncLayout` 方法在后台线程预计算布局。
-    - **列表倒置**：聊天列表通过旋转 180° 的 `ListView` 实现，由底向上排列，确保新消息自然出现在底部。
-  - **渲染优化**：大量的文本计算、图片解码都在后台线程完成，主线程仅负责提交渲染指令。
+#### 2.1.1 代码结构与模块化
+
+**语言组成**：Swift (~70%) + Objective-C/C++ (~24%) + 其他 (~6%)
+
+**五大模块分类**：
+
+```text
+Telegram-iOS/
+├── submodules/
+│   ├── App/              # 核心应用功能
+│   │   ├── TelegramCore/     # 核心业务逻辑
+│   │   ├── TelegramUI/       # UI 组件库
+│   │   ├── Display/          # 自定义 Node 系统
+│   │   ├── ItemListUI/       # 列表 UI 组件
+│   │   ├── AccountContext/   # 账户上下文管理
+│   │   └── ...               # 100+ 其他模块
+│   ├── VoIP/             # 语音/视频通话
+│   │   ├── libtgvoip/        # 底层 VoIP 库 (C++)
+│   │   └── CallKit/          # iOS 系统通话集成
+│   ├── Watch/            # Apple Watch 应用
+│   ├── TON/              # Telegram Open Network (实验性)
+│   └── 3rd-party/        # 第三方依赖
+│       ├── AsyncDisplayKit/  # 定制版 Texture
+│       ├── SQLCipher/        # 加密数据库
+│       ├── Lottie/           # 动画库
+│       └── ...
+```
+
+---
+
+#### 2.1.2 构建系统：Bazel
+
+Telegram iOS 使用
+**Bazel**（Google 的开源构建工具）管理整个项目，早期曾使用 Buck（Facebook 的构建系统）。
+
+**选择 Bazel 的原因**：
+
+1. **增量构建**：只重新编译变更的模块，大型项目构建时间从 10+ 分钟缩短到秒级
+2. **依赖管理**：自动解析 200+ 模块间的复杂依赖关系
+3. **可复现构建**：确保开源代码编译结果与 App Store 版本完全一致
+4. **跨平台支持**：支持 macOS、iOS、watchOS 多目标编译
+
+**构建流程**：
+
+```bash
+# 1. 生成 Xcode 项目（用于开发调试）
+python3 build-system/Make/Make.py \
+    --cacheDir="$HOME/telegram-bazel-cache" \
+    generateProject \
+    --configurationPath=path/to/configuration
+
+# 2. 构建 IPA（发布包）
+python3 build-system/Make/Make.py \
+    --cacheDir="$HOME/telegram-bazel-cache" \
+    build \
+    --configuration=release_arm64
+```
+
+> **📌 关键文件**：
+>
+> - `build-system/Make/Make.py` — 主构建脚本
+> - `WORKSPACE` — Bazel 工作区配置
+> - `BUILD` 文件 — 各模块的构建规则
+
+---
+
+#### 2.1.3 网络层：MTProtoKit
+
+Telegram iOS **并未使用 TDLib**，而是维护了一套完全独立的 Objective-C 网络层
+`MtProtoKit`，专为 iOS 的后台机制和网络特性深度优化。
+
+**核心架构**：
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│                    TelegramCore                         │
+│              (业务逻辑 + API 封装)                       │
+└──────────────────────┬──────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────┐
+│                    MtProtoKit                           │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │  MTProto 2.0 协议实现                            │   │
+│  │  • AES-256-IGE 加密                             │   │
+│  │  • SHA-256 消息认证                             │   │
+│  │  • RSA-2048 密钥交换                            │   │
+│  └─────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │  传输层                                          │   │
+│  │  • TCP (主要) / HTTP / WebSocket                │   │
+│  │  • 自动 DC 迁移                                 │   │
+│  │  • 网络状态监测 + 重连策略                       │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+**iOS 专属优化**：
+
+| 特性           | 实现方式                                         |
+| -------------- | ------------------------------------------------ |
+| **后台保活**   | 利用 PushKit VoIP 推送接收后台数据（非仅通话）   |
+| **实时位置**   | 后台位置更新通过 VoIP 推送触发，而非传统位置服务 |
+| **未读计数**   | 通过 VoIP 推送隐式更新，无需唤醒主 App           |
+| **多 DC 连接** | 同时维护到多个数据中心的连接，智能切换           |
+
+> **🔗 源码路径**：`submodules/MtProtoKit/Sources/`
+
+---
+
+#### 2.1.4 UI 框架：深度定制的 AsyncDisplayKit
+
+Telegram 对 AsyncDisplayKit（现名 Texture）进行了**激进的定制**，移除了约
+**65%** 的原始代码。
+
+**定制策略**：
+
+| 原版功能                           | Telegram 处理                  |
+| ---------------------------------- | ------------------------------ |
+| `ASTableNode` / `ASCollectionNode` | ❌ 移除，使用自研 `ListView`   |
+| Flexbox + Yoga 布局引擎            | ❌ 移除，采用手动布局          |
+| `ASNetworkImageNode`               | ❌ 移除，因 MTProto 下载不兼容 |
+| `ASViewController`                 | ❌ 移除，自研 `ViewController` |
+| 核心 Node 系统                     | ✅ 保留并扩展                  |
+
+**自研 Node 体系**（分布在 `Display`、`TelegramUI`、`ItemListUI` 等模块）：
+
+```swift
+// 核心抽象 —— 所有 UI 组件的基类
+class ASDisplayNode {
+    var view: UIView { get }           // 惰性创建 UIView
+    var layer: CALayer { get }
+
+    // 关键方法：异步布局计算
+    func asyncLayout() -> (CGSize) -> (CGSize, () -> Void) {
+        // 返回一个闭包，可在后台线程执行布局计算
+        // 第二个闭包在主线程应用布局结果
+    }
+}
+
+// Telegram 扩展的专用 Node
+├── TextNode                    // 富文本渲染 (基于 CoreText)
+├── ImmediateTextNode           // 快速文本渲染
+├── ImageNode                   // 图片显示
+├── AnimatedStickerNode         // Lottie 动画贴纸
+├── MediaPlayNode               // 视频帧渲染
+├── WebEmbedPlayerNode          // 内嵌网页播放器
+├── ChatMessageBubbleItemNode   // 聊天气泡容器
+└── ... (数百个自定义 Node)
+```
+
+**手动布局示例**：
+
+```swift
+// TelegramUI/ChatMessageBubbleItemNode.swift 中的布局逻辑
+static func asyncLayout(_ item: ChatMessageItem)
+    -> (CGFloat, CGFloat) -> (CGSize, (ListViewItemUpdateAnimation) -> Void) {
+
+    // 第一阶段：后台线程计算
+    return { width, height in
+        let messageWidth = width - 80  // 手动计算边距
+        let textLayout = TextNode.asyncLayout(item.text)(messageWidth)
+        let bubbleHeight = textLayout.size.height + 24
+
+        // 第二阶段：主线程应用
+        return (CGSize(width: width, height: bubbleHeight), { animation in
+            self.textNode.frame = CGRect(x: 12, y: 8,
+                                          width: textLayout.size.width,
+                                          height: textLayout.size.height)
+        })
+    }
+}
+```
+
+---
+
+#### 2.1.5 响应式编程：SSignalKit / SwiftSignalKit
+
+Telegram 完全**避开了 RxSwift / Combine**，自研了轻量级响应式框架。
+
+**演进历史**：
+
+- `MTSignal` → Objective-C 版本，用于 MtProtoKit
+- `SSignalKit` → Objective-C 增强版
+- `SwiftSignalKit` → Swift 移植版，现为主力
+
+**核心概念**：
+
+```swift
+// Signal —— 代表一个异步值序列
+public final class Signal<T, E> {
+    public func start(next: @escaping (T) -> Void,
+                      error: @escaping (E) -> Void,
+                      completed: @escaping () -> Void) -> Disposable
+}
+
+// Promise —— 可写入的单值信号
+public final class Promise<T> {
+    public var signal: Signal<T, NoError>
+    public func set(_ signal: Signal<T, NoError>)
+}
+
+// 实际使用示例 —— 获取聊天列表
+func fetchChatList() -> Signal<[Chat], MTRpcError> {
+    return network.request(Api.messages.getDialogs(...))
+        |> mapToSignal { dialogs -> Signal<[Chat], MTRpcError> in
+            return processDialogs(dialogs)
+        }
+        |> deliverOnMainQueue
+}
+
+// UI 绑定
+self.chatListDisposable = fetchChatList().start(next: { [weak self] chats in
+    self?.updateChatList(chats)
+}, error: { error in
+    // 处理错误
+})
+```
+
+**为何自研？**
+
+1. **零依赖**：不受第三方库版本和 API 变更影响
+2. **极致轻量**：核心代码约 2000 行，RxSwift 约 20000 行
+3. **完全控制**：可针对 Telegram 特定场景深度优化
+
+---
+
+#### 2.1.6 数据存储：Postbox + SQLite
+
+**存储架构**：
+
+```text
+Container/
+└── telegram-data/                    # Group Container (共享给 App Extension)
+    └── account-{id}/
+        └── postbox/
+            └── db/
+                └── db_sqlite         # 主数据库 (SQLCipher 加密)
+```
+
+**技术栈**：
+
+| 组件             | 用途                          |
+| ---------------- | ----------------------------- |
+| **SQLite**       | 核心存储引擎                  |
+| **SQLCipher**    | 数据库全盘加密                |
+| **FTS5**         | 全文搜索（消息搜索功能）      |
+| **自定义序列化** | TL (Type Language) 二进制格式 |
+
+**Postbox 核心模块**：
+
+```swift
+// submodules/Postbox/Sources/Postbox.swift
+public final class Postbox {
+    // 消息存储
+    public func messageHistory(peerId: PeerId) -> Signal<[Message], NoError>
+
+    // 事务操作
+    public func transaction<T>(_ f: @escaping (Transaction) -> T) -> Signal<T, NoError>
+
+    // 实时监听变更
+    public func messageHistoryObserver(peerId: PeerId) -> Signal<MessageHistoryUpdate, NoError>
+}
+```
+
+**数据共享**：
+
+- 主 App、Widget、Share Extension、Watch App 通过 **App Group Container**
+  共享同一数据库
+- 使用 Darwin notify 机制在进程间同步数据变更
+
+---
+
+#### 2.1.7 消息列表渲染：ListView + ChatMessageBubbleContentNode
+
+聊天列表是 Telegram 性能的核心战场。在 iPhone 6s (iOS 13.5) 上实测可保持 **58+
+FPS**。
+
+**核心组件层次**：
+
+```text
+ChatHistoryListNode (ListView 子类)
+└── ChatMessageBubbleItemNode (气泡容器)
+    └── ChatMessageBubbleContentNode (内容节点)
+        ├── ChatMessageTextBubbleContentNode        # 纯文本
+        ├── ChatMessageMediaBubbleContentNode       # 图片/视频
+        ├── ChatMessageFileBubbleContentNode        # 文件附件
+        ├── ChatMessageWebpageBubbleContentNode     # 链接预览
+        ├── ChatMessageAnimatedStickerContentNode   # 动画贴纸
+        ├── ChatMessageVoiceContentNode             # 语音消息
+        └── ... (更多内容类型)
+```
+
+**列表倒置技巧**：
+
+```swift
+// ListView 通过 CATransform3D 旋转 180°
+listView.transform = CATransform3DMakeRotation(CGFloat.pi, 1, 0, 0)
+
+// 每个 Cell 再反向旋转 180°
+cell.transform = CATransform3DMakeRotation(CGFloat.pi, 1, 0, 0)
+
+// 效果：滚动方向自然，新消息从底部出现
+```
+
+**性能优化策略**：
+
+1. **完全异步渲染**：文本 (CoreText)、图片解码、布局计算全部在后台线程
+2. **预计算缓存**：`asyncLayout` 返回的布局结果可缓存复用
+3. **渐进式加载**：快速滚动时显示占位符，停止后加载真实内容
+4. **智能复用**：Node 层级的 Cell 复用，比 UITableViewCell 更轻量
+
+---
+
+#### 2.1.8 UIKit 重新实现
+
+Telegram 对系统 UIKit 组件的行为不满意，**从零重写了多个核心控制器**：
+
+```swift
+// 自研控制器 vs 系统控制器
+NavigationController      // 替代 UINavigationController
+TabBarController          // 替代 UITabBarController
+AlertController           // 替代 UIAlertController
+ActionSheetController     // 替代 UIAlertController (ActionSheet)
+ContextMenuController     // 替代 UIContextMenuInteraction
+```
+
+**重写原因**：
+
+- 系统控制器在不同 iOS 版本行为不一致
+- 无法完全控制动画曲线和时长
+- 系统组件的手势冲突难以解决
+- 需要支持复杂的自定义转场
+
+---
 
 > **🔗 源码参考**：
-> - Telegram-iOS GitHub
->   <https://github.com/TelegramMessenger/Telegram-iOS>
-> - Texture 官方文档
->   <https://texturegroup.org/>
+>
+> - [Telegram-iOS GitHub](https://github.com/TelegramMessenger/Telegram-iOS)
+> - [Texture 官方文档](https://texturegroup.org/)
+> - [MTProto 协议文档](https://core.telegram.org/mtproto)
 
 ### 🤖 Android (Official vs X)
 
@@ -56,8 +383,10 @@ Android 生态存在著名的 '双客户端' 策略，展示了两种不同的�
   - **核心**：直接实现 MTProto，UI 层大量使用自定义 View。
   - **可复现构建 (Reproducible Builds)**：
     - Telegram 是少数支持 Android 可复现构建的主流 App。
-    - 用户可以使用 Docker 环境，基于公开源码编译出与 Google Play 一模一样的 APK。
-    - 验证工具：`apkdiff.py` 可对比自编译包与官方包的二进制差异（通常仅签名不同）。
+    - 用户可以使用 Docker 环境，基于公开源码编译出与 Google
+      Play 一模一样的 APK。
+    - 验证工具：`apkdiff.py`
+      可对比自编译包与官方包的二进制差异（通常仅签名不同）。
 
 #### Telegram X
 
@@ -67,18 +396,18 @@ Android 生态存在著名的 '双客户端' 策略，展示了两种不同的�
 - **交互**：拥有更流畅的手势操作和即时夜间模式切换。
 
 > **🔗 源码参考**：
-> - Telegram Android
->   <https://github.com/DrKLO/Telegram>
-> - Reproducible Builds 指南
->   <https://core.telegram.org/reproducible-builds>
+>
+> - Telegram Android <https://github.com/DrKLO/Telegram>
+> - Reproducible Builds 指南 <https://core.telegram.org/reproducible-builds>
 
 ### 🌐 Web (K & Z)
 
-Telegram Web 不仅仅是网页，更是 **WebAssembly (WASM)** 的教科书级应用。由于历史原因（Lightweight Client
-Contest），存在两个官方版本。
+Telegram Web 不仅仅是网页，更是 **WebAssembly (WASM)**
+的教科书级应用。由于历史原因（Lightweight Client Contest），存在两个官方版本。
 
 - **Web Z (Z 版本)**：
-  - **框架**：**Teact**（自研的类 React 框架，更轻量，去除了 React 的兼容性包袱） + TypeScript。
+  - **框架**：**Teact**（自研的类 React 框架，更轻量，去除了 React 的兼容性包袱） +
+    TypeScript。
   - **协议**：自定义 MTProto JS 实现。
 - **Web K (K 版本)**：
   - **框架**：原生 TypeScript，无重型框架依赖，架构更接近 'Vanilla JS'。
@@ -87,17 +416,16 @@ Contest），存在两个官方版本。
   - **媒体处理**：Opus 音频编码器、RLottie 动画渲染器均运行在 WASM 中，解决了 JS 处理二进制数据的性能瓶颈。
 
 > **🔗 源码参考**：
-> - Web Z 源码
->   <https://github.com/Ajaxy/telegram-tt>
-> - Web K 源码
->   <https://github.com/morethanwords/tweb>
+>
+> - Web Z 源码 <https://github.com/Ajaxy/telegram-tt>
+> - Web K 源码 <https://github.com/morethanwords/tweb>
 
 ---
 
 ## 3. TDLib：通用客户端引擎
 
-**TDLib (Telegram Database Library)** 是 Telegram 开放给第三方开发者的'核武器'。它将复杂的 MTProto
-协议、本地存储、网络同步封装成了一个黑盒。
+**TDLib (Telegram Database Library)**
+是 Telegram 开放给第三方开发者的'核武器'。它将复杂的 MTProto协议、本地存储、网络同步封装成了一个黑盒。
 
 ### 架构图解
 
@@ -140,19 +468,18 @@ TDLib 对外暴露极其简单的接口，类似于 Redux 的单向数据流：
 - **`receive()`**：轮询获取更新（Updates），所有数据变更（新消息、用户上线）都通过此接口异步推送。
 
 > **🔗 官方文档**：
-> - TDLib 核心概念
->   <https://core.telegram.org/tdlib>
-> - GitHub 仓库
->   <https://github.com/tdlib/td>
+>
+> - TDLib 核心概念 <https://core.telegram.org/tdlib>
+> - GitHub 仓库 <https://github.com/tdlib/td>
 
 ---
 
 ## 4. 总结：Telegram 的工程启示
 
-1.  **掌控核心技术栈**：为了极致体验，不惜维护定制版的 UI 框架（iOS Texture 改版）和 Web
-    框架（Teact）。
-2.  **性能至上**：将繁重的计算（加密、布局、媒体处理）从主线程剥离，利用 C++ / WASM /
-    Background Threads 解决。
+1.  **掌控核心技术栈**：为了极致体验，不惜维护定制版的 UI 框架（iOS
+    Texture 改版）和 Web 框架（Teact）。
+2.  **性能至上**：将繁重的计算（加密、布局、媒体处理）从主线程剥离，利用 C++ /
+    WASM / Background Threads 解决。
 3.  **开放与透明**：通过开源客户端代码和支持可复现构建，建立了极高的安全信任度。
 
 ---
@@ -160,16 +487,13 @@ TDLib 对外暴露极其简单的接口，类似于 Redux 的单向数据流：
 ## 参考文献与链接
 
 - **官方资源**
-  - Telegram Apps Source Code
-    <https://telegram.org/apps#source-code>
+  - Telegram Apps Source Code <https://telegram.org/apps#source-code>
   - Reproducible Builds for Android
     <https://core.telegram.org/reproducible-builds>
-  - TDLib - Telegram Database Library
-    <https://core.telegram.org/tdlib>
+  - TDLib - Telegram Database Library <https://core.telegram.org/tdlib>
 
 - **技术分析**
-  - AsyncDisplayKit (Texture) 官方文档
-    <https://texturegroup.org/>
+  - AsyncDisplayKit (Texture) 官方文档 <https://texturegroup.org/>
   - Telegram iOS 架构分析 (Hubo.dev)
     <https://hubo.dev/blog/telegram-ios-architecture/>
   - Citizen Lab 对微信安全性的分析 (作为对比参考)

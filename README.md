@@ -44,7 +44,8 @@ ai-talk/
 │   ├── news/                 # 每日新闻总结
 │   ├── tools-and-apis/       # 工具与 API
 │   └── project-meta/         # 项目规划
-├── docs/                     # VitePress 配置
+├── docs/                     # VitePress 文档与配置
+│   └── claude.zh-cn.md        # Claude 中文说明
 ├── library/                  # 论文、教程、参考资料
 ├── prompts/                  # Prompt 模板收集
 └── sessions/                 # 对话记录存档
