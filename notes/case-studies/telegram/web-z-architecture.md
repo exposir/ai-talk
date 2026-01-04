@@ -23,6 +23,125 @@ Contest 中获得**第一名**的作品，现已成为官方 Web 客户端之一
 | **语言组成** | TypeScript (~68%), SCSS, Rust (WASM)                      |
 | **协议实现** | GramJS (定制版)                                           |
 
+### 整体架构图
+
+```mermaid
+graph TB
+    subgraph "用户界面层"
+        UI[Teact Components]
+        LEFT[LeftColumn<br/>会话列表]
+        MIDDLE[MiddleColumn<br/>聊天内容]
+        RIGHT[RightColumn<br/>详情面板]
+    end
+
+    subgraph "状态管理层"
+        GLOBAL[Global State]
+        ACTIONS[Actions]
+        SELECTORS[Selectors]
+        REDUCERS[Reducers]
+    end
+
+    subgraph "API 层"
+        GRAMJS[GramJS<br/>MTProto 实现]
+        WORKER[Web Worker<br/>后台处理]
+        CRYPTO[AES-IGE 加密<br/>WASM]
+    end
+
+    subgraph "核心库层"
+        TEACT[Teact 框架]
+        RLOTTIE[RLottie WASM<br/>动画渲染]
+        WEBP[WebP WASM<br/>图片解码]
+        OPUS[Opus WASM<br/>音频编码]
+    end
+
+    subgraph "存储层"
+        IDB[(IndexedDB)]
+        CACHE[媒体缓存]
+    end
+
+    subgraph "网络层"
+        WS[WebSocket<br/>MTProto]
+        DC[Telegram DC<br/>数据中心]
+    end
+
+    UI --> LEFT & MIDDLE & RIGHT
+    LEFT & MIDDLE & RIGHT --> GLOBAL
+    GLOBAL --> ACTIONS
+    ACTIONS --> GRAMJS
+    GRAMJS --> WORKER
+    WORKER --> CRYPTO
+    WORKER --> WS
+    WS --> DC
+    GLOBAL --> IDB
+    GRAMJS --> IDB & CACHE
+    UI --> TEACT
+    MIDDLE --> RLOTTIE & WEBP
+    MIDDLE --> OPUS
+```
+
+### 技术栈分层
+
+```mermaid
+block-beta
+    columns 1
+    block:ui["🎨 UI 层"]
+        columns 3
+        Teact["Teact<br/>(自研框架)"]
+        SCSS["SCSS<br/>(样式)"]
+        JSX["TSX<br/>(组件)"]
+    end
+    block:state["📦 状态层"]
+        columns 3
+        Global["Global State"]
+        Actions["Actions"]
+        Selectors["Selectors"]
+    end
+    block:api["🔌 API 层"]
+        columns 3
+        GramJS["GramJS"]
+        Workers["Web Workers"]
+        MTProto["MTProto 2.0"]
+    end
+    block:wasm["⚡ WASM 层"]
+        columns 4
+        RLottie["RLottie"]
+        WebP["WebP"]
+        Opus["Opus"]
+        AES["AES-IGE"]
+    end
+    block:storage["💾 存储层"]
+        columns 2
+        IndexedDB["IndexedDB"]
+        Cache["媒体缓存"]
+    end
+```
+
+### 请求响应数据流
+
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant C as Teact 组件
+    participant A as Actions
+    participant G as Global State
+    participant W as Web Worker
+    participant GJ as GramJS
+    participant S as Telegram Server
+
+    U->>C: 点击发送消息
+    C->>A: dispatch(sendMessage)
+    A->>G: 乐观更新<br/>(临时消息ID)
+    G-->>C: 重渲染<br/>(显示发送中)
+    A->>W: postMessage
+    W->>GJ: invokeApi
+    GJ->>S: MTProto 请求
+    S-->>GJ: 服务器响应
+    GJ-->>W: 解析结果
+    W-->>A: 回调
+    A->>G: 确认更新<br/>(真实消息ID)
+    G-->>C: 重渲染<br/>(发送成功)
+```
+
 ---
 
 ## 1. 项目结构
@@ -119,6 +238,55 @@ telegram-tt/
 
 Teact 是 Telegram 专为 Web
 Z 开发的**零依赖**轻量级 UI 框架，重新实现了 React 的核心范式。
+
+### Teact 渲染流程
+
+```mermaid
+flowchart LR
+    subgraph "初始渲染"
+        A[JSX] --> B[createElement]
+        B --> C[VNode 树]
+        C --> D[mount]
+        D --> E[真实 DOM]
+    end
+
+    subgraph "更新渲染"
+        F[State 变化] --> G[重新渲染]
+        G --> H[新 VNode 树]
+        H --> I[Diff 算法]
+        I --> J[Patch]
+        J --> K[最小 DOM 更新]
+    end
+
+    E -.-> F
+```
+
+### Teact vs React 对比
+
+```mermaid
+graph LR
+    subgraph "React (~45KB)"
+        R1[Synthetic Events]
+        R2[Fiber Scheduler]
+        R3[Concurrent Mode]
+        R4[Suspense]
+        R5[IE11 兼容]
+    end
+
+    subgraph "Teact (~3KB)"
+        T1[原生 DOM Events]
+        T2[同步渲染]
+        T3[无]
+        T4[无]
+        T5[现代浏览器]
+    end
+
+    R1 -.->|移除| T1
+    R2 -.->|简化| T2
+    R3 -.->|移除| T3
+    R4 -.->|移除| T4
+    R5 -.->|移除| T5
+```
 
 ### 2.1 为什么自研框架？
 
@@ -326,6 +494,57 @@ function shallowEqual(a: any, b: any): boolean {
 
 Telegram Web Z 使用自研的**类 Redux**状态管理系统，但更轻量。
 
+### 状态流转图
+
+```mermaid
+flowchart TD
+    subgraph "组件层"
+        C1[ChatList]
+        C2[MessageList]
+        C3[Composer]
+    end
+
+    subgraph "Actions"
+        A1[loadChats]
+        A2[sendMessage]
+        A3[markAsRead]
+    end
+
+    subgraph "Global State"
+        GS[(GlobalState)]
+    end
+
+    subgraph "Selectors"
+        S1[selectChats]
+        S2[selectMessages]
+        S3[selectCurrentUser]
+    end
+
+    subgraph "API Layer"
+        API[GramJS API]
+    end
+
+    C1 & C2 & C3 -->|dispatch| A1 & A2 & A3
+    A1 & A2 & A3 -->|updateGlobal| GS
+    A1 & A2 & A3 -->|invokeApi| API
+    API -->|response| A1 & A2 & A3
+    GS -->|subscribe| S1 & S2 & S3
+    S1 & S2 & S3 -->|props| C1 & C2 & C3
+```
+
+### 单向数据流
+
+```mermaid
+graph LR
+    A[用户操作] --> B[Action]
+    B --> C[API 调用]
+    C --> D[服务器响应]
+    D --> E[更新 State]
+    E --> F[Selector 计算]
+    F --> G[组件重渲染]
+    G --> A
+```
+
 ### 3.1 架构概览
 
 ```text
@@ -482,6 +701,60 @@ export const selectVisibleMessages = memoize(
 ## 4. Web Worker 架构
 
 GramJS（MTProto 实现）运行在独立的 Web Worker 中，避免阻塞主线程。
+
+### 主线程与 Worker 通信时序
+
+```mermaid
+sequenceDiagram
+    participant M as 主线程
+    participant B as API Bridge
+    participant W as GramJS Worker
+    participant S as Telegram Server
+
+    M->>B: callApi('sendMessage', params)
+    B->>B: 生成 requestId
+    B->>W: postMessage({type, requestId, args})
+    Note over M: 继续处理 UI<br/>不阻塞
+
+    W->>W: 序列化 TL 对象
+    W->>W: AES-IGE 加密
+    W->>S: WebSocket 发送
+    S-->>W: 加密响应
+    W->>W: AES-IGE 解密
+    W->>W: 反序列化 TL 对象
+    W-->>B: postMessage({requestId, result})
+    B-->>M: resolve Promise
+```
+
+### Worker 线程分工
+
+```mermaid
+graph TB
+    subgraph "Main Thread (UI)"
+        UI[Teact 组件]
+        STATE[Global State]
+        BRIDGE[API Bridge]
+    end
+
+    subgraph "GramJS Worker"
+        TL[TL 序列化]
+        CRYPTO[AES-IGE 加密]
+        WS[WebSocket 连接]
+        CACHE[Session 缓存]
+    end
+
+    subgraph "Crypto Worker"
+        AES[AES-IGE WASM]
+        SHA[SHA-256]
+        RSA[RSA 加密]
+    end
+
+    UI --> BRIDGE
+    BRIDGE <-->|postMessage| TL
+    TL <--> CRYPTO
+    CRYPTO <--> WS
+    CRYPTO <-->|可选| AES & SHA & RSA
+```
 
 ### 4.1 架构图
 
@@ -650,6 +923,63 @@ client.addEventHandler((update) => {
 ## 5. 消息列表虚拟滚动
 
 聊天消息列表是 Telegram 的核心，Web Z 实现了高性能的虚拟滚动。
+
+### 虚拟滚动原理图
+
+```mermaid
+graph TB
+    subgraph "完整消息列表 (1000+ 条)"
+        M1[消息 1]
+        M2[消息 2]
+        M3[消息 ...]
+        M4[消息 50]
+        M5[消息 51]
+        M6[消息 52]
+        M7[消息 ...]
+        M8[消息 100]
+        M9[消息 ...]
+        M10[消息 1000]
+    end
+
+    subgraph "可视区域 (仅渲染 ~20 条)"
+        V1[消息 50]
+        V2[消息 51]
+        V3[消息 52]
+    end
+
+    subgraph "DOM 节点"
+        D1[div.message]
+        D2[div.message]
+        D3[div.message]
+    end
+
+    M4 -.->|渲染| V1
+    M5 -.->|渲染| V2
+    M6 -.->|渲染| V3
+    V1 --> D1
+    V2 --> D2
+    V3 --> D3
+```
+
+### 滚动事件处理流程
+
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant S as Scroll Event
+    participant C as 计算可见范围
+    participant SE as Selector
+    participant R as 重渲染
+
+    U->>S: 滚动列表
+    S->>C: onScroll(scrollTop)
+    C->>C: 计算 viewportTop/Bottom
+    C->>SE: selectVisibleMessages
+    SE->>SE: 过滤消息数组
+    SE-->>R: 返回可见消息
+    R->>R: 仅更新变化的节点
+    Note over R: IntersectionObserver<br/>懒加载图片
+```
 
 ### 5.1 核心组件结构
 
@@ -1115,6 +1445,87 @@ async function initRLottie() {
 ---
 
 ## 8. 性能优化技巧
+
+### 性能优化策略全景
+
+```mermaid
+mindmap
+  root((Web Z 性能优化))
+    渲染优化
+      Teact 轻量框架
+      memo 组件缓存
+      虚拟滚动
+      异步渲染
+    网络优化
+      Web Worker 隔离
+      WebSocket 长连接
+      增量同步
+      乐观更新
+    计算优化
+      WASM 加速
+        AES-IGE 加密
+        RLottie 动画
+        Opus 音频
+      Selector 缓存
+      防抖/节流
+    加载优化
+      代码分割
+      懒加载
+      Service Worker
+      IndexedDB 缓存
+```
+
+### 登录认证流程
+
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant W as Web Z
+    participant S as Telegram Server
+
+    U->>W: 输入手机号
+    W->>S: auth.sendCode
+    S-->>W: sent_code (hash)
+    S-->>U: 发送验证码 (SMS/App)
+
+    U->>W: 输入验证码
+    W->>S: auth.signIn(code, hash)
+
+    alt 需要 2FA
+        S-->>W: password_required
+        U->>W: 输入密码
+        W->>S: auth.checkPassword
+    end
+
+    S-->>W: auth.authorization
+    W->>W: 保存 session 到 IndexedDB
+    W-->>U: 登录成功，进入主界面
+```
+
+### 消息发送完整流程
+
+```mermaid
+flowchart TD
+    A[用户输入消息] --> B[点击发送]
+    B --> C{消息类型}
+
+    C -->|纯文本| D[创建本地消息]
+    C -->|带媒体| E[上传媒体到服务器]
+    E --> F[获取 file_id]
+    F --> D
+
+    D --> G[乐观更新 UI]
+    G --> H[显示发送中状态]
+    H --> I[调用 messages.sendMessage]
+
+    I --> J{发送结果}
+    J -->|成功| K[更新消息 ID]
+    J -->|失败| L[显示重试按钮]
+
+    K --> M[显示已发送]
+    M --> N[等待已读回执]
+    N --> O[更新已读状态]
+```
 
 ### 8.1 调度器设计
 

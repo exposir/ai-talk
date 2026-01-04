@@ -27,6 +27,737 @@ Z 采用完全不同的技术路线：**零框架依赖**，纯原生 TypeScript
 
 ---
 
+## 📊 架构可视化
+
+### 1. 系统总体架构
+
+```mermaid
+graph TB
+    subgraph "用户界面层 UI Layer"
+        UI[原生 DOM 组件]
+        Chat[Chat 聊天容器]
+        Sidebar[SidebarLeft/Right]
+        Popups[Popups 弹窗]
+        Emoticons[表情选择器]
+    end
+
+    subgraph "业务逻辑层 Business Layer"
+        AM[AppMessagesManager]
+        UCM[AppUsersManager]
+        ACM[AppChatsManager]
+        APM[AppPeersManager]
+        ADM[AppDialogsManager]
+    end
+
+    subgraph "事件系统 Event System"
+        RS[RootScope 事件总线]
+    end
+
+    subgraph "存储层 Storage Layer"
+        IDB[(IndexedDB)]
+        MC[Memory Cache]
+        FS[FileStorage]
+    end
+
+    subgraph "协议层 Protocol Layer"
+        MTProto[MTProto 核心]
+        NW[Networker 网络管理]
+        Auth[Authorizer 认证]
+        TL[TL 序列化]
+    end
+
+    subgraph "传输层 Transport Layer"
+        WS[WebSocket]
+        HTTP[HTTP 降级]
+        OBF[Obfuscated 反审查]
+    end
+
+    subgraph "Telegram 服务器"
+        DC1[DC1]
+        DC2[DC2]
+        DC3[DCn...]
+    end
+
+    UI --> RS
+    Chat --> AM
+    Sidebar --> ADM
+
+    RS --> AM
+    RS --> UCM
+    RS --> ACM
+
+    AM --> MTProto
+    UCM --> MTProto
+    ACM --> MTProto
+    APM --> MTProto
+    ADM --> MTProto
+
+    AM --> IDB
+    AM --> MC
+    UCM --> IDB
+    FS --> IDB
+
+    MTProto --> NW
+    MTProto --> Auth
+    MTProto --> TL
+
+    NW --> WS
+    NW --> HTTP
+    NW --> OBF
+
+    WS --> DC1
+    WS --> DC2
+    HTTP --> DC3
+
+    style MTProto fill:#ff6b6b,stroke:#c0392b,stroke-width:2px
+    style RS fill:#54a0ff,stroke:#2980b9,stroke-width:2px
+    style IDB fill:#2ecc71,stroke:#27ae60,stroke-width:2px
+```
+
+---
+
+### 2. 组件层次结构
+
+```mermaid
+graph TD
+    subgraph "应用入口"
+        Index[index.ts 入口]
+    end
+
+    subgraph "核心容器"
+        App[AppFrame]
+        IM[IMLayout]
+    end
+
+    subgraph "主要容器组件"
+        SL[SidebarLeft 左侧栏]
+        CC[ChatContainer 聊天容器]
+        SR[SidebarRight 右侧栏]
+    end
+
+    subgraph "左侧栏子组件"
+        DL[DialogsList 会话列表]
+        CF[ChatFolders 文件夹]
+        Search[SearchGroup 搜索]
+        Settings[Settings 设置]
+    end
+
+    subgraph "聊天容器子组件"
+        TB[TopBar 顶部栏]
+        Bubbles[ChatBubbles 气泡容器]
+        Input[ChatInput 输入框]
+        Selection[Selection 选择管理]
+    end
+
+    subgraph "气泡内部组件"
+        Bubble[Bubble 单个气泡]
+        Media[MediaContainer 媒体]
+        Reply[ReplyContainer 回复]
+        Forward[ForwardHeader 转发]
+    end
+
+    subgraph "右侧栏子组件"
+        Profile[Profile 资料]
+        SharedMedia[SharedMedia 共享媒体]
+        Members[Members 成员]
+    end
+
+    subgraph "全局弹窗"
+        Popups2[Popups 弹窗管理]
+        Emoji[EmoticonsDropdown 表情]
+        Stickers[StickersDropdown 贴纸]
+    end
+
+    Index --> App
+    App --> IM
+    IM --> SL
+    IM --> CC
+    IM --> SR
+
+    SL --> DL
+    SL --> CF
+    SL --> Search
+    SL --> Settings
+
+    CC --> TB
+    CC --> Bubbles
+    CC --> Input
+    CC --> Selection
+
+    Bubbles --> Bubble
+    Bubble --> Media
+    Bubble --> Reply
+    Bubble --> Forward
+
+    SR --> Profile
+    SR --> SharedMedia
+    SR --> Members
+
+    App --> Popups2
+    App --> Emoji
+    App --> Stickers
+
+    style App fill:#e74c3c,stroke:#c0392b
+    style Bubbles fill:#3498db,stroke:#2980b9
+    style DL fill:#2ecc71,stroke:#27ae60
+```
+
+---
+
+### 3. MTProto 认证流程时序图
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Web K 客户端
+    participant Auth as Authorizer
+    participant NW as Networker
+    participant DC as Telegram DC
+
+    Note over Client,DC: 🔐 DH 密钥交换过程
+
+    Client->>Auth: authorize(dcId)
+    Auth->>NW: 创建临时连接
+    NW->>DC: req_pq_multi (请求 PQ)
+    DC-->>NW: resPQ (nonce, server_nonce, pq)
+
+    Note over Auth: 分解 PQ = p × q
+
+    Auth->>Auth: 生成 new_nonce
+    Auth->>Auth: 构建 p_q_inner_data
+    Auth->>Auth: RSA 加密 inner_data
+
+    NW->>DC: req_DH_params (encrypted_data)
+    DC-->>NW: server_DH_params_ok (encrypted_answer)
+
+    Note over Auth: AES-IGE 解密获取 g, dh_prime, g_a
+
+    Auth->>Auth: 生成随机 b
+    Auth->>Auth: 计算 g_b = g^b mod dh_prime
+    Auth->>Auth: 计算 auth_key = g_a^b mod dh_prime
+
+    Auth->>Auth: 构建 client_DH_inner_data
+    Auth->>Auth: AES-IGE 加密
+
+    NW->>DC: set_client_DH_params (encrypted_data)
+    DC-->>NW: dh_gen_ok
+
+    Note over Auth: 计算 auth_key_id = SHA1(auth_key)[12:20]
+
+    Auth-->>Client: 返回 { auth_key, auth_key_id }
+
+    Note over Client,DC: ✅ 认证完成，可以发送加密消息
+```
+
+---
+
+### 4. 消息发送流程时序图
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as 用户
+    participant UI as ChatInput
+    participant Bubbles as ChatBubbles
+    participant AM as AppMessagesManager
+    participant IDB as IndexedDB
+    participant MTProto
+    participant NW as Networker
+    participant DC as Telegram DC
+
+    User->>UI: 输入消息 + 点击发送
+
+    Note over UI: 获取消息内容和附件
+
+    UI->>AM: sendMessage(peerId, text, media)
+
+    Note over AM: 生成临时 randomId
+
+    AM->>AM: 创建本地消息对象
+    AM->>IDB: 保存草稿消息 (pending)
+    AM->>Bubbles: 渲染发送中气泡
+
+    Note over Bubbles: 显示发送中状态 ⏳
+
+    AM->>MTProto: messages.sendMessage()
+    MTProto->>MTProto: TL 序列化
+    MTProto->>MTProto: AES-IGE 加密
+    MTProto->>NW: 发送请求
+
+    NW->>DC: 加密后的消息
+
+    Note over DC: 服务器处理
+
+    DC-->>NW: Updates (含新消息)
+    NW-->>MTProto: 解密响应
+    MTProto-->>AM: 消息发送成功
+
+    AM->>AM: 更新消息 ID 映射
+    AM->>IDB: 更新消息状态 (sent)
+    AM->>Bubbles: 更新气泡状态
+
+    Note over Bubbles: 显示已发送 ✓
+
+    DC-->>NW: UpdateReadHistoryOutbox
+    NW-->>AM: 已读确认
+    AM->>Bubbles: 更新已读状态
+
+    Note over Bubbles: 显示已读 ✓✓
+```
+
+---
+
+### 5. 消息接收流程时序图
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant DC as Telegram DC
+    participant NW as Networker
+    participant MTProto
+    participant AM as AppMessagesManager
+    participant RS as RootScope
+    participant IDB as IndexedDB
+    participant Bubbles as ChatBubbles
+    participant UI as 界面更新
+
+    DC->>NW: 推送新消息 (WebSocket)
+    NW->>MTProto: 解密 & TL 反序列化
+
+    MTProto->>MTProto: 解析 Updates
+    MTProto->>AM: processUpdates()
+
+    Note over AM: 提取 updateNewMessage
+
+    AM->>AM: 解析消息实体
+    AM->>IDB: 存储消息到本地
+
+    AM->>RS: dispatchEvent("message_sent", msg)
+
+    RS->>Bubbles: 触发 message_sent 回调
+
+    alt 消息属于当前聊天
+        Bubbles->>Bubbles: renderMessage(msg)
+        Bubbles->>UI: 添加新气泡到列表
+        Note over UI: 滚动到底部
+    else 消息属于其他聊天
+        RS->>UI: 更新未读计数
+        Note over UI: 显示未读气泡
+    end
+
+    AM->>RS: dispatchEvent("dialog_update")
+    RS->>UI: 更新会话列表排序
+```
+
+---
+
+### 6. IndexedDB 存储架构图
+
+```mermaid
+graph TB
+    subgraph "IndexedDB: tweb"
+        subgraph "messages Store"
+            MSG_KEY["🔑 Key: [peerId, mid]"]
+            MSG_IDX1["📇 Index: date"]
+            MSG_IDX2["📇 Index: peerId"]
+            MSG_DATA["📦 Data: Message Object"]
+        end
+
+        subgraph "dialogs Store"
+            DLG_KEY["🔑 Key: peerId"]
+            DLG_IDX1["📇 Index: pinned"]
+            DLG_IDX2["📇 Index: folderId"]
+            DLG_DATA["📦 Data: Dialog Object"]
+        end
+
+        subgraph "users Store"
+            USR_KEY["🔑 Key: id"]
+            USR_DATA["📦 Data: User Object"]
+        end
+
+        subgraph "chats Store"
+            CHT_KEY["🔑 Key: id"]
+            CHT_DATA["📦 Data: Chat/Channel Object"]
+        end
+
+        subgraph "files Store"
+            FILE_KEY["🔑 Key: fileId"]
+            FILE_DATA["📦 Data: Blob (媒体文件)"]
+        end
+
+        subgraph "session Store"
+            SESS_KEY["🔑 Key: dcId"]
+            SESS_DATA["📦 Data: Session Info"]
+        end
+    end
+
+    subgraph "Memory Cache"
+        MC_MSG["💾 messages Map"]
+        MC_USER["💾 users Map"]
+        MC_CHAT["💾 chats Map"]
+        MC_FILE["💾 files Map (50MB LRU)"]
+    end
+
+    subgraph "AppStorage API"
+        GET["get(store, key)"]
+        SET["set(store, value)"]
+        SET_MANY["setMany(store, values)"]
+        GET_RANGE["getRange(store, index, range)"]
+        DELETE["delete(store, key)"]
+    end
+
+    GET --> MSG_KEY
+    GET --> DLG_KEY
+    GET --> USR_KEY
+    GET --> CHT_KEY
+    GET --> FILE_KEY
+
+    MC_MSG -.-> MSG_DATA
+    MC_USER -.-> USR_DATA
+    MC_FILE -.-> FILE_DATA
+
+    style MSG_DATA fill:#3498db
+    style DLG_DATA fill:#2ecc71
+    style FILE_DATA fill:#e74c3c
+```
+
+---
+
+### 7. 事件系统流程图
+
+```mermaid
+graph LR
+    subgraph "事件发布者 Publishers"
+        AM[AppMessagesManager]
+        UCM[AppUsersManager]
+        NW[Networker]
+        UI[UI Components]
+    end
+
+    subgraph "RootScope 事件总线"
+        RS[RootScope]
+        EV1["📡 peer_changed"]
+        EV2["📡 message_sent"]
+        EV3["📡 message_read"]
+        EV4["📡 user_update"]
+        EV5["📡 dialog_update"]
+        EV6["📡 connection_status"]
+    end
+
+    subgraph "事件订阅者 Subscribers"
+        Chat[ChatComponent]
+        DL[DialogsList]
+        TB[TopBar]
+        Badge[UnreadBadge]
+        Conn[ConnectionIndicator]
+    end
+
+    AM -->|dispatchEvent| RS
+    UCM -->|dispatchEvent| RS
+    NW -->|dispatchEvent| RS
+    UI -->|dispatchEvent| RS
+
+    RS --> EV1
+    RS --> EV2
+    RS --> EV3
+    RS --> EV4
+    RS --> EV5
+    RS --> EV6
+
+    EV1 -->|callback| Chat
+    EV2 -->|callback| Chat
+    EV2 -->|callback| DL
+    EV3 -->|callback| Chat
+    EV4 -->|callback| Chat
+    EV4 -->|callback| TB
+    EV5 -->|callback| DL
+    EV6 -->|callback| Conn
+
+    style RS fill:#9b59b6,stroke:#8e44ad,stroke-width:2px
+```
+
+---
+
+### 8. 虚拟滚动工作原理图
+
+```mermaid
+graph TD
+    subgraph "Viewport 可视区域"
+        VP["📱 viewportHeight: 600px"]
+    end
+
+    subgraph "Padding Up"
+        PAD_UP["⬆️ padding-up: 2400px"]
+        HIDDEN_UP["消息 1-40 (隐藏)"]
+    end
+
+    subgraph "Visible Items 可见项"
+        ITEM41["消息 41"]
+        ITEM42["消息 42"]
+        ITEM43["消息 43"]
+        ITEM44["..."]
+        ITEM50["消息 50"]
+    end
+
+    subgraph "Padding Down"
+        PAD_DOWN["⬇️ padding-down: 1800px"]
+        HIDDEN_DOWN["消息 51-80 (隐藏)"]
+    end
+
+    VP --> ITEM41
+    PAD_UP --> VP
+    ITEM50 --> PAD_DOWN
+
+    style VP fill:#3498db,stroke:#2980b9
+    style PAD_UP fill:#95a5a6
+    style PAD_DOWN fill:#95a5a6
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as 用户滚动
+    participant Scroll as Scrollable
+    participant Calc as calculateVisibleRange
+    participant Render as updateVisibleItems
+    participant DOM
+
+    User->>Scroll: onScroll 事件
+    Note over Scroll: debounce 16ms
+
+    Scroll->>Calc: scrollTop, viewportHeight
+    Calc->>Calc: 遍历 itemHeights
+    Calc->>Calc: 计算 from/to (含 buffer)
+    Calc-->>Scroll: { from: 41, to: 50 }
+
+    alt 范围变化
+        Scroll->>Render: updateVisibleItems(41, 50)
+
+        loop 移除不可见项
+            Render->>DOM: element.remove()
+        end
+
+        loop 添加新可见项
+            Render->>DOM: renderItem(index)
+            Render->>DOM: insertAtPosition()
+        end
+
+        Render->>DOM: 更新 padding-up 高度
+        Render->>DOM: 更新 padding-down 高度
+    end
+```
+
+---
+
+### 9. TL 序列化流程图
+
+```mermaid
+graph LR
+    subgraph "输入"
+        METHOD["方法名: messages.sendMessage"]
+        PARAMS["参数: {peer, message, ...}"]
+    end
+
+    subgraph "TLSerializer 处理"
+        SCHEMA["查找 TL Schema"]
+        CID["写入构造函数 ID (4 bytes)"]
+
+        subgraph "参数序列化"
+            INT["storeInt() - 4 bytes"]
+            LONG["storeLong() - 8 bytes"]
+            STR["storeBytes() - 变长"]
+            VEC["storeVector() - 数组"]
+        end
+    end
+
+    subgraph "输出"
+        BYTES["Uint8Array (二进制)"]
+    end
+
+    METHOD --> SCHEMA
+    PARAMS --> SCHEMA
+    SCHEMA --> CID
+    CID --> INT
+    INT --> LONG
+    LONG --> STR
+    STR --> VEC
+    VEC --> BYTES
+
+    style BYTES fill:#2ecc71
+```
+
+---
+
+### 10. 类继承关系图
+
+```mermaid
+classDiagram
+    class Component {
+        #element: HTMLElement
+        #isDestroyed: boolean
+        +mount(parent)
+        +destroy()
+        #createElement()*
+        #init()
+        #onMount()
+        #onDestroy()
+    }
+
+    class Scrollable {
+        +container: HTMLElement
+        +scrollContainer: HTMLElement
+        -items: Map
+        -itemHeights: Map
+        +scrollTo(offset)
+        +scrollToElement(el)
+        #renderItem(index)*
+        -onScroll()
+        -calculateVisibleRange()
+        -updateVisibleItems()
+    }
+
+    class ChatScroller {
+        -messages: Message[]
+        -messagesManager
+        +setMessages(messages)
+        #renderItem(index)
+        -estimateMessageHeight()
+        -renderBubble()
+    }
+
+    class ChatBubbles {
+        -container: HTMLElement
+        -scrollable: Scrollable
+        -bubbles: Map
+        -chat: Chat
+        +renderMessage(msg)
+        +renderMessages(msgs)
+        +updateMessageStatus()
+        +deleteMessage()
+        -bindEvents()
+        -onClick()
+    }
+
+    class Chat {
+        +bubbles: ChatBubbles
+        +input: ChatInput
+        +topbar: TopBar
+        +peerId: PeerId
+        +init()
+        +destroy()
+    }
+
+    class RootScope {
+        -listeners: Map
+        +addEventListener(event, cb)
+        +removeEventListener(event, cb)
+        +dispatchEvent(event, ...args)
+    }
+
+    Component <|-- Scrollable
+    Scrollable <|-- ChatScroller
+    Chat *-- ChatBubbles
+    ChatBubbles --> Scrollable : uses
+    ChatBubbles --> RootScope : subscribes
+```
+
+---
+
+### 11. 数据流状态图
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle: 应用启动
+
+    state "消息发送流程" as SendFlow {
+        Idle --> Composing: 用户开始输入
+        Composing --> Sending: 点击发送
+        Sending --> Pending: 本地存储
+        Pending --> Sent: 服务器确认
+        Sent --> Delivered: 送达
+        Delivered --> Read: 已读
+    }
+
+    state "消息接收流程" as ReceiveFlow {
+        Idle --> Receiving: 收到推送
+        Receiving --> Parsing: TL 反序列化
+        Parsing --> Storing: IndexedDB 存储
+        Storing --> Rendering: UI 渲染
+        Rendering --> Displayed: 显示完成
+    }
+
+    state "连接状态" as ConnState {
+        Online --> Connecting: 网络中断
+        Connecting --> Online: 重连成功
+        Connecting --> Offline: 重连失败
+        Offline --> Connecting: 网络恢复
+    }
+
+    Read --> Idle
+    Displayed --> Idle
+```
+
+---
+
+### 12. 模块依赖关系图
+
+```mermaid
+graph TB
+    subgraph "入口层"
+        Entry[index.ts]
+    end
+
+    subgraph "组件层"
+        Chat[components/chat/*]
+        Sidebar[components/sidebar*]
+        Popups[components/popups/*]
+    end
+
+    subgraph "管理器层"
+        AppMgrs[lib/appManagers/*]
+    end
+
+    subgraph "协议层"
+        MTProto2[lib/mtproto/*]
+    end
+
+    subgraph "存储层"
+        Storage[lib/storages/*]
+    end
+
+    subgraph "工具层"
+        Helpers[helpers/*]
+        DOM[helpers/dom/*]
+    end
+
+    subgraph "样式层"
+        SCSS[scss/*]
+    end
+
+    Entry --> Chat
+    Entry --> Sidebar
+    Entry --> Popups
+
+    Chat --> AppMgrs
+    Sidebar --> AppMgrs
+    Popups --> AppMgrs
+
+    AppMgrs --> MTProto2
+    AppMgrs --> Storage
+
+    MTProto2 --> Helpers
+    Chat --> Helpers
+    Chat --> DOM
+
+    Chat -.-> SCSS
+
+    style MTProto2 fill:#e74c3c
+    style AppMgrs fill:#3498db
+    style Storage fill:#2ecc71
+```
+
+---
+
 ## Web Z vs Web K 核心差异
 
 | 维度         | Web Z (telegram-tt)     | Web K (tweb)       |
