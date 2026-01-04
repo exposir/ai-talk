@@ -403,21 +403,63 @@ Telegram 的'特种部队'模式给 AI 团队的借鉴：
 
 #### 核心库
 
-| 项目 | 说明 | 仓库地址 | Stars |
-| --- | --- | --- | --- |
-| **TDLib** | Telegram 核心库(C++) | [tdlib/td](https://github.com/tdlib/td) | 7.4k⭐ |
+**TDLib**
+
+- 说明：Telegram 核心库 (C++)
+- 仓库：tdlib/td
+  <https://github.com/tdlib/td>
+- Stars：7.4k⭐
 
 #### 官方客户端
 
-| 平台 | 语言 | 仓库地址 | Stars |
-| --- | --- | --- | --- |
-| **iOS** | Swift/Objective-C | [TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS) | 6.1k⭐ |
-| **Android** | Java/Kotlin | [DrKLO/Telegram](https://github.com/DrKLO/Telegram) | 27.9k⭐ |
-| **Desktop (Qt)** | C++/Qt | [telegramdesktop/tdesktop](https://github.com/telegramdesktop/tdesktop) | 26.2k⭐ |
-| **macOS (Native)** | Swift | [overtake/TelegramSwift](https://github.com/overtake/TelegramSwift) | 5.1k⭐ |
-| **Web A** | TypeScript/Teact | [Ajaxy/telegram-tt](https://github.com/Ajaxy/telegram-tt) | 2.7k⭐ |
-| **Web K (Webogram)** | TypeScript | [zhukov/webogram](https://github.com/zhukov/webogram) | 7.9k⭐ |
-| **Web K (Official)** | TypeScript | [TelegramOrg/Telegram-web-k](https://github.com/TelegramOrg/Telegram-web-k) | 500⭐ |
+**iOS**
+
+- 语言：Swift/Objective-C
+- 仓库：TelegramMessenger/Telegram-iOS
+  <https://github.com/TelegramMessenger/Telegram-iOS>
+- Stars：6.1k⭐
+
+**Android**
+
+- 语言：Java/Kotlin
+- 仓库：DrKLO/Telegram
+  <https://github.com/DrKLO/Telegram>
+- Stars：27.9k⭐
+
+**Desktop (Qt)**
+
+- 语言：C++/Qt
+- 仓库：telegramdesktop/tdesktop
+  <https://github.com/telegramdesktop/tdesktop>
+- Stars：26.2k⭐
+
+**macOS (Native)**
+
+- 语言：Swift
+- 仓库：overtake/TelegramSwift
+  <https://github.com/overtake/TelegramSwift>
+- Stars：5.1k⭐
+
+**Web A**
+
+- 语言：TypeScript/Teact
+- 仓库：Ajaxy/telegram-tt
+  <https://github.com/Ajaxy/telegram-tt>
+- Stars：2.7k⭐
+
+**Web K (Webogram)**
+
+- 语言：TypeScript
+- 仓库：zhukov/webogram
+  <https://github.com/zhukov/webogram>
+- Stars：7.9k⭐
+
+**Web K (Official)**
+
+- 语言：TypeScript
+- 仓库：TelegramOrg/Telegram-web-k
+  <https://github.com/TelegramOrg/Telegram-web-k>
+- Stars：500⭐
 
 #### GitHub 组织
 
@@ -453,21 +495,27 @@ Telegram 拒绝使用 React Native 或 Flutter 等跨平台框架，坚持用原
 
 **Telegram for iOS**
 
-| 项目 | 信息 |
-| --- | --- |
-| **技术** | Swift / Objective-C |
-| **代码** | ✅ [GitHub](https://github.com/TelegramMessenger/Telegram-iOS) |
-| **特点** | • 120Hz 流畅动画（ProMotion 设备）<br>• 自研异步渲染列表<br>• 完美遵循苹果设计语言<br>• 极低电量消耗 |
-| **亮点** | Telegram 体验的标杆，很多 UI 组件为性能和定制化完全重写 |
+- 技术：Swift / Objective-C
+- 代码：GitHub
+  <https://github.com/TelegramMessenger/Telegram-iOS>
+- 特点：
+  - 120Hz 流畅动画（ProMotion 设备）
+  - 自研异步渲染列表
+  - 完美遵循苹果设计语言
+  - 极低电量消耗
+- 亮点：Telegram 体验的标杆，很多 UI 组件为性能和定制化完全重写
 
 **Telegram for Android**
 
-| 项目 | 信息 |
-| --- | --- |
-| **技术** | Java / Kotlin |
-| **代码** | ✅ [GitHub](https://github.com/DrKLO/Telegram) |
-| **特点** | • 原生开发，针对碎片化优化<br>• 丰富的自定义主题<br>• 可复现构建（Reproducible Builds）<br>• 支持旧设备流畅运行 |
-| **安全** | 支持可验证构建，确保 Google Play 版本与源码一致 |
+- 技术：Java / Kotlin
+- 代码：GitHub
+  <https://github.com/DrKLO/Telegram>
+- 特点：
+  - 原生开发，针对碎片化优化
+  - 丰富的自定义主题
+  - 可复现构建（Reproducible Builds）
+  - 支持旧设备流畅运行
+- 安全：支持可验证构建，确保 Google Play 版本与源码一致
 
 #### 2. 桌面端：两条技术路线
 
@@ -475,23 +523,29 @@ Telegram 在桌面端提供两个版本，满足不同用户需求：
 
 **Telegram Desktop (TDesktop) - 跨平台版**
 
-| 项目 | 信息 |
-| --- | --- |
-| **技术** | C++ / Qt |
-| **代码** | ✅ [GitHub](https://github.com/telegramdesktop/tdesktop) |
-| **平台** | Windows / Linux / macOS |
-| **优点** | • 功能更新最快<br>• 强大的群组管理<br>• 支持导出聊天记录<br>• 跨平台统一体验 |
-| **缺点** | macOS 上与系统原生界面融合度稍差 |
+- 技术：C++ / Qt
+- 代码：GitHub
+  <https://github.com/telegramdesktop/tdesktop>
+- 平台：Windows / Linux / macOS
+- 优点：
+  - 功能更新最快
+  - 强大的群组管理
+  - 支持导出聊天记录
+  - 跨平台统一体验
+- 缺点：macOS 上与系统原生界面融合度稍差
 
 **Telegram for macOS - 原生版**
 
-| 项目 | 信息 |
-| --- | --- |
-| **技术** | Swift (Native) |
-| **代码** | ✅ [GitHub](https://github.com/overtake/TelegramSwift) |
-| **平台** | macOS 专享 |
-| **优点** | • 完美支持 macOS 特性（Touch Bar、手势、分享）<br>• 毛玻璃效果<br>• 原生通知中心<br>• 符合苹果设计规范 |
-| **缺点** | 某些高级功能（如导出）可能比 Qt 版慢推出 |
+- 技术：Swift (Native)
+- 代码：GitHub
+  <https://github.com/overtake/TelegramSwift>
+- 平台：macOS 专享
+- 优点：
+  - 完美支持 macOS 特性（Touch Bar、手势、分享）
+  - 毛玻璃效果
+  - 原生通知中心
+  - 符合苹果设计规范
+- 缺点：某些高级功能（如导出）可能比 Qt 版慢推出
 
 **💡 选择建议**：
 
@@ -504,10 +558,19 @@ Telegram 通过 JavaScript 开发大赛选出两个优胜 Web 客户端，长期
 
 **Telegram Web A & Web K**
 
-| 版本 | 技术 | 链接 | 特点 |
-| --- | --- | --- | --- |
-| **Web A** | TypeScript/React | ✅ [GitHub](https://github.com/Ajaxy/telegram-tt) | 界面更现代，功能迭代激进 |
-| **Web K** | TypeScript | ✅ [webk.telegram.org](https://webk.telegram.org) | 渲染性能更好，旧浏览器兼容性更好 |
+**Web A**
+
+- 技术：TypeScript/React
+- 链接：GitHub
+  <https://github.com/Ajaxy/telegram-tt>
+- 特点：界面更现代，功能迭代激进
+
+**Web K**
+
+- 技术：TypeScript
+- 链接：webk.telegram.org
+  <https://webk.telegram.org>
+- 特点：渲染性能更好，旧浏览器兼容性更好
 
 **共同特性**：
 
@@ -523,20 +586,52 @@ Telegram 通过 JavaScript 开发大赛选出两个优胜 Web 客户端，长期
 
 #### 官方实验性客户端
 
-| 客户端 | 平台 | 技术 | 特色 |
-| --- | --- | --- | --- |
-| **Telegram X** | Android | Kotlin/Jetpack | Material Design 3<br>实验性新特性<br>更激进的 UI 设计 |
+**Telegram X**
+
+- 平台：Android
+- 技术：Kotlin/Jetpack
+- 特色：
+  - Material Design 3
+  - 实验性新特性
+  - 更激进的 UI 设计
 
 #### 社区增强版
 
-| 客户端 | 平台 | 基于 | 特色 |
-| --- | --- | --- | --- |
-| **Nicegram** | iOS | 官方 iOS 版 | 标签页管理<br>隐藏频道<br>增强隐私功能 |
-| **Plus Messenger** | Android | 官方 Android 版 | 自定义主题<br>额外设置项<br>增强文件夹 |
-| **Nekogram** | Android | 官方 Android 版 | 去广告<br>隐私增强<br>翻译功能 |
-| **Unigram** | Windows | TDLib | UWP 原生<br>Windows 11 设计<br>流畅体验 |
-| **exteraGram** | Android | 官方 Android 版 | 极致隐私<br>去跟踪<br>开源 |
-| **64Gram** | Desktop | TDesktop | 跨平台<br>增强功能<br>自定义 UI |
+**Nicegram**
+
+- 平台：iOS
+- 基于：官方 iOS 版
+- 特色：标签页管理、隐藏频道、增强隐私功能
+
+**Plus Messenger**
+
+- 平台：Android
+- 基于：官方 Android 版
+- 特色：自定义主题、额外设置项、增强文件夹
+
+**Nekogram**
+
+- 平台：Android
+- 基于：官方 Android 版
+- 特色：去广告、隐私增强、翻译功能
+
+**Unigram**
+
+- 平台：Windows
+- 基于：TDLib
+- 特色：UWP 原生、Windows 11 设计、流畅体验
+
+**exteraGram**
+
+- 平台：Android
+- 基于：官方 Android 版
+- 特色：极致隐私、去跟踪、开源
+
+**64Gram**
+
+- 平台：Desktop
+- 基于：TDesktop
+- 特色：跨平台、增强功能、自定义 UI
 
 **第三方客户端的优势**：
 
@@ -846,16 +941,16 @@ Telegram 的客户端策略给我们的启示：
 - How Telegram hit $1B revenue - Latka
   <https://getlatka.com/companies/telegram-messenger>
 - Telegram Posts 150% Revenue Growth, $540M Profit in 2024 - AInvest
-  <https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/>
+  <https://tinyurl.com/2anpm883>
 - Telegram global IAP revenue - Statista
   <https://www.statista.com/statistics/1342640/telegram-in-app-revenue/>
 - Telegram Tracks for First Profitable Year - Yahoo Finance
-  <https://finance.yahoo.com/news/telegram-tracks-first-profitable-1-160522206.html>
+  <https://tinyurl.com/2cj4f8pg>
 
 ### Premium 订阅
 
 - Telegram Premium tops 1 million subscribers - TechCrunch
-  <https://techcrunch.com/2022/12/06/telegram-premium-tops-1-million-subscribers/>
+  <https://tinyurl.com/2jdhqcd2>
 - Telegram Premium subscribers worldwide 2022-2024 - Statista
   <https://www.statista.com/statistics/1344164/telegram-paying-subscribers/>
 - Telegram Statistics in 2025 - RichAds Blog
@@ -864,14 +959,14 @@ Telegram 的客户端策略给我们的启示：
 ### 团队与文化
 
 - Telegram Team Size Analysis - Startuppedia
-  <https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688>
+  <https://tinyurl.com/226z84sy>
 - Pavel Durov Interview with Tucker Carlson
   <https://www.youtube.com/watch?v=1RjB7ez4fYg>
 
 [^team-size]: Startuppedia 对团队规模与估值的汇总。
-  <https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688>
+  <https://tinyurl.com/226z84sy>
 [^valuation]: Startuppedia 对估值区间的引用。
-  <https://startuppedia.in/trending/trending/pavel-durov-led-telegram-is-now-a-30-billion-company-that-operates-with-just-30-employees-working-remotely-serving-over-1-billion-users-10589688>
+  <https://tinyurl.com/226z84sy>
 [^mau]: Statista 与 Business of Apps 的 MAU 数据汇总。
   <https://www.statista.com/statistics/234038/telegram-messenger-mau-users/>
   <https://www.businessofapps.com/data/telegram-statistics/>
@@ -889,12 +984,12 @@ Telegram 的客户端策略给我们的启示：
   <https://resourcera.com/data/social/telegram-revenue/>
   <https://getlatka.com/companies/telegram-messenger>
 [^revenue]: AInvest 与 Yahoo Finance 的营收与盈利报道汇总。
-  <https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/>
-  <https://finance.yahoo.com/news/telegram-tracks-first-profitable-1-160522206.html>
+  <https://tinyurl.com/2anpm883>
+  <https://tinyurl.com/2cj4f8pg>
 [^profit]: AInvest 的利润数据整理。
-  <https://www.ainvest.com/news/telegram-posts-150-revenue-growth-540-million-profit-2024-2505/>
+  <https://tinyurl.com/2anpm883>
 [^premium]: TechCrunch 与 Statista 的订阅用户数据。
-  <https://techcrunch.com/2022/12/06/telegram-premium-tops-1-million-subscribers/>
+  <https://tinyurl.com/2jdhqcd2>
   <https://www.statista.com/statistics/1344164/telegram-paying-subscribers/>
 [^funding]: Latka 与 Resourcera 的融资信息整理。
   <https://getlatka.com/companies/telegram-messenger>
