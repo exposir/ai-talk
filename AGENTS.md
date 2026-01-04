@@ -1,48 +1,42 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## 项目结构与模块组织
 
-This repository is a documentation-first knowledge base for AI/LLM topics.
-Primary content lives in `notes/`, organized by topic (for example,
-`notes/ai-fundamentals/`, `notes/architecture/`, `notes/claude-code/`). The
-VitePress site config and theme live in `docs/.vitepress/`, and static
-documentation files in `docs/`. Supporting materials are stored in `library/`
-and `prompts/`, while conversation archives live in `sessions/`.
+这是一个以文档为主的 AI/LLM 知识库项目。核心内容位于 `notes/`，按主题组织（例如
+`notes/ai-fundamentals/`、`notes/architecture/`、`notes/claude-code/`）。VitePress
+站点配置与主题在 `docs/.vitepress/`，静态文档文件在 `docs/`。支持材料存放于
+`library/` 与 `prompts/`，对话归档在 `sessions/`。
 
-## Build, Test, and Development Commands
+## 构建、测试与开发命令
 
-- `npm run docs:dev`: Start the VitePress dev server.
-- `npm run docs:build`: Build the static site for production.
-- `npm run docs:preview`: Preview the production build locally.
-- `npx prettier --write .`: Format Markdown and config files.
-- `npx prettier --check .`: Validate formatting without changes.
+- `npm run docs:dev`: 启动 VitePress 开发服务器。
+- `npm run docs:build`: 构建生产静态站点。
+- `npm run docs:preview`: 预览生产构建结果。
+- `npx prettier --write .`: 格式化 Markdown 与配置文件。
+- `npx prettier --check .`: 仅检查格式，不写入。
 
-## Coding Style & Naming Conventions
+## 编码风格与命名规范
 
-- Markdown is wrapped at 80 chars with single quotes; see `.prettierrc`.
-- Use `kebab-case` for folders and Markdown files (for example,
-  `notes/ai-fundamentals/prompt-engineering.md`).
-- Prefer clear, structured headings and include language tags on code blocks.
+- Markdown 以 80 字符换行，使用单引号；见 `.prettierrc`。
+- 目录与 Markdown 文件使用 `kebab-case`（例如
+  `notes/ai-fundamentals/prompt-engineering.md`）。
+- 标题层级清晰，代码块必须标注语言。
 
-## Testing Guidelines
+## 测试指南
 
-There is no automated test suite. The `npm test` script intentionally exits
-with an error. Validate changes by running `npm run docs:dev` and checking for
-broken links or layout regressions.
+当前没有自动化测试套件，`npm test` 会故意报错退出。请使用
+`npm run docs:dev` 进行本地检查，重点验证链接与页面布局。
 
-## Commit & Pull Request Guidelines
+## 提交与 PR 指南
 
-Recent history uses short, conventional-style subjects such as
-`docs: update ...` or `docs(telegram): ...`. Follow that pattern and keep
-subjects imperative and scoped when relevant. PRs should include:
+近期提交信息使用简短的约定式主题，如 `docs: update ...` 或
+`docs(telegram): ...`。请保持祈使句和必要的范围标注。PR 需包含：
 
-- A brief description of content changes and why.
-- Links to related notes or issues if applicable.
-- Screenshots or a short recording when visual layout changes in VitePress.
+- 变更内容与原因的简要说明。
+- 关联笔记或 Issue 的链接（如有）。
+- VitePress 布局变化的截图或短录屏。
 
-## Documentation Workflow Notes
+## 文档工作流程
 
-- Update `notes/guide/index.md` and `README.md` when adding or renaming
-  documents.
-- Avoid creating application code or runtime config files; this repo is a
-  documentation project.
+- 新增或重命名文档时同步更新 `notes/guide/index.md` 与 `README.md`。
+- 避免新增应用代码或运行时配置文件；这是文档项目。
