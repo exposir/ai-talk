@@ -15,46 +15,46 @@
 
 1. **委内瑞拉后续：美接管石油，古巴警员伤亡**：美军行动主要作战结束，据报造成32名古巴警员死亡，加剧国际紧张。美国宣布暂时"管理/控制"委内瑞拉石油资源，引发"新殖民主义"批评。中、印、印尼等国呼吁和平，欧盟态度谨慎。
 
-![Venezuela Oil Geopolitics](assets/venezuela_oil_geopolitics.png)
+<img src="assets/venezuela_oil_geopolitics.png" alt="Venezuela Oil Geopolitics" width="500" />
 
 2. **英法联合空袭叙利亚**：英法空军联合对叙利亚境内的 ISIS 军火库发动空袭，显示反恐行动仍在持续。
 
-![Syria Airstrikes](assets/syria_airstrikes.png)
+<img src="assets/syria_airstrikes.png" alt="Syria Airstrikes" width="500" />
 
 3. **朝鲜发射导弹回应**：朝鲜确认向东部海域发射弹道导弹，作为对近期美韩军演及区域紧张局势的回应。
 
-![NK Missile Launch](assets/nk_missile_launch.png)
+<img src="assets/nk_missile_launch.png" alt="NK Missile Launch" width="500" />
 
 #### 💰 财经与市场
 
 4. **印度超越中国成为最大大米生产国**：随着 FY26 农业投资提速，印度大米产量创历史新高，在全球粮食安全格局中的权重显著上升。
 
-![India Rice Production](assets/india_rice_production.png)
+<img src="assets/india_rice_production.png" alt="India Rice Production" width="500" />
 
 5. **Andhra Pradesh 领跑印度投资**：印度安得拉邦（Andhra
    Pradesh）在 2026 财年吸引投资居各邦之首，显示全球供应链向印度次大陆转移的趋势加速。
 
-![Andhra Investment](assets/andhra_investment.png)
+<img src="assets/andhra_investment.png" alt="Andhra Investment" width="500" />
 
 6. **菲律宾与阿联酋将签自贸协定**：预计本月中旬签署，旨在深化中东与东南亚的经济联系，降低石油与农产品关税。
 
-![Phil-UAE Deal](assets/phil_uae_deal.png)
+<img src="assets/phil_uae_deal.png" alt="Phil-UAE Deal" width="500" />
 
 #### 🚨 社会与科技
 
 7. **柏林火灾疑为极端袭击**：柏林西南部发生严重火灾导致大面积断电，当局怀疑是极左翼组织针对基础设施的破坏行动。
 
-![Berlin Infrastructure Fire](assets/berlin_infrastructure_fire.png)
+<img src="assets/berlin_infrastructure_fire.png" alt="Berlin Infrastructure Fire" width="500" />
 
 8. **希腊空管系统大规模故障**：无线电频率崩溃导致航班全境停飞数小时，因设备老化及维护不足，暴露欧洲基础设施脆弱性。
 
-![Greece ATC Glitch](assets/greece_atc_glitch.png)
+<img src="assets/greece_atc_glitch.png" alt="Greece ATC Glitch" width="500" />
 
 9. **新加坡推行全民 AI 教育**：义安理工学院（Ngee Ann
    Polytechnic）宣布全员必修生成式 AI 课程，标志着新加坡教育系统全面拥抱 AI
    Agent 时代。
 
-![Singapore AI Education](assets/singapore_ai_edu.png)
+<img src="assets/singapore_ai_edu.png" alt="Singapore AI Education" width="500" />
 
 ### 解读
 
