@@ -473,6 +473,42 @@ claude --resume code-review
 
 ---
 
+## 九、常见问题 (Q&A)
+
+### Q: 什么是 Tesla 及 FSD 架构？
+
+**1. FSD (Feature-Sliced Design) 架构**
+
+FSD 是目前前端社区公认的解决大型应用复杂度的主流架构标准。
+
+- **核心思想**：通过**分层 (Layers)** 和 **切片 (Slices)**
+  来解耦代码，严格控制依赖方向（只能从上层引用下层）。
+- **分层结构** (从下到上)：
+  1.  `shared`: 共享的基础设施（UI 库、API 客户端、通用工具）。不包含任何业务逻辑。
+  2.  `entities`: 业务实体（User, Product,
+      Order）。只包含核心数据模型和简单的展示组件。
+  3.  `features`: 用户功能交互（AuthByPhone, AddToCart,
+      LikeProduct）。包含具体的业务逻辑。
+  4.  `widgets`: 组合层（Header,
+      ProductDetailCard）。将实体和功能组合成独立模块。
+  5.  `pages`: 页面层（HomePage, CartPage）。路由组件，负责组装 Widgets。
+  6.  `app`: 全局配置（Styles, Providers, Routing）。
+
+**2. "Tesla" 技术栈**
+
+"Tesla" 在此语境下并非官方标准术语，而是指代本文档推荐的**高性能、现代化、强类型**的前端技术组合（类比 Tesla 汽车的高性能与现代化）。它通常包含以下核心要素（T.E.S.L.A）：
+
+- **T**ypeScript (Strict Mode): 极其严格的类型系统，这是大型项目的基石。
+- **E**cosystem (Modern): 使用 Next.js (App Router) 等现代生态框架。
+- **S**tate
+  (Zustand): 摒弃繁重的 Redux，使用轻量级、原子化的 Zustand 进行状态管理。
+- **L**ayered (FSD): 严格的分层架构设计。
+- **A**utomation (TDD/CI): 强调自动化测试 (Vitest) 和类型检查。
+
+这个组合的目标是让前端项目像精密制造的汽车一样，模块化、高性能且易于维护。
+
+---
+
 ## 参考资源
 
 - [Claude Code 官方文档](https://docs.anthropic.com/en/docs/claude-code)
