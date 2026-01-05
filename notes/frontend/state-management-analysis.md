@@ -6,54 +6,41 @@
 
 ## 📊 状态管理库全景图
 
-```mermaid
-mindmap
-  root((前端状态管理))
-    Flux 架构派
-      Redux["Redux ⭐60k"]
-      RTK["Redux Toolkit ⭐10k"]
-      Zustand["Zustand ⭐40k"]
-    原子化派
-      Jotai["Jotai ⭐17k"]
-      Recoil["Recoil ⚠️停更"]
-      NanoStores["Nano Stores ⭐5k"]
-    Proxy 响应式派
-      MobX["MobX ⭐27k"]
-      MST["MobX-State-Tree ⭐6.9k"]
-      Valtio["Valtio ⭐8.5k"]
-    Signal 细粒度派
-      PreactSignals["Preact Signals ⭐3.5k"]
-      LegendState["Legend-State ⭐2.5k"]
-      SolidSignals["Solid.js Signals ⭐30k"]
-    状态机派 FSM
-      XState["XState ⭐26k"]
-      Robot["Robot ⭐1.8k"]
-    服务端状态派
-      ReactQuery["TanStack Query ⭐40k"]
-      SWR["SWR ⭐30k"]
-      RTKQuery["RTK Query"]
-    RxJS 流式派
-      RxJS["RxJS ⭐30k"]
-      Elf["Elf ⭐1.5k"]
-      Akita["Akita ⭐3.7k"]
-    CRDT 协作派
-      Yjs["Yjs ⭐15k"]
-      Automerge["Automerge ⭐3k"]
-      Liveblocks["Liveblocks"]
-    GraphQL 客户端派
-      Apollo["Apollo Client ⭐19k"]
-      Relay["Relay ⭐18k"]
-      URQL["URQL ⭐8.5k"]
-    其他特色方案
-      Effector["Effector ⭐4.5k"]
-      Hookstate["Hookstate ⭐1.6k"]
-      Overmind["Overmind ⭐1.3k"]
-    领域专用
-      表单["React Hook Form / Formik"]
-      路由["TanStack Router"]
-      表格["TanStack Table"]
-      本地DB["RxDB / PouchDB / Dexie"]
-```
+| 派系                | 库               | Stars   | 核心思想                    |
+| :------------------ | :--------------- | :------ | :-------------------------- |
+| **Flux 架构派**     | Redux            | ⭐ 60k  | 单一数据源 + 纯函数 Reducer |
+|                     | Redux Toolkit    | ⭐ 10k  | Redux 官方简化版            |
+|                     | Zustand          | ⭐ 40k  | 极简 Flux，无 Provider      |
+| **原子化派**        | Jotai            | ⭐ 17k  | 自底向上的原子组合          |
+|                     | Recoil ⚠️        | ⭐ 19k  | 已停止维护                  |
+|                     | Nano Stores      | ⭐ 5k   | 框架无关，< 1KB             |
+| **Proxy 响应式派**  | MobX             | ⭐ 27k  | 透明函数式响应编程          |
+|                     | MobX-State-Tree  | ⭐ 6.9k | 结构化类型 + 快照           |
+|                     | Valtio           | ⭐ 8.5k | 像 Vue 一样可变             |
+| **Signal 细粒度派** | Preact Signals   | ⭐ 3.5k | 绕过 VDOM Diff              |
+|                     | Legend-State     | ⭐ 2.5k | 声称比 Zustand 快 10x       |
+|                     | Solid.js Signals | ⭐ 30k  | 编译时 + 无 VDOM            |
+| **状态机派 (FSM)**  | XState           | ⭐ 26k  | W3C SCXML 标准实现          |
+|                     | Robot            | ⭐ 1.8k | 极简 FSM，< 1KB             |
+| **服务端状态派**    | TanStack Query   | ⭐ 40k  | 服务端状态 = 缓存           |
+|                     | SWR              | ⭐ 30k  | Stale-While-Revalidate      |
+|                     | RTK Query        | -       | Redux 生态方案              |
+| **RxJS 流式派**     | RxJS             | ⭐ 30k  | 一切皆流                    |
+|                     | Elf              | ⭐ 1.5k | 基于 RxJS 的 Store          |
+|                     | Akita            | ⭐ 3.7k | 实体管理                    |
+| **CRDT 协作派**     | Yjs              | ⭐ 15k  | 无冲突复制数据类型          |
+|                     | Automerge        | ⭐ 3k   | JSON 友好 CRDT              |
+|                     | Liveblocks       | -       | CRDT + BaaS                 |
+| **GraphQL 派**      | Apollo Client    | ⭐ 19k  | 归一化缓存                  |
+|                     | Relay            | ⭐ 18k  | 编译期优化                  |
+|                     | URQL             | ⭐ 8.5k | 轻量级 GraphQL              |
+| **其他特色**        | Effector         | ⭐ 4.5k | 多向数据流                  |
+|                     | Hookstate        | ⭐ 1.6k | Proxy + Hook 极简           |
+|                     | Overmind         | ⭐ 1.3k | Flux + FSM + Proxy 融合     |
+| **领域专用**        | React Hook Form  | ⭐ 40k  | 表单状态                    |
+|                     | TanStack Router  | ⭐ 7k   | URL 即状态                  |
+|                     | TanStack Table   | ⭐ 24k  | 表格状态                    |
+|                     | RxDB / Dexie     | -       | 本地数据库                  |
 
 ### 快速选择指南
 
