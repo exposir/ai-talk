@@ -6,41 +6,41 @@
 
 ## 📊 状态管理库全景图
 
-| 派系                | 库               | Stars   | 核心思想                    |
-| :------------------ | :--------------- | :------ | :-------------------------- |
-| **Flux 架构派**     | Redux            | ⭐ 60k  | 单一数据源 + 纯函数 Reducer |
-|                     | Redux Toolkit    | ⭐ 10k  | Redux 官方简化版            |
-|                     | Zustand          | ⭐ 40k  | 极简 Flux，无 Provider      |
-| **原子化派**        | Jotai            | ⭐ 17k  | 自底向上的原子组合          |
-|                     | Recoil ⚠️        | ⭐ 19k  | 已停止维护                  |
-|                     | Nano Stores      | ⭐ 5k   | 框架无关，< 1KB             |
-| **Proxy 响应式派**  | MobX             | ⭐ 27k  | 透明函数式响应编程          |
-|                     | MobX-State-Tree  | ⭐ 6.9k | 结构化类型 + 快照           |
-|                     | Valtio           | ⭐ 8.5k | 像 Vue 一样可变             |
-| **Signal 细粒度派** | Preact Signals   | ⭐ 3.5k | 绕过 VDOM Diff              |
-|                     | Legend-State     | ⭐ 2.5k | 声称比 Zustand 快 10x       |
-|                     | Solid.js Signals | ⭐ 30k  | 编译时 + 无 VDOM            |
-| **状态机派 (FSM)**  | XState           | ⭐ 26k  | W3C SCXML 标准实现          |
-|                     | Robot            | ⭐ 1.8k | 极简 FSM，< 1KB             |
-| **服务端状态派**    | TanStack Query   | ⭐ 40k  | 服务端状态 = 缓存           |
-|                     | SWR              | ⭐ 30k  | Stale-While-Revalidate      |
-|                     | RTK Query        | -       | Redux 生态方案              |
-| **RxJS 流式派**     | RxJS             | ⭐ 30k  | 一切皆流                    |
-|                     | Elf              | ⭐ 1.5k | 基于 RxJS 的 Store          |
-|                     | Akita            | ⭐ 3.7k | 实体管理                    |
-| **CRDT 协作派**     | Yjs              | ⭐ 15k  | 无冲突复制数据类型          |
-|                     | Automerge        | ⭐ 3k   | JSON 友好 CRDT              |
-|                     | Liveblocks       | -       | CRDT + BaaS                 |
-| **GraphQL 派**      | Apollo Client    | ⭐ 19k  | 归一化缓存                  |
-|                     | Relay            | ⭐ 18k  | 编译期优化                  |
-|                     | URQL             | ⭐ 8.5k | 轻量级 GraphQL              |
-| **其他特色**        | Effector         | ⭐ 4.5k | 多向数据流                  |
-|                     | Hookstate        | ⭐ 1.6k | Proxy + Hook 极简           |
-|                     | Overmind         | ⭐ 1.3k | Flux + FSM + Proxy 融合     |
-| **领域专用**        | React Hook Form  | ⭐ 40k  | 表单状态                    |
-|                     | TanStack Router  | ⭐ 7k   | URL 即状态                  |
-|                     | TanStack Table   | ⭐ 24k  | 表格状态                    |
-|                     | RxDB / Dexie     | -       | 本地数据库                  |
+| 派系                | 库                                                                                  | 作者/组织                      | Stars   | 核心思想                    |
+| :------------------ | :---------------------------------------------------------------------------------- | :----------------------------- | :------ | :-------------------------- |
+| **Flux 架构派**     | [Redux](https://github.com/reduxjs/redux)                                           | Dan Abramov / Redux Team       | ⭐ 60k  | 单一数据源 + 纯函数 Reducer |
+|                     | [Redux Toolkit](https://github.com/reduxjs/redux-toolkit)                           | Redux Team                     | ⭐ 10k  | Redux 官方简化版            |
+|                     | [Zustand](https://github.com/pmndrs/zustand)                                        | Pmndrs (Dai Shi)               | ⭐ 40k  | 极简 Flux，无 Provider      |
+| **原子化派**        | [Jotai](https://github.com/pmndrs/jotai)                                            | Pmndrs (Dai Shi)               | ⭐ 17k  | 自底向上的原子组合          |
+|                     | [Recoil](https://github.com/facebookexperimental/Recoil) ⚠️                         | Meta (Facebook)                | ⭐ 19k  | 已停止维护                  |
+|                     | [Nano Stores](https://github.com/nanostores/nanostores)                             | Evil Martians                  | ⭐ 5k   | 框架无关，< 1KB             |
+| **Proxy 响应式派**  | [MobX](https://github.com/mobxjs/mobx)                                              | Michel Weststrate              | ⭐ 27k  | 透明函数式响应编程          |
+|                     | [MobX-State-Tree](https://github.com/mobxjs/mobx-state-tree)                        | Michel Weststrate              | ⭐ 6.9k | 结构化类型 + 快照           |
+|                     | [Valtio](https://github.com/pmndrs/valtio)                                          | Pmndrs (Dai Shi)               | ⭐ 8.5k | 像 Vue 一样可变             |
+| **Signal 细粒度派** | [Preact Signals](https://github.com/preactjs/signals)                               | Preact Team                    | ⭐ 3.5k | 绕过 VDOM Diff              |
+|                     | [Legend-State](https://github.com/LegendApp/legend-state)                           | Legend App                     | ⭐ 2.5k | 声称比 Zustand 快 10x       |
+|                     | [Solid.js](https://github.com/solidjs/solid)                                        | Ryan Carniato                  | ⭐ 30k  | 编译时 + 无 VDOM            |
+| **状态机派 (FSM)**  | [XState](https://github.com/statelyai/xstate)                                       | Stately (David Khourshid)      | ⭐ 26k  | W3C SCXML 标准实现          |
+|                     | [Robot](https://github.com/matthewp/robot)                                          | Matthew Phillips               | ⭐ 1.8k | 极简 FSM，< 1KB             |
+| **服务端状态派**    | [TanStack Query](https://github.com/TanStack/query)                                 | Tanner Linsley                 | ⭐ 40k  | 服务端状态 = 缓存           |
+|                     | [SWR](https://github.com/vercel/swr)                                                | Vercel                         | ⭐ 30k  | Stale-While-Revalidate      |
+|                     | [RTK Query](https://github.com/reduxjs/redux-toolkit)                               | Redux Team                     | -       | Redux 生态方案              |
+| **RxJS 流式派**     | [RxJS](https://github.com/ReactiveX/rxjs)                                           | ReactiveX / Ben Lesh           | ⭐ 30k  | 一切皆流                    |
+|                     | [Elf](https://github.com/ngneat/elf)                                                | ngneat                         | ⭐ 1.5k | 基于 RxJS 的 Store          |
+|                     | [Akita](https://github.com/datorama/akita)                                          | Datorama                       | ⭐ 3.7k | 实体管理                    |
+| **CRDT 协作派**     | [Yjs](https://github.com/yjs/yjs)                                                   | Kevin Jahns                    | ⭐ 15k  | 无冲突复制数据类型          |
+|                     | [Automerge](https://github.com/automerge/automerge)                                 | Ink & Switch                   | ⭐ 3k   | JSON 友好 CRDT              |
+|                     | [Liveblocks](https://liveblocks.io/)                                                | Liveblocks Inc.                | -       | CRDT + BaaS                 |
+| **GraphQL 派**      | [Apollo Client](https://github.com/apollographql/apollo-client)                     | Apollo GraphQL                 | ⭐ 19k  | 归一化缓存                  |
+|                     | [Relay](https://github.com/facebook/relay)                                          | Meta (Facebook)                | ⭐ 18k  | 编译期优化                  |
+|                     | [URQL](https://github.com/urql-graphql/urql)                                        | urql-graphql                   | ⭐ 8.5k | 轻量级 GraphQL              |
+| **其他特色**        | [Effector](https://github.com/effector/effector)                                    | Dmitry Boldyrev                | ⭐ 4.5k | 多向数据流                  |
+|                     | [Hookstate](https://github.com/avkonst/hookstate)                                   | Andrey Konstantinov            | ⭐ 1.6k | Proxy + Hook 极简           |
+|                     | [Overmind](https://github.com/cerebral/overmind)                                    | Cerebral                       | ⭐ 1.3k | Flux + FSM + Proxy 融合     |
+| **领域专用**        | [React Hook Form](https://github.com/react-hook-form/react-hook-form)               | Bill Luo                       | ⭐ 40k  | 表单状态                    |
+|                     | [TanStack Router](https://github.com/TanStack/router)                               | Tanner Linsley                 | ⭐ 7k   | URL 即状态                  |
+|                     | [TanStack Table](https://github.com/TanStack/table)                                 | Tanner Linsley                 | ⭐ 24k  | 表格状态                    |
+|                     | [RxDB](https://github.com/pubkey/rxdb) / [Dexie](https://github.com/dexie/Dexie.js) | Daniel Meyer / David Fahlander | -       | 本地数据库                  |
 
 ### 快速选择指南
 
