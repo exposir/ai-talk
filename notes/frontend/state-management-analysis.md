@@ -20,7 +20,7 @@
 | **Signal 细粒度派** | [Preact Signals](https://github.com/preactjs/signals)                               | Preact Team                    | ⭐ 3.5k | 绕过 VDOM Diff              |
 |                     | [Legend-State](https://github.com/LegendApp/legend-state)                           | Legend App                     | ⭐ 2.5k | 声称比 Zustand 快 10x       |
 |                     | [Solid.js](https://github.com/solidjs/solid)                                        | Ryan Carniato                  | ⭐ 30k  | 编译时 + 无 VDOM            |
-| **状态机派 (FSM)**  | [XState](https://github.com/statelyai/xstate)                                       | Stately (David Khourshid)      | ⭐ 26k  | W3C SCXML 标准实现          |
+| **状态机派 (FSM)**  | [XState](https://github.com/statelyai/xstate)                                       | Stately (David Khourshid)      | ⭐ 26k  | W3C SCXML 标准实现 [^1]     |
 |                     | [Robot](https://github.com/matthewp/robot)                                          | Matthew Phillips               | ⭐ 1.8k | 极简 FSM，< 1KB             |
 | **服务端状态派**    | [TanStack Query](https://github.com/TanStack/query)                                 | Tanner Linsley                 | ⭐ 40k  | 服务端状态 = 缓存           |
 |                     | [SWR](https://github.com/vercel/swr)                                                | Vercel                         | ⭐ 30k  | Stale-While-Revalidate      |
@@ -53,6 +53,16 @@
 | **多人协作**       | Yjs + Liveblocks      | CRDT 冲突自动解决      |
 | **GraphQL 项目**   | Apollo / URQL         | 归一化缓存             |
 | **Redux 遗留项目** | Redux Toolkit         | 官方现代化方案         |
+
+[^1]:
+    **什么是状态机？**
+    状态机 (FSM) 是指"系统只能处于有限个状态之一，通过事件触发状态转换"的模型。例如交通灯只能是红/黄/绿三个状态，按固定规则切换。**为什么前端少见？**
+    前端从 jQuery 脚本发展而来，习惯用 `isLoading/isError`
+    等布尔值组合表示状态，但这会产生"不可能状态"的 Bug（如
+    `isLoading=true && isError=true`
+    同时为真）。状态机强制你显式定义所有合法状态和转换规则，从根本上消除这类问题。**SCXML**
+    是 W3C 制定的状态机描述标准，源于 1987 年 David
+    Harel 的 Statecharts 论文，XState 严格遵循此规范实现。
 
 ---
 
