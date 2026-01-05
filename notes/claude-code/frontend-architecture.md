@@ -475,9 +475,27 @@ claude --resume code-review
 
 ## 九、常见问题 (Q&A)
 
-### Q: 什么是 Tesla 及 FSD 架构？
+### Q1: 什么是 Tesla 及 FSD 架构？
 
-**1. FSD (Feature-Sliced Design) 架构**
+**1. "Tesla" 技术栈**
+
+"Tesla" 在此语境下并非官方标准术语，而是指代本文档推荐的**高性能、现代化、强类型**的前端技术组合（类比 Tesla 汽车的高性能与现代化）。它通常包含以下核心要素：
+
+| 字母 | 技术                             | 说明                                                        |
+| ---- | -------------------------------- | ----------------------------------------------------------- |
+| T    | **TypeScript**                   | 极其严格的类型系统 (Strict Mode)，大型项目的基石            |
+| E    | **Ecosystem**                    | React + Next.js (App Router) 现代生态框架                   |
+| S    | **State (Zustand/Atomic State)** | 摒弃繁重的 Redux，使用轻量级、原子化的 Zustand 进行状态管理 |
+| L    | **Layered (FSD)**                | 严格的分层架构设计 (Feature-Sliced Design)                  |
+| A    | **Automation**                   | TDD + CI，强调自动化测试 (Vitest) 和类型检查                |
+
+> **Note**:
+> React 是这套技术栈的核心 UI 库，Next.js 作为元框架 (Meta-framework) 构建于 React 之上，提供路由、SSR、API
+> Routes 等能力。
+
+这个组合的目标是让前端项目像精密制造的汽车一样，模块化、高性能且易于维护。
+
+**2. FSD (Feature-Sliced Design) 架构**
 
 FSD 是目前前端社区公认的解决大型应用复杂度的主流架构标准。
 
@@ -494,18 +512,325 @@ FSD 是目前前端社区公认的解决大型应用复杂度的主流架构标�
   5.  `pages`: 页面层（HomePage, CartPage）。路由组件，负责组装 Widgets。
   6.  `app`: 全局配置（Styles, Providers, Routing）。
 
-**2. "Tesla" 技术栈**
+### Q2: Ecosystem 具体包含什么？为什么 State 单独列出？
 
-"Tesla" 在此语境下并非官方标准术语，而是指代本文档推荐的**高性能、现代化、强类型**的前端技术组合（类比 Tesla 汽车的高性能与现代化）。它通常包含以下核心要素（T.E.S.L.A）：
+虽然广义的 "React Ecosystem" 包含状态管理，但在 **TESLA** 架构中特意做出了区分：
 
-- **T**ypeScript (Strict Mode): 极其严格的类型系统，这是大型项目的基石。
-- **E**cosystem (Modern): 使用 Next.js (App Router) 等现代生态框架。
-- **S**tate
-  (Zustand): 摒弃繁重的 Redux，使用轻量级、原子化的 Zustand 进行状态管理。
-- **L**ayered (FSD): 严格的分层架构设计。
-- **A**utomation (TDD/CI): 强调自动化测试 (Vitest) 和类型检查。
+1.  **E (Ecosystem) 侧重于基础设施**：
+    - 指代 **React + Next.js (App Router)**。
+    - 解决应用的**骨架问题**：路由、渲染模式 (SSR/RSC)、文件结构、构建工具。
 
-这个组合的目标是让前端项目像精密制造的汽车一样，模块化、高性能且易于维护。
+2.  **S (State) 侧重于数据流策略**：
+    - 指代 **Zustand + React Query**。
+    - 解决数据的**流转问题**。
+    - **拆分原因**：为了强调**"轻量化状态管理"**这一核心架构主张。特意将 State 单独列出，是为了凸显从 Redux 等重型方案转向 Atomic
+      State (原子化状态) 的现代化决策。
+
+### Q3: 深入说说 State 的含义与最佳实践
+
+在 **TESLA** 架构中，**S (State)**
+代表了一种**去中心化、原子化**的状态管理哲学，核心包含三层含义：
+
+1.  **拒绝巨型 Store (No Giant Store)**
+    - 传统 Redux 模式倾向于将所有应用状态集中在一个巨大的 Store 树中。
+    - **现代实践**：使用 Zustand 将状态拆分为多个独立的、功能单一的小 Store（Atomic
+      Stores）。例如 `useAuthStore` 仅管理用户身份，`useCartStore`
+      仅管理购物车。这使得模块解耦，更易于迁移和测试。
+
+2.  **服务端状态 vs 客户端状态 (Server vs Client State)**
+    - **服务端状态**（API 数据）：完全交给 **React
+      Query**。API 返回的数据被视为"缓存"而非"应用状态"。严禁手动 fetch 数据后 set 到 store 的冗余操作。
+    - **客户端状态**（UI/交互）：交给
+      **Zustand**。仅用于管理纯前端的交互状态（如侧边栏开关、模态框显示、未提交的复杂表单）。
+
+3.  **URL as State (URL 即状态)**
+    - 最高优先级的状态位置。
+    - 鼓励将筛选条件、分页页码、搜索关键词等状态直接同步到 URL Search
+      Params。这样页面可分享、刷新不丢失状态，且天然支持浏览器的后退/前进功能。
+
+### Q4: 在企业级项目中，仅靠 TESLA 中的 S (Zustand + React Query) 真的够用吗？
+
+**完完全全足够，且大多时候优于传统方案。**
+
+1.  **复杂度减法**: 90% 的"复杂状态"本质是**服务端数据同步**问题（Loading,
+    Error, Cache, Retry）。React Query 完美抽离了这部分复杂度。
+2.  **性能优势**: Zustand 基于 Selector 的细粒度更新机制，天然比 Context
+    API 更高效，无需昂贵的 `memo` 优化。
+3.  **架构隔离**: 传统的大型 Global Redux
+    Store 往往演变成难以维护的"垃圾场"。TESLA 提倡的 **Atomic Stores + FSD**
+    强制将状态隔离在 Service/Feature 内部，物理上杜绝了耦合。
+
+> **例外情况**：对于极度复杂的**时序逻辑**或**有限状态机**（如即时通讯核心、游戏逻辑），建议引入
+> **XState** 管理逻辑核心，配合 Zustand 绑定 UI。
+
+### Q5: 深入解析：为什么说 XState 是"失落的控制层"？
+
+**XState 不仅仅是一个库，它是对前端"状态驱动"开发模式的降维打击。**
+
+> **资源卡片**
+>
+> - **GitHub**: [statelyai/xstate](https://github.com/statelyai/xstate) (26k+
+>   Stars)
+> - **定义**: 基于 W3C
+>   SCXML 标准实现的有限状态机 (FSM) 和状态图 (Statecharts) 库，用于编写"防弹"的逻辑核心。
+> - **核心价值**: Make Impossible States Impossible
+>   (让不可能的状态在数学上不可能发生)。
+
+大多数前端开发者习惯于 **"Bottom-up Data Modeling"**（自底向上的数据建模）：
+
+> "我有 `isLoading`, `data`, `error`
+> 三个变量，我通过组合它们的 true/false 来推导当前页面应该显示什么。"
+
+**问题在于**：变量的组合是指数级增长的。3个布尔值有 8 种组合，但有效状态可能只有 4 种。那剩下的 4 种"不可能状态"（例如：`isLoading: true`
+且 `error: true`）就是 Bug 的温床。
+
+**XState 带来的是 "Top-down Behavioral Modeling"（自顶向下的行为建模）：**
+
+1.  **明确的有限状态机 (FSM)**
+    - 系统在任何时刻只能处于**一个**确定的状态（如 `idle`, `loading`, `success`,
+      `failure`）。
+    - 状态的流转是**确定性**的：只有 `FETCH` 事件能触发 `idle` -> `loading`。在
+      `loading` 状态下再次触发 `FETCH` 会被**数学级**地无视，无需写
+      `if (loading) return`。
+
+2.  **状态图 (Statecharts - W3C SCXML 标准)**
+    - 解决了传统 FSM 的状态爆炸问题。
+    - **Hierarchical States (层级状态)**：像目录一样管理状态（例如 `Payment`
+      状态下包含 `Verifying`, `Processing` 子状态）。
+    - **Parallel States (并行状态)**：同时管理正交的逻辑（例如：上传组件同时处于
+      `Uploading` 和 `BatteryLow` 状态）。
+
+3.  **可视化即代码 (Visualization as Code)**
+    - 你的代码就是流程图。复制 XState 配置到可视化工具，它能直接生成产品经理都能看懂的交互图。这是 Redux 永远做不到的。
+
+**何时必须使用？** 当逻辑复杂度超过了人脑能维持心智模型的阈值时：
+
+- **复杂异步流程**：例如视频会议的连接过程（信令 -> 握手 -> 媒体流 -> 重连 -> 降级）。
+- **关键任务系统**：例如支付收银台，绝对不能允许用户在"扣款中"状态触发"取消订单"。
+
+在 TESLA 架构中，我们将 Zustand 视为**"数据中心"**，将 XState 视为**"控制中心"**。只有极少数核心业务需要"控制中心"。
+
+### Q6: XState 是状态管理的终极形态吗？
+
+**是"逻辑建模"的终极，但不是"数据存储"的终极。**
+
+如果你试图用 XState 管理一个包含 1000 条商品的大列表，那简直是灾难（代码极其冗长，且性能不如直接读写变量）。但如果你用它来管理这个列表的"加载 -> 筛选 -> 翻页 -> 报错重试"流程，那它是神器。
+
+**真正的终极形态是"动静分离" (Hybrid Architecture)：**
+
+| 维度                      | 职责 (Responsibility)                | 最佳工具        | 比喻          |
+| :------------------------ | :----------------------------------- | :-------------- | :------------ |
+| **控制流 (Control Flow)** | 决定"现在可以做什么"、"下一步去哪里" | **XState**      | 大脑 (Brain)  |
+| **数据流 (Data Flow)**    | 存储"现在有什么"、"值是多少"         | **Zustand**     | 肌肉 (Muscle) |
+| **外部同步 (Sync)**       | 保持"与服务器一致"                   | **React Query** | 感官 (Senses) |
+
+**TESLA 架构的态度**：不做"一刀切"的所谓终极选择。我们默认使用 **Zustand + React
+Query**（覆盖 95% 场景），只在逻辑复杂度"溢出"时，引入 **XState**
+作为精密逻辑的外挂心脏。这才是工程上的终极实用主义。
+
+### Q7: 真正的"魔法"：什么是 Yjs (CRDTs)？
+
+你指的"最牛逼"、"通用"且支持"实时文本协作"的方案，一定是 **Yjs**（基于 **CRDT**
+算法）。
+
+**它不是普通的状态管理，它是"多人协作的物理引擎"。**
+
+1.  **解决什么终极难题？**
+    - 当 A 用户输入 "Hello" 且断网，B 用户输入 "World"，A 联网后，如何保证两人看到的最终结果完全一致，且不冲突？
+    - 这就是 **Conflict-free Replicated Data Types (无冲突复制数据类型)**。
+
+2.  **为什么说它通用？**
+    - **框架无关**：它可以绑定到 React, Vue, Svelte。
+    - **编辑器无关**：它是 **Prosemirror, Monaco, Quill, Slate**
+      等富文本/代码编辑器的协作标准。
+    - **传输无关**：你可以通过 WebSocket, WebRTC,甚至 IPFS 同步它。
+
+3.  **在架构中的位置**
+    - 如果你的应用需要**多人实时编辑**（如 Google
+      Docs 用到的 OT 算法的现代替代品），Yjs 是唯一真神。
+    - 你可以通过 `y-webrtc` 或 `Liveblocks` 轻松接入。
+    - **SyncedStore**
+      是一个基于 Yjs 的 React 库，用起来和 MobX/Valtio 一样简单，但背后全是 CRDT 魔法。
+
+### Q8: 盘点所有 React 能用的状态管理方案
+
+### Q8: 盘点所有 React 能用的状态管理方案 (终极全集)
+
+既然你要"所有"，那我们就把 React 历史长河里的遗珠都挖出来。这里不仅仅是"能用"，更是前端状态管理演进的活化石。
+
+#### 第一梯队：现代主流 (The Mainstream)
+
+| 门派            | 代表作                  | 核心理念     | 一句话点评                                       |
+| :-------------- | :---------------------- | :----------- | :----------------------------------------------- |
+| **Flux 简化派** | **Zustand**             | 极简 Flux    | 目前最均衡的选择，闭眼入。                       |
+| **Atomic 派**   | **Jotai**               | 原子化       | 下一代高性能应用的首选，React 理念的极致与继承。 |
+| **Server 派**   | **React Query**         | 异步状态管理 | 必装。它不是选项，是标准。                       |
+| **Gen 2 Redux** | **Redux Toolkit (RTK)** | 官方改进版   | 如果非要用 Redux，请一定用 RTK。                 |
+
+#### 第二梯队：特色鲜明 (The Specialized)
+
+| 门派           | 代表作                                | 核心理念       | 一句话点评                                                 |
+| :------------- | :------------------------------------ | :------------- | :--------------------------------------------------------- |
+| **Proxy 派**   | **Valtio**                            | 可变代理       | 像 Vue 一样写 React，快就一个字。                          |
+| **OOP 强类型** | **MobX** / **MobX-State-Tree**        | 响应式编程     | MST 是结构化数据的神，适合超复杂且深度嵌套的数据模型。     |
+| **FSM 派**     | **XState**                            | 状态机         | 精密仪器，处理复杂交互逻辑的核武器。                       |
+| **Signal 派**  | **Preact Signals** / **Legend-State** | 细粒度更新     | 追求极致性能，绕过 React VDOM Diff 的黑魔法。              |
+| **CRDT 派**    | **Yjs** / **Automerge**               | 分布式冲突合并 | 实时协作领域的垄断者。                                     |
+| **Graph 派**   | **Apollo Client** / **Relay**         | 归一化缓存     | 如果你用 GraphQL，那它们本身就是一个巨大的 State Manager。 |
+
+#### 第三梯队：实力遗珠 (The Underrated)
+
+| 门派             | 代表作                                 | 描述                                                                  |
+| :--------------- | :------------------------------------- | :-------------------------------------------------------------------- |
+| **硬核计算派**   | **Effector**                           | 东欧神兽。类型完美，性能极高，但 API 繁琐。国内少见，但绝对是实力派。 |
+| **微型派**       | **Nano Stores**                        | 无依赖，几百字节。主打框架无关 (React/Vue/Svelte 通用)，微前端首选。  |
+| **性能代理派**   | **Hookstate**                          | 声称比 Context 快 N 倍。基于 Proxy 的极简 API。                       |
+| **RxJS 派**      | **Akita** / **Elf**                    | 基于 Observable 的流式状态管理，Angular 难民的避风港。                |
+| **全能派**       | **Overmind**                           | 试图融合 Statechart + Flux + Proxy 的野心之作。                       |
+| **Redux 包装派** | **Rematch** / **Kea** / **Easy Peasy** | 在 RTK 出来之前的过渡方案，Kea 在 PostHog 团队用得风生水起。          |
+| **DI 容器派**    | **Unstated Next** / **Constatet**      | React Context 的极简封装，主打依赖注入。                              |
+
+#### 第四梯队：领域专用 (The Domain Specific)
+
+这些库本质上也是状态管理，但专精于特定领域，**覆盖了 80% 的日常状态需求**：
+
+- **表单状态 (Forms)**: **React Hook Form** (性能之王), **Formik** (老牌).
+- **路由状态 (Router)**: **TanStack Router**, **React Router (Loaders)**.
+  URL 是唯一真理。
+- **表格状态 (Tables)**: **TanStack Table** (Headless UI).
+- **本地数据库 (Local DB)**: **RxDB**, **PouchDB**. 离线优先应用的终极状态方案。
+
+#### 第五梯队：历史尘埃 (The Legacy)
+
+- **Recoil**: Facebook 曾寄予厚望的原子化方案，现已**烂尾停更**。勿念。
+- **Redux (Legacy)**: 写 switch-case 的原始 Redux。**快跑**。
+- **Flux (Library)**: Facebook 古早库，已进博物馆。
+
+### Q9: 不懂就问，为什么 RxJS 没有"拥有姓名"？
+
+其实它是**隐形王者**。在上面的列表里，RxJS 是作为一个**底层元语 (Primitive)**
+存在的，而不是一个开箱即用的 React 状态库。
+
+1.  **它在哪里？**
+    - **Akita / Elf**: 这两个库完全基于 RxJS 构建。
+    - **Observable-hooks**: 这是在 React 中直接使用 RxJS 最流行的胶水层。
+
+2.  **为什么不推荐直接用 RxJS 做 State？**
+    - **维度不同**: React 是**拉 (Pull)**
+      模式（组件渲染时去读数据），RxJS 是**推 (Push)**
+      模式（数据变了推给组件）。
+    - **胶水层地狱**: 你需要手动管理 `Subscription`
+      的销毁（防止内存泄漏），虽然有 `useEffect`，但代码量极大且容易写错。
+    - **心智负担**: Operator 实在太多了（switchMap, exhaustMap,
+      concatMap...）。除了 Angular 开发者，很少有 React 团队能全员 hold 住 RxJS。
+
+**结论**: 如果你是 RxJS 大神，请直接用
+**Elf**；如果不是，请远离，否则你的代码只有你自己能看懂。
+
+### Q10: XState vs RxJS：为什么一个是"王者"，另一个不是？
+
+简单来说：**XState 是一个"成品"，RxJS 是一个"原材料"。**
+
+| 维度           | XState                                 | RxJS                                     |
+| :------------- | :------------------------------------- | :--------------------------------------- |
+| **是什么**     | 精密手表 (成品)                        | 齿轮、弹簧 (零件)                        |
+| **心智模型**   | 强制性的 (States, Transitions, Guards) | 完全自由，自己定规则                     |
+| **React 适配** | 官方 `@xstate/react`，无缝融合         | 必须手动管理 Subscription                |
+| **可视化**     | 代码即流程图，可直接生成交互图         | 用 Marble Diagram 勉强调试，无法对应业务 |
+| **出错时**     | 编译期就能发现"不可能的状态转换"       | 运行时才知道 Stream 写错了               |
+| **谁能用**     | 任何前端开发者（只需要理解 FSM 概念）  | 几乎只有 Angular 背景的人能精通          |
+
+**核心区别**：
+
+- **XState 解决的是"业务逻辑正确性"问题**。它的 Statechart 是一种**数学上可证明的模型**。
+- **RxJS 解决的是"数据流组合"问题**。它是一种**极其强大但无约束的工具**。
+
+**为什么 XState 更能称为"王者"？**
+因为它提供了一条**从问题到解决方案的完整道路**：
+
+1.  画出状态图 -> 2. 翻译成代码 -> 3. 代码可以反过来生成图 -> 4. 图可以直接拿给产品经理对
+
+而 RxJS 没有这个闭环。你可以用它做任何事，但它不会**阻止你做错事**。
+
+#### 底层原理对比
+
+1.  **XState 的底层：Statecharts (状态图)**
+    - **理论来源**：1987 年 David Harel 发表的论文《Statecharts: A Visual
+      Formalism for Complex
+      Systems》。这是一个**计算机科学的经典理论**，被广泛应用于航空航天、医疗设备等关键系统。
+    - **核心概念**：
+      - **有限状态 (Finite States)**：系统只能处于有限个已定义的状态之一。
+      - **确定性转换 (Deterministic
+        Transitions)**：给定当前状态和事件，下一个状态是唯一确定的。
+      - **层级与并行 (Hierarchy &
+        Parallelism)**：状态可以嵌套（子状态机），也可以正交并行（多个独立状态机同时运行）。
+    - **标准化**：W3C 的 SCXML (State Chart
+      XML) 标准。XState 是该标准在 JavaScript 领域的实现。
+    - **数学保证**：因为是形式化模型，可以用数学方法**证明**系统不会进入非法状态。
+
+2.  **RxJS 的底层：Reactive Extensions (Rx)**
+    - **理论来源**：2009 年微软 Erik Meijer 团队发明的 Reactive Extensions
+      (Rx)，最初是 .NET 库。它的思想源于**函数式响应式编程 (FRP)**
+      和**观察者模式 (Observer Pattern)**。
+    - **核心概念**：
+      - **Observable (可观察对象)**：一个随时间推送值的异步数据流。
+      - **Operators (操作符)**：对流进行变换、过滤、组合的纯函数（如 `map`,
+        `filter`, `merge`, `switchMap`）。
+      - **Subscription
+        (订阅)**：连接 Observable 和 Observer 的纽带。必须手动管理其生命周期。
+    - **核心理念**："一切皆流" (Everything is a
+      Stream)。点击事件是流，HTTP 响应是流，WebSocket 消息是流。你用操作符像管道一样处理它们。
+    - **无约束**：RxJS 不强制任何结构。你可以用它构建任何模式，但也可能写出"意大利面条"式的流。
+
+**总结**：XState 是**形式化方法**在前端的应用（严谨、可证明）；RxJS 是**函数式编程**在异步领域的应用（灵活、强大但需自律）。
+
+#### 实现原理对比
+
+1.  **XState 的实现原理**
+
+    ```
+    [Machine Config] --> [createMachine()] --> [Machine Definition]
+                                                       |
+                                                       v
+    [Event] --> [interpret(machine)] --> [Service (Interpreter)]
+                                                       |
+                                                       v
+                                            [Transition Resolution]
+                                                       |
+                                                       v
+                                              [New State + Context]
+    ```
+
+    - **配置即代码**：开发者用 JSON-like 配置对象描述状态机（states,
+      transitions, guards, actions）。
+    - **解释器模式 (Interpreter Pattern)**：`interpret()`
+      创建一个"服务"实例，它持有当前状态，并监听事件。
+    - **纯函数转换**：`machine.transition(currentState, event)`
+      是纯函数，返回新状态。无副作用。
+    - **Context 存储扩展状态**：除了离散状态（idle/loading），还可以存储连续数据（如
+      `count: 5`），通过 `assign()` 更新。
+    - **Actor 模型**：XState
+      v5 引入了完整的 Actor 模型，每个状态机是一个 Actor，可以 spawn 子 Actor。
+
+2.  **RxJS 的实现原理**
+    ```
+    [Producer (数据源)] --> [Observable] --> [pipe(operators)] --> [Observer (消费者)]
+                                                                          |
+                                                                          v
+                                                                   [Subscription]
+    ```
+
+    - **惰性求值 (Lazy Evaluation)**：Observable 在 `subscribe()`
+      被调用之前什么都不做。这是和 Promise 的核心区别（Promise 一旦创建就立即执行）。
+    - **Cold vs Hot**：
+      - **Cold Observable**：每次订阅都会创建一个新的数据源（如 HTTP 请求）。
+      - **Hot Observable**：多个订阅者共享同一个数据源（如 WebSocket,
+        DOM 事件）。
+    - **Operator 链式管道**：`pipe(op1, op2, op3)`
+      本质是函数组合。每个 operator 接收一个 Observable，返回一个新的 Observable。
+    - **Scheduler 调度器**：控制事件在什么时间、什么上下文执行（同步、异步、动画帧等）。
+    - **背压 (Backpressure)**：当生产者速度超过消费者时，RxJS 提供策略（如
+      `throttle`, `debounce`, `buffer`）来处理。
 
 ---
 
