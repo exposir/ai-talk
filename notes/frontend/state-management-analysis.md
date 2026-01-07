@@ -887,6 +887,55 @@ legacyStore.subscribe(() => legacyState.refresh());
 
 ## 五、实施路线图
 
+## 六、术语与定义
+
+> 导读：统一关键术语，减少歧义。
+
+- **State Node**：可订阅、可组合的状态单元（atom/computed/async/sync）。
+- **Batch**：在单一批次中合并多次写入并统一通知。
+- **TraceEvent**：可观测事件流记录。
+
+
+## 七、QA
+
+> 导读：记录关键问答，回答基于本文既有内容与明确约束。
+
+> 本节记录对话中的关键问答，回答基于本文既有内容与明确约束。
+
+### 1. 目前世界上没有我这样的项目吗？如果有类似的，我这个就无意义了？
+
+**答**：不是没有“类似点”，但目前看不到一个项目同时满足本文的关键约束。现有方案大多只覆盖单点能力：例如 XState 强在逻辑层，React Query 强在异步/缓存，Yjs 强在协作，Signal 生态强在细粒度更新。你的文档要解决的是“统一心智模型 + 逻辑/数据解耦 + 协作原生 + 可观测协议 + 迁移可行”的组合问题，这种整体性目前多依赖多库拼接而非单一体系。  
+“无意义”与否不取决于“有没有类似”，而取决于你能否提供两个可验证的价值：  
+1) **统一性**：用同一套原语覆盖本地/服务端/协作状态，减少模型切换与胶水代码；  
+2) **迁移可行性**：让现有项目能渐进接入，而不是推倒重来。  
+如果这两点在真实项目里成立，即便存在部分相似的方案，你的项目仍然有明确价值。
+
+### 2. 我的项目能否支持简单项目和超大型前端架构项目？
+
+**答**：从文档目标与约束来看，设计是“可同时覆盖”，但成立与否取决于两条路径是否都能被验证。  
+对**简单项目**，关键是“低心智、低配置、低体积”。文档中已经强调“渐进增强”“低配置成本”“可树摇”，并在路线图中把 `atom/computed/batch` 定义为最小可用原语。如果最终 API 能做到“只用 atom 也不需要理解机器/协作层”，并且默认性能足够，那就能胜任小项目。  
+对**超大型项目**，关键是“可观测性、分域治理、一致性与性能”。如果你明确只面向未来新项目，**迁移路径不是必需条件**，但仍需要满足：  
+1) **可观测性**覆盖跨团队协作的审计需求（时间线、回放、依赖图）。  
+2) **分域治理**可让不同团队在边界内独立演进。  
+3) **一致性与性能**在 1k+ 订阅、并发更新与 SSR 场景下稳定。  
+因此，答案是“设计上可支持，但必须通过原型与真实项目验证”。若 M0/M1 demo 在小项目中保持极简体验，同时在大型架构中证明可观测与分域治理能力，那么两端都成立。
+
+### 3. 能否同时支持 Vue 和 React？
+
+**答**：可以，但需要把“核心”与“适配器”严格分层。文档里已经定义了 `@singularity/core` 与框架适配器的包结构，这种架构天然支持多框架：  
+1) **核心层**只负责状态原语、调度、可观测协议，不依赖任何框架；  
+2) **适配器层**分别对接 React/Vue 的渲染与订阅机制。  
+可行性取决于适配器的质量与一致性语义能否保持一致，但从架构上是可行且符合本文约束的。
+
+### 4. 心智模型和上手难度能否极为简易？
+
+**答**：可以设计得极简，但前提是“默认路径足够短、进阶功能可推迟理解”。文档已强调“渐进增强”“低配置成本”和最小原语，这意味着新用户只需理解 `atom/computed/batch` 就能完成大多数小项目需求。  
+难度的关键不在概念数量，而在**是否强迫理解复杂层**。只要状态机、协作、异步缓存都保持“按需启用”，并且默认案例不涉及它们，上手就能保持极简。  
+所以，结论是“可以做到极简”，但需要在 API 设计与文档中明确**默认路径**与**进阶路径**的边界。
+
+---
+
+
 > 导读：将实现拆成阶段，便于里程碑管理与风险控制。
 
 ### Phase 1: 核心原语 (Week 1-2)
@@ -992,7 +1041,7 @@ console.log('p95', p95);
 
 ---
 
-## 七、API 细节与一致性语义
+## 八、API 细节与一致性语义
 
 > 导读：细化 API 与一致性语义，为实现提供硬规则。
 
@@ -1060,7 +1109,7 @@ type TraceSnapshot = {
 
 ---
 
-## 八、版本化与发布策略 (草案)
+## 九、版本化与发布策略 (草案)
 
 > 导读：说明包结构与版本策略，明确发布节奏。
 
@@ -1084,7 +1133,7 @@ type TraceSnapshot = {
 
 ---
 
-## 九、文档结构建议 (草案)
+## 十、文档结构建议 (草案)
 
 > 导读：规划对外文档结构，便于传播与使用。
 
@@ -1111,7 +1160,7 @@ type TraceSnapshot = {
 
 ---
 
-## 十、文档评审与改进建议
+## 十一、文档评审与改进建议
 
 > 导读：评审与反思区，不作为最终规范。
 
@@ -1226,46 +1275,8 @@ const double = computed(() => legacyCounter.get().count * 2);
 
 ---
 
-## QA
 
-> 导读：记录关键问答，回答基于本文既有内容与明确约束。
-
-> 本节记录对话中的关键问答，回答基于本文既有内容与明确约束。
-
-### 1. 目前世界上没有我这样的项目吗？如果有类似的，我这个就无意义了？
-
-**答**：不是没有“类似点”，但目前看不到一个项目同时满足本文的关键约束。现有方案大多只覆盖单点能力：例如 XState 强在逻辑层，React Query 强在异步/缓存，Yjs 强在协作，Signal 生态强在细粒度更新。你的文档要解决的是“统一心智模型 + 逻辑/数据解耦 + 协作原生 + 可观测协议 + 迁移可行”的组合问题，这种整体性目前多依赖多库拼接而非单一体系。  
-“无意义”与否不取决于“有没有类似”，而取决于你能否提供两个可验证的价值：  
-1) **统一性**：用同一套原语覆盖本地/服务端/协作状态，减少模型切换与胶水代码；  
-2) **迁移可行性**：让现有项目能渐进接入，而不是推倒重来。  
-如果这两点在真实项目里成立，即便存在部分相似的方案，你的项目仍然有明确价值。
-
-### 2. 我的项目能否支持简单项目和超大型前端架构项目？
-
-**答**：从文档目标与约束来看，设计是“可同时覆盖”，但成立与否取决于两条路径是否都能被验证。  
-对**简单项目**，关键是“低心智、低配置、低体积”。文档中已经强调“渐进增强”“低配置成本”“可树摇”，并在路线图中把 `atom/computed/batch` 定义为最小可用原语。如果最终 API 能做到“只用 atom 也不需要理解机器/协作层”，并且默认性能足够，那就能胜任小项目。  
-对**超大型项目**，关键是“可观测性、分域治理、一致性与性能”。如果你明确只面向未来新项目，**迁移路径不是必需条件**，但仍需要满足：  
-1) **可观测性**覆盖跨团队协作的审计需求（时间线、回放、依赖图）。  
-2) **分域治理**可让不同团队在边界内独立演进。  
-3) **一致性与性能**在 1k+ 订阅、并发更新与 SSR 场景下稳定。  
-因此，答案是“设计上可支持，但必须通过原型与真实项目验证”。若 M0/M1 demo 在小项目中保持极简体验，同时在大型架构中证明可观测与分域治理能力，那么两端都成立。
-
-### 3. 能否同时支持 Vue 和 React？
-
-**答**：可以，但需要把“核心”与“适配器”严格分层。文档里已经定义了 `@singularity/core` 与框架适配器的包结构，这种架构天然支持多框架：  
-1) **核心层**只负责状态原语、调度、可观测协议，不依赖任何框架；  
-2) **适配器层**分别对接 React/Vue 的渲染与订阅机制。  
-可行性取决于适配器的质量与一致性语义能否保持一致，但从架构上是可行且符合本文约束的。
-
-### 4. 心智模型和上手难度能否极为简易？
-
-**答**：可以设计得极简，但前提是“默认路径足够短、进阶功能可推迟理解”。文档已强调“渐进增强”“低配置成本”和最小原语，这意味着新用户只需理解 `atom/computed/batch` 就能完成大多数小项目需求。  
-难度的关键不在概念数量，而在**是否强迫理解复杂层**。只要状态机、协作、异步缓存都保持“按需启用”，并且默认案例不涉及它们，上手就能保持极简。  
-所以，结论是“可以做到极简”，但需要在 API 设计与文档中明确**默认路径**与**进阶路径**的边界。
-
----
-
-## 十一、奇点技术规格 (Draft)
+## 十二、奇点技术规格 (Draft)
 
 > 导读：将草案变成可执行规格的核心章节。
 
@@ -1302,6 +1313,54 @@ export function effect(fn: () => void): Effect;
 - `computed` 只读，依赖追踪在 `get()` 时建立。
 - `effect` 在依赖变化时重新执行，并允许显式 `dispose()`。
 
+**API 明细**：
+
+**`atom<T>(initial: T): Atom<T>`**
+- **用途**：创建可读写的原子状态。
+- **参数**：`initial` 初始值，允许任意可序列化或不可序列化对象。
+- **返回**：`Atom<T>`，提供 `get/set/subscribe`。
+- **错误**：无显式错误；不建议在 `computed` 中调用 `set`。
+- **示例**：
+
+```typescript
+const count = atom(0);
+count.set((n) => n + 1);
+```
+
+**`computed<T>(read: () => T): Computed<T>`**
+- **用途**：创建只读派生状态。
+- **参数**：`read` 读取函数，依赖通过 `get()` 自动追踪。
+- **返回**：`Computed<T>`，提供 `get/subscribe`。
+- **错误**：若发生循环依赖，抛出错误并中止本次计算。
+- **示例**：
+
+```typescript
+const total = computed(() => price.get() * (1 + tax.get()));
+```
+
+**`batch(fn: () => void): void`**
+- **用途**：合并批量更新，减少通知与渲染。
+- **语义**：嵌套 batch 合并为单一批次；批次结束统一通知。
+- **示例**：
+
+```typescript
+batch(() => {
+  a.set(1);
+  b.set(2);
+});
+```
+
+**`effect(fn: () => void): Effect`**
+- **用途**：创建副作用，依赖变化时重新执行。
+- **返回**：`Effect`，提供 `dispose()` 解除订阅。
+- **注意**：effect 内部若产生同步错误，将记录到 TraceEvent。
+- **示例**：
+
+```typescript
+const e = effect(() => console.log(total.get()));
+e.dispose();
+```
+
 ### 11.2 Async API 规范 (Core)
 
 ```typescript
@@ -1331,6 +1390,34 @@ export function atomAsync<T>(
 - `refresh` 触发一次请求，若并发请求同 key，则合并。
 - `optimistic` 时允许先写入本地值，失败后回滚。
 
+**API 明细**：
+
+**`atomAsync<T>(fetcher, options): AsyncAtom<T>`**
+- **用途**：创建带缓存与取消语义的异步状态。
+- **参数**：
+  - `fetcher`：返回 Promise 的请求函数。
+  - `options.key`：缓存键，必须显式提供。
+  - `options.staleTime`：缓存新鲜期，单位毫秒。
+  - `options.cacheTime`：无订阅后保留时间。
+  - `options.retry`：失败重试次数。
+  - `options.retryDelay`：重试退避策略。
+  - `options.optimistic`：是否启用乐观更新。
+- **返回**：`AsyncAtom<T>`，包含 `status/error/refresh`。
+- **错误**：
+  - `fetcher` 抛错时写入 `error` atom。
+  - 并发过期响应会被丢弃，不覆盖新值。
+- **示例**：
+
+```typescript
+const user = atomAsync(fetchUser, {
+  key: 'user:1',
+  staleTime: 5_000,
+  retry: 2,
+});
+
+user.refresh();
+```
+
 ### 11.3 Store 级能力 (Core)
 
 ```typescript
@@ -1349,6 +1436,17 @@ export function createStore(): Store;
 - `createStore` 用于 SSR 请求级隔离。
 - `snapshot` 提供可观测快照给 DevTools 与调试。
 
+**API 明细**：
+
+**`createStore(): Store`**
+- **用途**：创建独立的 Store，用于多实例或 SSR。
+- **返回**：`Store`，包含 `atom/computed/batch/effect`。
+- **注意**：每个 Store 的节点相互隔离。
+
+**`Store.snapshot(): Record<string, unknown>`**
+- **用途**：导出当前状态快照给调试/审计。
+- **注意**：默认仅导出可序列化字段。
+
 ### 11.4 框架适配器 API (React/Vue)
 
 ```typescript
@@ -1364,6 +1462,23 @@ export function useAtomRef<T>(node: Atom<T> | Computed<T>): { value: T };
 **语义说明**：
 - 适配器只负责订阅与更新，不改变核心语义。
 - React 适配器使用 `useSyncExternalStore` 保证并发安全。
+
+**API 明细 (React)**：
+
+**`useAtom<T>(node): T`**
+- **用途**：订阅 atom/computed 并触发组件更新。
+- **注意**：依赖变化触发重渲染，遵守 batch 语义。
+
+**`useAtomValue<T>(node): T`**
+- **用途**：只读订阅，不暴露 set。
+
+**`useSetAtom<T>(node): (next) => void`**
+- **用途**：获取写入函数，便于拆分读写。
+
+**API 明细 (Vue)**：
+
+**`useAtomRef<T>(node): Ref<T>`**
+- **用途**：返回 Vue `ref`，保持响应式。
 
 ### 11.5 DevTools 事件格式 (Core)
 
@@ -1410,7 +1525,7 @@ packages/
 
 ---
 
-## 十二、状态机与协作层规格 (Draft)
+## 十三、状态机与协作层规格 (Draft)
 
 > 导读：补充状态机与协作层的具体接口。
 
@@ -1495,7 +1610,7 @@ export function atomSync<T>(initial: T, options: SyncOptions): SyncAtom<T>;
 
 ---
 
-## 十三、类型系统与规范约束 (Draft)
+## 十四、类型系统与规范约束 (Draft)
 
 > 导读：说明类型约束与泛型边界。
 
@@ -1521,7 +1636,7 @@ type EventKey<T extends EventMap> = keyof T & string;
 
 ---
 
-## 十四、兼容层与共存策略 (Draft)
+## 十五、兼容层与共存策略 (Draft)
 
 > 导读：说明与旧系统共存的最小策略。
 
@@ -1542,7 +1657,7 @@ export const compat = {
 
 ---
 
-## 十五、调度与错误处理细则 (Draft)
+## 十六、调度与错误处理细则 (Draft)
 
 > 导读：调度与错误规则是行为一致性的依据。
 
@@ -1566,7 +1681,7 @@ export const compat = {
 
 ---
 
-## 十六、DevTools UI 草案 (Draft)
+## 十七、DevTools UI 草案 (Draft)
 
 > 导读：描述 DevTools 交互目标与基本布局。
 
@@ -1584,7 +1699,7 @@ export const compat = {
 
 ---
 
-## 十七、性能基准细化 (Draft)
+## 十八、性能基准细化 (Draft)
 
 > 导读：给出基准场景与统计口径。
 
@@ -1602,7 +1717,7 @@ export const compat = {
 
 ---
 
-## 十八、Demo 骨架与验收脚本 (Draft)
+## 十九、Demo 骨架与验收脚本 (Draft)
 
 > 导读：Demo 与验收脚本是验证入口。
 
@@ -1630,7 +1745,7 @@ export function assertBatching(result: { renders: number }) {
 
 ---
 
-## 十九、API 示例用例集 (Draft)
+## 二十、API 示例用例集 (Draft)
 
 > 导读：提供典型用法示例，便于理解 API。
 
@@ -1677,7 +1792,7 @@ const auth = machine({
 
 ---
 
-## 二十、边界测试清单 (Draft)
+## 二十一、边界测试清单 (Draft)
 
 > 导读：列出需要覆盖的边界测试用例。
 
@@ -1689,7 +1804,7 @@ const auth = machine({
 
 ---
 
-## 二十一、发布验收清单 (Draft)
+## 二十二、发布验收清单 (Draft)
 
 > 导读：发布前的验收检查表。
 
@@ -1701,7 +1816,7 @@ const auth = machine({
 
 ---
 
-## 二十二、版本迁移策略细则 (Draft)
+## 二十三、版本迁移策略细则 (Draft)
 
 > 导读：版本迁移策略模板与原则。
 
@@ -1720,7 +1835,7 @@ const auth = machine({
 
 ---
 
-## 二十三、架构决策记录 (ADR) 模板
+## 二十四、架构决策记录 (ADR) 模板
 
 > 导读：ADR 模板用于记录关键决策。
 
@@ -1735,7 +1850,7 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十四、安全与合规 (Draft)
+## 二十五、安全与合规 (Draft)
 
 > 导读：安全与合规的最低要求。
 
@@ -1752,7 +1867,7 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十五、跨平台与运行时兼容性 (Draft)
+## 二十六、跨平台与运行时兼容性 (Draft)
 
 > 导读：跨平台运行环境与支持范围。
 
@@ -1762,7 +1877,7 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十六、生态与社区路线图 (Draft)
+## 二十七、生态与社区路线图 (Draft)
 
 > 导读：生态与社区发展的方向。
 
@@ -1779,7 +1894,7 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十七、学习路径与培训材料 (Draft)
+## 二十八、学习路径与培训材料 (Draft)
 
 > 导读：学习路径与培训素材方向。
 
@@ -1789,7 +1904,7 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十八、奇点项目 Todo List (我的执行计划)
+## 二十九、奇点项目 Todo List (我的执行计划)
 
 > 导读：执行计划与阶段划分。
 
@@ -1821,7 +1936,225 @@ ADR-0001: 使用 Signal 作为核心响应式原语
 
 ---
 
-## 二十九、参考资源
+## 三十、工程级文档骨架 (Draft)
+
+> 导读：面向真实用户与落地工程的文档结构。
+
+### 30.1 快速上手
+
+- **安装**：包结构与最小依赖说明
+- **Hello World**：atom/computed/batch 最小示例
+- **5 分钟 Demo**：计数器 + 派生 + batch
+- **错误演示**：常见误用与修正
+
+**安装 (示例)**：
+
+```bash
+npm i @singularity/core @singularity/react
+```
+
+**Hello World**：
+
+```typescript
+import { atom, computed, effect } from '@singularity/core';
+
+const count = atom(0);
+const double = computed(() => count.get() * 2);
+
+effect(() => {
+  console.log('double', double.get());
+});
+
+count.set(1);
+```
+
+**5 分钟 Demo (React)**：
+
+```tsx
+import { atom, computed, batch } from '@singularity/core';
+import { useAtom } from '@singularity/react';
+
+const count = atom(0);
+const double = computed(() => count.get() * 2);
+
+export function Counter() {
+  const value = useAtom(count);
+  const doubled = useAtom(double);
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          batch(() => {
+            count.set((n) => n + 1);
+            count.set((n) => n + 1);
+          });
+        }}
+      >
+        +2
+      </button>
+      <div>count: {value}</div>
+      <div>double: {doubled}</div>
+    </div>
+  );
+}
+```
+
+**错误演示**：
+
+```typescript
+// Bad: computed 中执行 set 会导致循环
+const bad = computed(() => {
+  count.set(1);
+  return count.get();
+});
+```
+
+```text
+建议: computed 中只读，不执行写入操作。
+```
+
+### 30.2 入门教程 (Hands-on)
+
+- **第 1 章**：状态原语与订阅
+- **第 2 章**：computed 与依赖图
+- **第 3 章**：batch 与渲染合并
+- **第 4 章**：effect 与清理
+
+**第 1 章：状态原语与订阅**  
+目标：理解 atom 与 subscribe 的最小使用方式。
+
+```typescript
+const a = atom(0);
+const unsub = a.subscribe(() => console.log(a.get()));
+a.set(1);
+unsub();
+```
+
+**第 2 章：computed 与依赖图**  
+目标：理解派生值与依赖追踪。
+
+```typescript
+const price = atom(100);
+const tax = atom(0.1);
+const total = computed(() => price.get() * (1 + tax.get()));
+```
+
+**第 3 章：batch 与渲染合并**  
+目标：理解批处理如何合并通知。
+
+```typescript
+batch(() => {
+  price.set(120);
+  tax.set(0.2);
+});
+```
+
+**第 4 章：effect 与清理**  
+目标：理解 effect 生命周期。
+
+```typescript
+const e = effect(() => {
+  console.log('total', total.get());
+});
+e.dispose();
+```
+
+### 30.2 API 参考
+
+- **Core**：`atom/computed/batch/effect`
+- **Async**：`atomAsync` 选项与缓存语义
+- **Machine**：`machine` 配置与事件语义
+- **Sync**：`atomSync` 协作连接与状态
+- **Store**：`createStore/snapshot` 与 SSR 约束
+- **Adapters**：React/Vue Hooks 与订阅语义
+
+### 30.3 API 参考模板
+
+```
+函数名：
+签名：
+参数：
+返回：
+错误：
+示例：
+注意事项：
+```
+
+### 30.4 核心概念
+
+- State Node 与依赖图
+- 一致性语义与调度规则
+- 可观测协议与时间线
+
+**State Node**  
+State Node 是奇点的统一抽象，包含 atom/computed/async/sync 四类节点。  
+原则：可订阅、可组合、可观察。
+
+**一致性语义**  
+同一批次读取的是批次开始时的快照；写入在批次结束时统一通知。
+
+**可观测协议**  
+所有读写与异步事件进入 TraceEvent 流，可被 DevTools 解析。
+
+### 30.5 实践指南
+
+- 小型项目最佳实践
+- 超大型项目分域治理
+- 异步与协作场景模式
+
+**小型项目**  
+只使用 atom/computed/batch，避免引入状态机与协作层。
+
+**超大型项目**  
+按域拆分 Store，采用统一命名规范与审计时间线。
+
+**异步与协作**  
+async 与 sync 只在需要时引入，避免过早复杂化。
+
+### 30.6 性能与调试
+
+- Benchmark 口径与结果模板
+- DevTools 使用与排错
+- 性能退化定位清单
+
+**Benchmark 模板**  
+记录设备、浏览器、操作次数、均值与 P95。
+
+**排错清单**  
+1) 是否有 computed 中的写入  
+2) 是否存在过度订阅  
+3) 是否存在未释放的 effect
+
+### 30.7 迁移与集成
+
+- 与 Redux/Zustand/Jotai 共存
+- GraphQL/REST 数据层协作
+- 旧系统只读桥接示例
+
+**只读桥接示例**：
+
+```typescript
+const legacy = atom.fromStore(getState, subscribe);
+const total = computed(() => legacy.get().total);
+```
+
+### 30.8 故障排查与 FAQ
+
+- 常见误用与修复
+- 性能退化与定位流程
+- 诊断清单与自查步骤
+
+**常见问题**  
+Q: 为什么 computed 不更新？  
+A: 确认 computed 内部读取了 atom 的 get。
+
+Q: 为什么批处理没生效？  
+A: 确认更新发生在 batch 内部。
+
+---
+
+## 三十一、参考资源
 
 > 导读：参考资料入口。
 
