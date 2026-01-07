@@ -44,6 +44,8 @@ type TraceExport = {
 
 ## 附录 B、实现路线图 (工程级细化)
 
+> 本节为唯一路线图来源，主文仅引用，不再重复维护。
+
 ### Phase 1: Core MVP (Week 1-2)
 
 - [ ] atom/computed/batch/effect 原型
@@ -185,4 +187,3 @@ Demo:
 兼容性:
 已知问题:
 ```
-

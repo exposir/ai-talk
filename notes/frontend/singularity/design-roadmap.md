@@ -127,3 +127,7 @@ const legacyState = fromStore(() => legacyStore.getState(), legacyStore.subscrib
 ## 五、实施路线图
 
 > 导读：将实现拆成阶段，便于里程碑管理与风险控制。
+
+本节具体路线图已整理到附录文档，避免与主文重复：
+
+- [实现路线图 (工程级细化)](./appendices.md#附录-b-实现路线图-工程级细化)
