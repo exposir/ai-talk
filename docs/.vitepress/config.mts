@@ -16,6 +16,7 @@ export default defineConfig({
       { text: 'Claude Code', link: '/claude-code/README' },
       { text: 'Antigravity', link: '/antigravity/README' },
       { text: '架构设计', link: '/architecture/README' },
+      { text: '前端工程', link: '/frontend/singularity/README' },
     ],
 
     sidebar: {
@@ -60,6 +61,26 @@ export default defineConfig({
         {
           text: '架构设计',
           items: [{ text: '概述', link: '/architecture/README' }],
+        },
+      ],
+      '/frontend/singularity/': [
+        {
+          text: '奇点：下一代状态管理系统',
+          items: [
+            { text: '目录', link: '/frontend/singularity/README' },
+            { text: '全景与库综述', link: '/frontend/singularity/landscape' },
+            { text: '核心问题与愿景', link: '/frontend/singularity/problems-vision' },
+            { text: '设计与路线图', link: '/frontend/singularity/design-roadmap' },
+            { text: '术语与 QA', link: '/frontend/singularity/terminology-qa' },
+            { text: 'API 细节与治理', link: '/frontend/singularity/api-governance' },
+            { text: '核心规格', link: '/frontend/singularity/specs-core' },
+            { text: '扩展规格', link: '/frontend/singularity/specs-advanced' },
+            { text: '性能与 DevTools', link: '/frontend/singularity/performance-devtools' },
+            { text: '验证与发布', link: '/frontend/singularity/validation-release' },
+            { text: '运维与生态', link: '/frontend/singularity/ops-community' },
+            { text: '附录', link: '/frontend/singularity/appendices' },
+            { text: '参考资源', link: '/frontend/singularity/references' },
+          ],
         },
       ],
       '/project-meta/': [
