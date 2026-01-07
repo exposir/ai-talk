@@ -160,13 +160,13 @@ type TraceSnapshot = {
    统一心智模型 > 可观测性 > 逻辑/数据解耦 > 协作原生
    ```
 
-   四个目标排序合理，体现了**从根本上解决问题**而非缝缝补补的思路。
+   四个目标排序合理，体现了**从根本上解决问题**而非缝缝补补的思路。协作原生作为一等能力，但默认关闭、按需启用。
 
 3. **API 设计务实**
    ```typescript
    const docAtom = atomSync({ title: '', content: '' }, { id: 'doc:1' });
    ```
-   "渐进增强"的 API 设计（`atom` → `atomAsync` → `atomSync`）是正确的方向。
+   "渐进增强"的 API 设计（`atom` → `atomAsync` → `atomSync`）是正确的方向，协作能力默认关闭、按需启用。
 
 ### 11.3 潜在风险与建议
 
@@ -245,4 +245,3 @@ const double = computed(() => legacyCounter.get().count * 2);
 5. **定义失败条件**：明确何时应该放弃或转向
 
 ---
-
