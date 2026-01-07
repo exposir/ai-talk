@@ -18,7 +18,7 @@
 |                     | [MobX-State-Tree](https://github.com/mobxjs/mobx-state-tree)                        | Michel Weststrate              | ⭐ 6.9k | 结构化类型 + 快照           | ✅ 专为复杂场景     |
 |                     | [Valtio](https://github.com/pmndrs/valtio)                                          | Pmndrs (Dai Shi)               | ⭐ 8.5k | 像 Vue 一样可变             | ⚠️ 中小型更适合     |
 | **Signal 细粒度派** | [Preact Signals](https://github.com/preactjs/signals)                               | Preact Team                    | ⭐ 3.5k | 绕过 VDOM Diff              | ⚠️ 生态不成熟       |
-|                     | [Legend-State](https://github.com/LegendApp/legend-state)                           | Legend App                     | ⭐ 2.5k | 声称比 Zustand 快 10x       | ⚠️ 社区较小         |
+|                     | [Legend-State](https://github.com/LegendApp/legend-state)                           | Legend App                     | ⭐ 2.5k | 强调性能优势                | ⚠️ 社区较小         |
 |                     | [Solid.js](https://github.com/solidjs/solid)                                        | Ryan Carniato                  | ⭐ 30k  | 编译时 + 无 VDOM            | ✅ 框架级方案       |
 | **状态机派 (FSM)**  | [XState](https://github.com/statelyai/xstate)                                       | Stately (David Khourshid)      | ⭐ 26k  | W3C SCXML 标准实现 [^1]     | ✅ 关键业务首选     |
 |                     | [Robot](https://github.com/matthewp/robot)                                          | Matthew Phillips               | ⭐ 1.8k | 极简 FSM，< 1KB             | ❌ 功能太简         |
@@ -42,6 +42,8 @@
 |                     | [TanStack Table](https://github.com/TanStack/table)                                 | Tanner Linsley                 | ⭐ 24k  | 表格状态                    | ✅ 复杂表格必备     |
 |                     | [RxDB](https://github.com/pubkey/rxdb) / [Dexie](https://github.com/dexie/Dexie.js) | Daniel Meyer / David Fahlander | -       | 本地数据库                  | ✅ 离线优先场景     |
 
+> Stars 为粗略量级，可能随时间变化；超大型项目评估是经验性判断。
+
 ### 快速选择指南
 
 | 场景               | 推荐方案              | 理由                   |
@@ -53,6 +55,17 @@
 | **多人协作**       | Yjs + Liveblocks      | CRDT 冲突自动解决      |
 | **GraphQL 项目**   | Apollo / URQL         | 归一化缓存             |
 | **Redux 遗留项目** | Redux Toolkit         | 官方现代化方案         |
+
+### 规模适配评估维度
+
+| 维度               | 关注点                                              | 小型项目偏好              | 超大型项目偏好                      |
+| :----------------- | :-------------------------------------------------- | :------------------------ | :---------------------------------- |
+| **心智模型**       | 需要掌握的核心概念数量                              | 概念少、上手快            | 概念可分层、可渐进引入              |
+| **可观测性**       | 调试/时间旅行/状态可视化                            | 简洁日志即可              | DevTools 完整、审计能力强           |
+| **一致性**         | 本地/服务端/协作状态能否统一                         | 允许多库组合              | 单一模型或低摩擦整合                |
+| **迁移成本**       | 从现有方案迁移的门槛                                | 直接替换 Hook             | 可增量接入、支持分层/分域迁移        |
+| **性能模型**       | 渲染/订阅开销是否可预测                              | 默认够快                  | 细粒度订阅、可控更新边界            |
+| **组织协作**       | 多团队协作、边界划分、规范化                         | 轻规范                    | 约定清晰、工具链配套                |
 
 [^1]:
     **什么是状态机？**
@@ -74,7 +87,7 @@
 
 ### 1.1 Flux 架构派系
 
-#### Redux (Facebook, 2015)
+#### Redux (2015)
 
 | 维度         | 内容                                                                                                       |
 | :----------- | :--------------------------------------------------------------------------------------------------------- |
@@ -198,7 +211,7 @@ const doubleAtom = atom((get) => get(countAtom) * 2);
 
 ---
 
-#### Recoil (Facebook, 2020) ⚠️ 已停止维护
+#### Recoil (2020) ⚠️ 已停止维护
 
 | 维度         | 内容                                                                                  |
 | :----------- | :------------------------------------------------------------------------------------ |
@@ -332,21 +345,21 @@ count.value++; // effect 自动执行
 | 维度         | 内容                                                                         |
 | :----------- | :--------------------------------------------------------------------------- |
 | **GitHub**   | [LegendApp/legend-state](https://github.com/LegendApp/legend-state) ⭐ 2.5k+ |
-| **核心思想** | 最快的 React 状态库，声称比 Zustand 快 10x                                   |
+| **核心思想** | 强调性能与细粒度响应式（性能宣称需以基准测试验证）                           |
 | **实现原理** | Proxy 拦截 + 细粒度 Signal + 自动持久化                                      |
 | **优点**     | 极致性能、内置 LocalStorage/AsyncStorage 同步                                |
 | **缺点**     | 相对小众，生态有限                                                           |
 
 ---
 
-#### Solid.js Signals (作为参考)
+#### Solid.js Signals (框架级参考)
 
 | 维度         | 内容                                                         |
 | :----------- | :----------------------------------------------------------- |
 | **GitHub**   | [solidjs/solid](https://github.com/solidjs/solid) ⭐ 30k+    |
 | **核心思想** | 编译时 + 细粒度响应式，无 VDOM                               |
 | **实现原理** | 编译器将 JSX 转换为真实 DOM 操作，Signal 直接绑定到 DOM 节点 |
-| **意义**     | React 社区的 Signal 方案都在模仿 Solid 的设计                |
+| **意义**     | 框架级响应式参考，对 React 生态有启发                        |
 
 ---
 
@@ -574,7 +587,7 @@ ymap.observe((event) => {
 
 ---
 
-#### Relay (Facebook)
+#### Relay (Meta)
 
 | 维度         | 内容                                                        |
 | :----------- | :---------------------------------------------------------- |
@@ -709,9 +722,28 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ---
 
-## 二、「完美」的状态管理库应该长什么样？
+## 三、「理想」的状态管理库应该长什么样？
 
-理想的下一代状态管理库应该具备：
+### 3.1 目标 (Goals)
+
+- **单一心智模型**：本地/服务端/协作状态共享统一抽象
+- **可观测与可调试**：状态变化可追踪，可视化与日志可用
+- **逻辑与数据解耦**：业务流程与数据存储分层，彼此可组合
+- **性能可预测**：细粒度更新，可控的订阅边界与调度策略
+- **跨团队可扩展**：支持分域与分层治理，允许渐进接入
+
+### 3.2 非目标 (Non-goals)
+
+- **不替代业务数据源**：GraphQL/REST 客户端仍是独立层
+- **不包办领域建模**：领域规则仍由应用层负责
+- **不强绑定框架**：保留框架适配层，核心保持框架无关
+
+### 3.3 硬约束 (Constraints)
+
+- **并发与 SSR 安全**：适配并发渲染与流式 SSR 的生命周期
+- **可树摇**：核心足够小，扩展能力按需引入
+- **调度确定性**：批处理与异步行为可预测，避免隐式魔法
+- **隔离性**：SSR 请求级隔离，避免跨请求状态污染
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -721,31 +753,61 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 │  2. 声明式逻辑流      │ 内置 FSM/Statechart，状态转换可视化        │
 │  3. 细粒度响应式      │ Signal-like 性能，无需手动优化             │
 │  4. 协作原生支持      │ 可选开启 CRDT，无需切换库                  │
-│  5. 类型安全          │ 100% TypeScript，编译期捕获错误            │
-│  6. 开发者体验        │ 小于 3KB，零配置，5 分钟上手               │
+│  5. 类型安全          │ TypeScript 优先，编译期捕获错误            │
+│  6. 开发者体验        │ 低配置成本，5 分钟上手                      │
 │  7. 框架无关          │ React/Vue/Svelte/Solid 通用                │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 三、下一代状态管理库设计构想
+## 四、下一代状态管理库设计构想
 
-### 3.1 设计原则
+### 4.1 设计原则
 
-1. **统一抽象**：设计一个足够通用的「State
-   Node」原语，能表达原子状态、派生状态、异步状态、协作状态
-2. **逻辑分离**：把"数据"和"状态机"作为两个正交的维度
+1. **统一抽象**：设计通用「State Node」原语，可表达原子、派生、
+   异步、协作状态
+2. **逻辑分离**：把"数据"与"状态机"作为两个正交维度
 3. **渐进增强**：简单场景极简 API，复杂场景可插拔扩展
+4. **可观测性优先**：所有状态变更可序列化、可回放
 
-### 3.2 技术选型
+### 4.2 技术选型
 
 - **响应式核心**：基于 Signal 的细粒度订阅
 - **逻辑层**：借鉴 XState 的 Statechart，但更轻量
 - **协作层**：可选集成 Yjs
 - **TypeScript**：类型推断驱动的 API 设计
 
-### 3.3 API 设计草案 (MVP)
+### 4.2.1 方案对比与取舍
+
+| 方案               | 优势                                           | 代价/风险                          | 取舍结论                     |
+| :----------------- | :--------------------------------------------- | :--------------------------------- | :--------------------------- |
+| **Signal**         | 细粒度更新、性能可预测                         | 需要适配 React 等框架调度          | 作为核心响应式原语           |
+| **Proxy**          | 写法自然、侵入性低                             | 隐式依赖难追踪、调试成本高          | 仅作为可选语法糖             |
+| **Observable**     | 异步建模能力强                                 | 心智负担大、组件集成需胶水层        | 用于异步层，不作为核心状态   |
+| **Immutable Tree** | 可预测、利于时间旅行                           | 性能与心智成本高                   | 用于 DevTools，而非强约束    |
+
+### 4.2.2 竞争优势与必然权衡
+
+- **明显更强**：统一心智模型、逻辑/数据解耦、协作原生、可观测协议
+- **可预期劣势**：初期生态不成熟、迁移需要桥接层、概念边界更复杂
+- **性能不承诺压倒性领先**：目标是稳定可预测，而非绝对跑分第一
+
+### 4.2.3 与主流方案对比矩阵 (草案)
+
+| 方案             | 统一心智模型 | 可观测性 | 逻辑/数据解耦 | 协作原生 | 迁移成本 |
+| :--------------- | :----------: | :------: | :-----------: | :------: | :------: |
+| **Redux Toolkit** |      ◐       |    ●     |      ◐        |    ✕     |    ◐     |
+| **Zustand**       |      ◐       |    ◐     |      ✕        |    ✕     |    ●     |
+| **Jotai**         |      ◐       |    ◐     |      ✕        |    ✕     |    ◐     |
+| **XState**        |      ✕       |    ●     |      ●        |    ✕     |    ◐     |
+| **React Query**   |      ✕       |    ●     |      ✕        |    ✕     |    ◐     |
+| **Yjs**           |      ✕       |    ◐     |      ✕        |    ●     |    ✕     |
+| **下一代方案**    |      ●       |    ●     |      ●        |    ●     |    ◐     |
+
+> 图例：● 强，◐ 中，✕ 弱。迁移成本越低越好。
+
+### 4.3 API 设计草案 (MVP)
 
 ```typescript
 // 梦想中的 API
@@ -772,7 +834,7 @@ const userAtom = atom.async(fetchUser);
 const docAtom = atom.sync({ title: '', content: '' });
 ```
 
-### 3.4 架构分层
+### 4.4 架构分层
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -793,20 +855,41 @@ const docAtom = atom.sync({ title: '', content: '' });
 └─────────────────────────────────────────────────────────┘
 ```
 
+### 4.5 迁移策略 (草案)
+
+- **兼容层**：提供对 Redux/Zustand/Jotai 的读取适配
+- **分域迁移**：从非核心模块开始替换，支持并行运行
+- **共存期**：提供桥接工具，允许旧状态与新状态互操作
+
+#### 迁移示例 (Redux -> State Node)
+
+```typescript
+// legacy store
+const legacyStore = configureStore({ reducer });
+
+// bridge: read-only snapshot to State Node
+const legacyState = atom.fromStore(() => legacyStore.getState());
+
+// subscribe once to propagate updates
+legacyStore.subscribe(() => legacyState.refresh());
+```
+
 ---
 
-## 四、实施路线图
+## 五、实施路线图
 
 ### Phase 1: 核心原语 (Week 1-2)
 
 - [ ] 实现 `atom()` - 基于 Signal 的响应式原子
 - [ ] 实现 `computed()` - 派生状态
 - [ ] 实现基础订阅机制
+- [ ] 最小可观测性：变更日志与订阅统计接口
 
 ### Phase 2: 状态机集成 (Week 3-4)
 
 - [ ] 实现 `machine()` - 轻量级 FSM
 - [ ] 状态机与 atom 的绑定
+- [ ] 副作用调度与取消语义 (effect lifecycle)
 - [ ] 可视化工具接口
 
 ### Phase 3: 异步与服务端状态 (Week 5-6)
@@ -814,6 +897,7 @@ const docAtom = atom.sync({ title: '', content: '' });
 - [ ] 实现 `atom.async()` - 异步数据获取
 - [ ] 缓存策略与乐观更新
 - [ ] 错误边界处理
+- [ ] CRDT 兼容数据模型 PoC (验证序列化与合并策略)
 
 ### Phase 4: 协作支持 (Week 7-8)
 
@@ -823,13 +907,194 @@ const docAtom = atom.sync({ title: '', content: '' });
 
 ### Phase 5: 框架适配 (Week 9-10)
 
-- [ ] React 适配器 (`@next-state/react`)
-- [ ] Vue 适配器 (`@next-state/vue`)
+- [ ] React 适配器 (`@next-state/react`) - 最小可用版本
 - [ ] DevTools 扩展
+- [ ] Vue 适配器 (`@next-state/vue`)
+
+### 里程碑 (M0/M1/M2)
+
+- **M0 (Week 2)**：`atom()`/`computed()` 可用，最小可观测性完成
+- **M1 (Week 6)**：`machine()`/`atom.async()` 可用，effect 语义稳定
+- **M2 (Week 10)**：`atom.sync()` 与 React 适配器可用，DevTools 可用
+
+### 关键风险与依赖
+
+- **CRDT 设计前置**：数据模型一旦定型，后期改动成本高
+- **调度一致性**：并发渲染/SSR 与异步取消语义要避免歧义
+- **生态接入成本**：迁移策略与桥接层必须同时验证
+
+### 里程碑验收标准
+
+- **M0 通过**：原语 API 覆盖基本用例，变更日志可追踪，订阅统计可导出
+- **M1 通过**：状态机/异步场景有最小示例，effect 生命周期文档清晰
+- **M2 通过**：React 适配器完成最小 demo，DevTools 可查看状态轨迹
+
+### Demo 场景清单
+
+- **M0 Demo**：计数器 + 派生状态 + 批量更新演示
+- **M1 Demo**：登录状态机 + 异步请求 + 取消与重试
+- **M2 Demo**：多人协作文档 + React 组件集成 + DevTools 回放
+
+### Demo 验收步骤
+
+- **M0 Demo**：点击 100 次累计更新一次渲染，日志可导出为 JSON
+- **M1 Demo**：触发登录后立即取消，状态机回到 idle 且无悬挂请求
+- **M2 Demo**：两端同时编辑，冲突自动合并，时间线可回放
+
+### 性能基线 (初版)
+
+- **订阅开销**：1k 订阅下更新延迟稳定，可观测日志不显著拖慢渲染
+- **批处理性能**：连续 1k 次更新合并为单次渲染
+- **异步吞吐**：并发 100 个请求时取消语义稳定、无内存泄漏
+
+### Benchmark 环境与口径 (初版)
+
+- **环境**：MacBook Pro M1 / 16GB / Chrome Stable
+- **场景**：1k 订阅、1k 连续更新、100 并发异步请求
+- **口径**：使用 Performance API 统计更新耗时，记录均值与 P95
+
+### Benchmark 采样脚本 (示例)
+
+```typescript
+// pseudo-benchmark for devtools panel or playground
+const marks: number[] = [];
+
+function measure(label: string, fn: () => void) {
+  const start = performance.now();
+  fn();
+  const end = performance.now();
+  marks.push(end - start);
+  console.log(label, end - start);
+}
+
+measure('batch-1000', () => {
+  batch(() => {
+    for (let i = 0; i < 1000; i += 1) {
+      counterAtom.set((n) => n + 1);
+    }
+  });
+});
+
+const p95 = marks.sort((a, b) => a - b)[Math.floor(marks.length * 0.95)];
+console.log('p95', p95);
+```
 
 ---
 
-## 五、参考资源
+## 七、API 细节与一致性语义
+
+### 7.1 状态类型与生命周期
+
+- **atom**：可变的原子值，允许同步更新与订阅
+- **computed**：派生值，依赖图自动追踪，只读
+- **async atom**：带缓存与取消语义的异步状态
+- **sync atom**：与 CRDT 绑定的协作状态，可选择离线合并
+
+### 7.2 一致性语义 (初版)
+
+- **读一致性**：同一批次内读到的是批次开始时的快照
+- **写合并**：同一批次内多次写合并为一次通知
+- **异步取消**：新请求触发时可取消旧请求，避免过期写入
+- **协作合并**：冲突按 CRDT 规则合并，结果可回放
+
+### 7.3 错误模型
+
+- **同步错误**：抛出到调用方，可由边界组件捕获
+- **异步错误**：保存在状态节点的 error 字段，可订阅
+- **协作错误**：网络/合并失败以事件流暴露，不阻断本地写入
+
+### 7.4 最小实现清单 (MVP)
+
+- **核心**：atom/computed + 订阅 + 批处理
+- **调度**：effect 生命周期与取消语义
+- **可观测性**：变更日志 + 订阅统计 + 时间线接口
+- **适配器**：React 最小 Hook 层
+
+### 7.5 Async 缓存与失效策略 (初版)
+
+- **缓存键**：`atom.async(key, fetcher)` 显式 key，避免隐式依赖
+- **staleTime**：过期前读缓存，过期后返回缓存并触发刷新
+- **cacheTime**：无人订阅后延迟回收
+- **retry**：可配置重试次数与退避策略
+- **optimistic**：允许先写入本地值，失败时回滚
+- **dedupe**：同 key 并发请求合并为单次网络调用
+
+### 7.6 DevTools 协议 (最小字段)
+
+```typescript
+type TraceEvent = {
+  id: string;
+  ts: number;
+  type: 'read' | 'write' | 'effect' | 'async' | 'sync';
+  nodeId: string;
+  payload?: unknown;
+  batchId?: string;
+  error?: string;
+};
+
+type TraceSnapshot = {
+  nodes: Record<string, unknown>;
+  edges: Array<{ from: string; to: string }>;
+};
+```
+
+### 7.7 SSR 与并发渲染语义 (初版)
+
+- **请求隔离**：每个 SSR 请求拥有独立 store 实例
+- **惰性初始化**：只有被访问的节点才创建
+- **hydration**：客户端优先使用服务端快照，避免闪烁
+- **并发一致性**：并发渲染中读到一致快照，提交后再触发通知
+
+---
+
+## 八、版本化与发布策略 (草案)
+
+### 8.1 包结构
+
+- `@next-state/core`：核心原语与调度
+- `@next-state/react`：React 适配器
+- `@next-state/devtools`：DevTools 协议与面板
+- `@next-state/sync`：协作层 (CRDT 适配)
+
+### 8.2 语义版本与兼容承诺
+
+- **0.x**：API 可快速迭代，不保证兼容
+- **1.0**：核心 API 稳定，破坏性变更按主版本发布
+- **适配器**：与核心版本对齐，保持同一主版本
+
+### 8.3 发布节奏
+
+- **核心优先**：核心稳定后再扩展适配器与协作层
+- **beta 通道**：提供 `-beta` 版本用于试验新语义
+
+---
+
+## 九、文档结构建议 (草案)
+
+### 9.1 快速上手
+
+- 5 分钟入门：atom/computed/batch
+- 第一个状态机 + 异步请求
+
+### 9.2 概念模型
+
+- State Node 抽象
+- 逻辑层与数据层
+- 一致性与调度语义
+
+### 9.3 迁移指南
+
+- Redux / Zustand / Jotai 迁移路径
+- 共存与桥接策略
+
+### 9.4 调试与性能
+
+- DevTools 使用
+- 性能基线与优化建议
+
+---
+
+## 六、参考资源
 
 ### 现有库深度研究
 
