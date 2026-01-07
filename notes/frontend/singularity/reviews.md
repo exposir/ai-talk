@@ -146,6 +146,232 @@ const docAtom = atomSync({ title: '', content: '' }, { id: 'doc:1' });
 
 ---
 
+#### 6.1 风险详解与解决方案
+
+##### ⚠️ 风险 1：时间表过于乐观
+
+**问题分析**：
+
+- 10 周从零实现 Core + Machine + Async + Sync + React Adapter +
+  DevTools 几乎不可能
+- 每一层都有隐藏的复杂度，尤其是 CRDT 协作层和 DevTools 时间旅行
+- 缺少测试、文档、边界案例处理的时间预留
+
+**解决方案**：
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    分阶段发布策略                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  v0.1 (Week 4-6)     │ atom/computed/batch/effect + React Hook  │
+│  v0.2 (Week 8-10)    │ atomAsync + 缓存/取消语义                 │
+│  v0.3 (Week 12-14)   │ machine + effect 生命周期                 │
+│  v1.0 (Week 18-20)   │ DevTools 面板 + 完整文档                  │
+│  v1.1 (Week 24+)     │ atomSync + CRDT 协作 (独立发布)           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**具体措施**：
+
+1. **MVP 优先**：v0.1 只做 `atom/computed/batch`，不做任何高级功能
+2. **功能门控**：使用 feature flag 隔离未完成功能
+3. **缓冲区**：每个里程碑预留 30% 的时间应对意外复杂度
+4. **并行开发**：DevTools 可在核心稳定后由独立贡献者推进
+
+---
+
+##### ⚠️ 风险 2：统一心智模型的悖论
+
+**问题分析**：
+
+- 历史教训：Redux 试图统一一切，结果 Action/Reducer/Middleware/Selector/Thunk 概念爆炸
+- 抽象越通用，概念开销越大，最终失去"简单"的初衷
+- "万能抽象"往往意味着"万能复杂"
+
+**解决方案**：
+
+**明确"不统一什么"——划定边界**：
+
+| 场景           |    是否纳入奇点    | 理由                     |
+| :------------- | :----------------: | :----------------------- |
+| 全局/模块状态  |      ✅ 核心       | 主战场                   |
+| 服务端缓存状态 |    ✅ atomAsync    | 统一心智模型的关键       |
+| 协作状态       | ✅ atomSync (可选) | 按需启用，不强制         |
+| **表单状态**   |     ❌ 不纳入      | React Hook Form 已足够好 |
+| **动画状态**   |     ❌ 不纳入      | Framer Motion 专业领域   |
+| **路由状态**   |     ❌ 不纳入      | TanStack Router 已解决   |
+| **表格状态**   |     ❌ 不纳入      | TanStack Table 专业领域  |
+
+**设计原则**：
+
+```typescript
+// ✅ 好的边界：奇点管"数据流"，不管"领域特化"
+const formState = useForm(); // 用 React Hook Form
+const tableState = useTable(); // 用 TanStack Table
+const appState = atom({ user: null }); // 用奇点
+
+// ❌ 不要试图：
+const form = atom({ fields: {}, errors: {}, touched: {} }); // 重复造轮子
+```
+
+**API 分层策略**：
+
+```
+Level 0 (必学)：atom, computed, batch        → 覆盖 80% 场景
+Level 1 (按需)：effect, atomAsync            → 异步与副作用
+Level 2 (进阶)：machine                       → 复杂业务流程
+Level 3 (专业)：atomSync, createStore        → 协作与 SSR
+```
+
+---
+
+##### ⚠️ 风险 3：Signal vs React 调和机制
+
+**问题分析**：
+
+- Signal 的核心是"细粒度更新"，绕过 React 的 VDOM Diff
+- 但 React 18+ 的并发特性 (`useTransition`, `Suspense`,
+  `useDeferredValue`) 依赖调度器控制
+- Signal 直接更新可能导致：
+  - 并发渲染中的 tearing（撕裂）问题
+  - Suspense 边界失效
+  - Transition 优先级被绕过
+
+**解决方案**：
+
+**方案 A：拥抱 `useSyncExternalStore`（推荐）**
+
+```typescript
+// React 18 官方推荐的外部状态订阅方式
+import { useSyncExternalStore } from 'react';
+
+export function useAtom<T>(atom: Atom<T>): T {
+  return useSyncExternalStore(
+    atom.subscribe, // 订阅函数
+    atom.get, // 客户端快照
+    atom.get, // 服务端快照 (SSR)
+  );
+}
+```
+
+**优势**：
+
+- 与 React Concurrent Mode 完全兼容
+- 自动处理 tearing 问题
+- 服务端渲染安全
+
+**方案 B：提供可选的"激进模式"**
+
+```typescript
+// 对于不需要并发特性的场景，提供更高性能的直接绑定
+import { useAtomFast } from '@singularity/react/fast';
+
+// ⚠️ 文档警告：此模式不保证与 Suspense/Transition 兼容
+const value = useAtomFast(atom);
+```
+
+**兼容性矩阵**：
+
+| React 特性           | useAtom (安全模式) | useAtomFast (激进模式) |
+| :------------------- | :----------------: | :--------------------: |
+| Concurrent Rendering |         ✅         |    ⚠️ 可能 tearing     |
+| Suspense             |         ✅         |    ⚠️ 边界可能失效     |
+| useTransition        |         ✅         |    ❌ 优先级被绕过     |
+| SSR/RSC              |         ✅         |           ✅           |
+| 性能                 |        良好        |          极致          |
+
+---
+
+##### ⚠️ 风险 4：缺少失败条件定义
+
+**问题分析**：
+
+- 路线图只定义了"怎样算成功"，没有定义"何时该放弃"
+- 没有 Kill Criteria 会导致项目无限拖延或过度投入
+
+**解决方案**：
+
+**制定明确的 Kill Criteria（项目终止条件）**：
+
+```markdown
+## Kill Criteria 检查点
+
+### M0 (Week 4) 检查点
+
+如果以下任一条件成立，重新评估项目：
+
+- [ ] atom/computed 基准性能不及 Jotai 的 80%
+- [ ] 依赖追踪机制存在无法解决的循环依赖 bug
+- [ ] React 适配器与 Concurrent Mode 无法兼容
+
+### M1 (Week 10) 检查点
+
+如果以下任一条件成立，考虑收缩范围：
+
+- [ ] atomAsync 无法实现"取消旧请求"语义
+- [ ] 状态机与 atom 的集成产生不可预测的副作用
+- [ ] DevTools 事件协议无法序列化复杂状态
+
+### M2 (Week 16) 检查点 - CRDT 专项
+
+如果以下任一条件成立，将 CRDT 推迟到 v2：
+
+- [ ] Yjs 集成导致包体积超过 50KB
+- [ ] 离线合并产生不可恢复的数据冲突
+- [ ] 协作性能在 5 人以上场景劣化严重
+
+### 项目级 Kill Criteria
+
+如果以下任一条件成立，停止项目：
+
+- [ ] v0.2 后试点项目反馈"比 Zustand 更复杂"
+- [ ] 社区已有方案（如 TanStack Store）覆盖 80%+ 目标
+- [ ] 核心维护者精力不足以持续 6 个月
+```
+
+**决策流程图**：
+
+```
+               ┌─────────────┐
+               │  里程碑到达  │
+               └──────┬──────┘
+                      ▼
+            ┌─────────────────┐
+            │  检查 Kill Criteria │
+            └────────┬────────┘
+                     ▼
+         ┌───────────┴───────────┐
+         │                       │
+    全部通过                  有失败项
+         │                       │
+         ▼                       ▼
+   ┌───────────┐         ┌────────────────┐
+   │ 继续推进  │         │ 召开评审会议    │
+   └───────────┘         └───────┬────────┘
+                                 ▼
+                    ┌────────────┴────────────┐
+                    │                         │
+               可修复/可规避              不可解决
+                    │                         │
+                    ▼                         ▼
+             ┌───────────┐            ┌────────────┐
+             │ 调整继续  │            │ 收缩/终止  │
+             └───────────┘            └────────────┘
+```
+
+---
+
+#### 6.2 风险缓解检查清单
+
+| 风险         | 缓解措施                         | 负责人     | 检查时间      |
+| :----------- | :------------------------------- | :--------- | :------------ |
+| 时间表乐观   | 分阶段发布，每阶段留 30% 缓冲    | 项目负责人 | 每周          |
+| 心智模型膨胀 | 维护"不统一列表"，API 分层教学   | 架构师     | 每次 API 变更 |
+| React 兼容性 | 强制使用 useSyncExternalStore    | 开发者     | 代码审查      |
+| 缺少失败条件 | 维护 Kill Criteria，里程碑后评审 | 项目负责人 | 每个里程碑    |
+
+---
+
 ### 七、竞品对比矩阵
 
 | 方案          | 统一心智模型 | 可观测性 | 逻辑/数据解耦 | 协作原生 | 迁移成本 |
