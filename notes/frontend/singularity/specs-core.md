@@ -210,6 +210,7 @@ export function createStore(): Store;
 ```typescript
 // React
 export function useAtom<T>(node: Atom<T> | Computed<T>): T;
+export function useAtom<T, R>(node: Atom<T>, selector: (state: T) => R): R;
 export function useAtomValue<T>(node: Atom<T> | Computed<T>): T;
 export function useSetAtom<T>(node: Atom<T>): Atom<T>['set'];
 
@@ -219,13 +220,47 @@ export function useAtomRef<T>(node: Atom<T> | Computed<T>): { value: T };
 
 **语义说明**：
 - 适配器只负责订阅与更新，不改变核心语义。
-- React 适配器使用 `useSyncExternalStore` 保证并发安全。
+- React 适配器**必须**使用 `useSyncExternalStore` 保证并发安全。
+- Selector 版本支持细粒度订阅，内置浅比较优化。
+
+**React 并发兼容性（关键）**：
+
+```typescript
+// 内部实现必须使用 useSyncExternalStore
+import { useSyncExternalStore, useCallback } from 'react';
+
+export function useAtom<T>(atom: Atom<T>): T {
+  return useSyncExternalStore(
+    atom.subscribe,
+    atom.get,
+    atom.get, // SSR 快照
+  );
+}
+
+// 带 Selector 的版本（性能优化）
+export function useAtomWithSelector<T, R>(
+  atom: Atom<T>,
+  selector: (state: T) => R,
+): R {
+  const getSnapshot = useCallback(
+    () => selector(atom.get()),
+    [atom, selector],
+  );
+  return useSyncExternalStore(atom.subscribe, getSnapshot, getSnapshot);
+}
+```
+
+> ⚠️ **强制要求**：不得绕过 `useSyncExternalStore`，否则会导致并发渲染 tearing。
 
 **API 明细 (React)**：
 
 **`useAtom<T>(node): T`**
 - **用途**：订阅 atom/computed 并触发组件更新。
 - **注意**：依赖变化触发重渲染，遵守 batch 语义。
+
+**`useAtom<T, R>(node, selector): R`**
+- **用途**：细粒度订阅，只在 selector 返回值变化时重渲染。
+- **性能**：内置浅比较，避免不必要的重渲染。
 
 **`useAtomValue<T>(node): T`**
 - **用途**：只读订阅，不暴露 set。

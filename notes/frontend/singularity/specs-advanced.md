@@ -89,6 +89,9 @@ effect(() => {
 
 ### 13.3 协作层 API 规范 (Sync)
 
+> ⚠️ **高风险模块**：atomSync 是整个项目风险最高的部分，建议作为 v1.1 独立发布。
+> 在 v1.0 阶段，优先确保 Core + Async + Machine 的稳定性。
+
 ```typescript
 type SyncOptions = {
   id: string;
@@ -108,6 +111,16 @@ export function atomSync<T>(initial: T, options: SyncOptions): SyncAtom<T>;
 **语义说明**：
 - `connect` 建立协作连接，`disconnect` 保留本地可写。
 - `offline` 为 true 时允许离线编辑，恢复后合并。
+
+**风险评估**：
+- **包体积**：Yjs 约 30-40KB (gzipped)，需控制总体积
+- **复杂度**：CRDT 合并语义复杂，调试困难
+- **性能**：多人协作场景下的性能验证需要充分测试
+
+**验收条件**（v1.1 发布前）：
+- 5 人以下协作无冲突丢失
+- 离线编辑恢复后数据一致
+- 包体积增量不超过 50KB
 
 **API 明细**：
 

@@ -124,7 +124,65 @@ const docAtom = atomSync({ title: '', content: '' }, { id: 'doc:1' });
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 4.5 迁移策略
+### 4.5 React 并发模式兼容性
+
+> ⚠️ **关键挑战**：Signal 与 React Concurrent Mode 的兼容性是项目成败的关键。
+
+#### 问题分析
+
+Signal 的核心是"细粒度更新"，绕过 React 的 VDOM Diff。但 React 18+ 的并发特性依赖调度器控制，Signal 直接更新可能导致：
+
+- **Tearing（撕裂）**：并发渲染中读到不一致的状态
+- **Suspense 边界失效**：异步状态与 Suspense 集成困难
+- **Transition 优先级被绕过**：`useTransition` 无法正常工作
+
+#### 解决方案：强制使用 `useSyncExternalStore`
+
+```typescript
+import { useSyncExternalStore } from 'react';
+
+export function useAtom<T>(atom: Atom<T>): T {
+  return useSyncExternalStore(
+    atom.subscribe, // 订阅函数
+    atom.get,       // 客户端快照
+    atom.get,       // 服务端快照 (SSR)
+  );
+}
+```
+
+**优势**：
+- 与 React Concurrent Mode 完全兼容
+- 自动处理 tearing 问题
+- 服务端渲染安全
+
+**代价**：
+- 回退到同步渲染（de-opt from time-slicing）
+- 需要通过 Selector 优化弥补性能损耗
+
+#### 兼容性矩阵
+
+| React 特性           | useAtom (安全模式) | 备注                     |
+| :------------------- | :----------------: | :----------------------- |
+| Concurrent Rendering |         ✅         | 通过 useSES 保证         |
+| Suspense             |         ✅         | atomAsync 需特殊处理     |
+| useTransition        |         ✅         | 需配合 Selector          |
+| SSR/RSC              |         ✅         | Store 隔离保证           |
+
+#### Selector 优化（必须）
+
+为弥补同步渲染带来的性能损耗，强制使用细粒度 Selector：
+
+```typescript
+// ❌ 不推荐：订阅整个大对象
+const store = useAtom(bigStore);
+
+// ✅ 推荐：只订阅需要的切片
+const count = useAtom(bigStore, (s) => s.count);
+```
+
+核心库应内置 Selector 的浅比较 (Shallow Compare) 逻辑。
+
+### 4.6 迁移策略
 
 - **兼容层**：提供对 Redux/Zustand/Jotai 的读取适配
 - **分域迁移**：从非核心模块开始替换，支持并行运行
@@ -147,6 +205,47 @@ const legacyState = fromStore(() => legacyStore.getState(), legacyStore.subscrib
 
 > 导读：将实现拆成阶段，便于里程碑管理与风险控制。
 
-本节具体路线图已整理到附录文档，避免与主文重复：
+### 5.1 版本规划概览
+
+| 版本   | 周期      | 核心能力                          | 风险等级 |
+| :----- | :-------- | :-------------------------------- | :------- |
+| v0.1   | Week 1-4  | atom/computed/batch/effect + React| 低       |
+| v0.2   | Week 5-8  | atomAsync (缓存/取消)             | 中       |
+| v0.3   | Week 9-12 | machine (状态机)                  | 低       |
+| v1.0   | Week 13-16| DevTools + 完整文档               | 中       |
+| v1.1   | Week 17+  | atomSync (CRDT 协作) - **可选**   | **高**   |
+
+> ⚠️ **关键决策**：CRDT 协作层（atomSync）风险最高，建议作为 v1.1 独立发布，不阻塞 v1.0。
+
+### 5.2 API 分层策略
+
+```
+Level 0 (必学)：atom, computed, batch        → 覆盖 80% 场景
+Level 1 (按需)：effect, atomAsync            → 异步与副作用
+Level 2 (进阶)：machine                       → 复杂业务流程
+Level 3 (专业)：atomSync, createStore        → 协作与 SSR
+```
+
+**设计原则**：新用户只需理解 Level 0 即可完成大多数小项目，进阶功能"按需解锁"。
+
+### 5.3 详细路线图
+
+具体实施细节与验收标准见附录：
 
 - [实现路线图 (工程级细化)](./appendices.md#附录-b-实现路线图-工程级细化)
+- [里程碑与验收标准](./appendices.md#附录-d-里程碑与验收标准-工程版)
+
+### 5.4 Kill Criteria（项目终止条件）
+
+> 明确"何时应该放弃或收缩范围"，避免无限拖延。
+
+| 检查点 | Kill Criteria                                      | 后续动作             |
+| :----- | :------------------------------------------------- | :------------------- |
+| M0     | atom/computed 性能不及 Jotai 80%                   | 重新评估技术选型     |
+| M0     | React 适配器与 Concurrent Mode 无法兼容            | 切换到 useSES 方案   |
+| M1     | atomAsync 无法实现取消旧请求语义                   | 收缩为只做 Core      |
+| M2     | 状态机与 atom 产生不可预测副作用                   | 降级为可选扩展       |
+| M4     | Yjs 集成包体积超 50KB                              | CRDT 推迟到 v2       |
+| M4     | 5 人以上协作性能严重劣化                           | CRDT 推迟到 v2       |
+| 全局   | v0.2 后试点反馈"比 Zustand 更复杂"                | 重新评估项目定位     |
+| 全局   | TanStack Store 发布且覆盖 80%+ 目标                | 评估是否继续         |

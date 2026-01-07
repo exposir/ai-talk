@@ -46,40 +46,56 @@ type TraceExport = {
 
 > 本节为唯一路线图来源，主文仅引用，不再重复维护。
 
-### Phase 1: Core MVP (Week 1-2)
+### Phase 1: Core MVP (Week 1-4)
 
 - [ ] atom/computed/batch/effect 原型
 - [ ] 依赖图追踪与订阅机制
 - [ ] TraceEvent 采集（write/effect）
 - [ ] 单元测试：循环依赖、batch 合并
+- [ ] React 最小 Hook 适配器（useAtom）
+- [ ] Demo：计数器 + batch 渲染合并
 
-### Phase 2: Machine MVP (Week 3-4)
+**验收标准**：atom/computed 基准性能不低于 Jotai 80%
 
-- [ ] machine 状态机执行器
-- [ ] entry/exit 语义 + FIFO 事件处理
-- [ ] effect 生命周期定义
-- [ ] Demo：登录状态机
-
-### Phase 3: Async MVP (Week 5-6)
+### Phase 2: Async MVP (Week 5-8)
 
 - [ ] atomAsync 去重/取消/staleTime
 - [ ] error/status 原子
 - [ ] Demo：请求 + 取消 + 重试
 - [ ] Benchmark：并发 100 请求
+- [ ] 完善 React 适配器与 Suspense 集成
 
-### Phase 4: Sync PoC (Week 7-8)
+**验收标准**：取消语义正确，无过期写入
+
+### Phase 3: Machine MVP (Week 9-12)
+
+- [ ] machine 状态机执行器
+- [ ] entry/exit 语义 + FIFO 事件处理
+- [ ] effect 生命周期定义
+- [ ] Demo：登录状态机
+- [ ] 状态机与 atom 集成验证
+
+**验收标准**：状态机与 atom 无冲突副作用
+
+### Phase 4: DevTools + 文档 (Week 13-16)
+
+- [ ] DevTools 面板原型（时间线回放）
+- [ ] 性能采样模式
+- [ ] 完整 API 文档
+- [ ] Vue ref 适配器
+
+**验收标准**：DevTools 可序列化回放
+
+### Phase 5: Sync PoC (Week 17-20) - 可选/v1.1
 
 - [ ] atomSync 原型
 - [ ] CRDT 合并 PoC（小规模）
 - [ ] TraceEvent 同步回放
 - [ ] Demo：协作文档小样
 
-### Phase 5: Adapters + DevTools (Week 9-10)
+**验收标准**：5 人以下协作无冲突丢失
 
-- [ ] React 最小 Hook 适配器
-- [ ] Vue ref 适配器
-- [ ] DevTools 面板原型
-- [ ] 性能采样模式
+> ⚠️ **重要**：CRDT 协作层风险最高，建议作为 v1.1 独立发布，不阻塞 v1.0
 
 ---
 
@@ -110,23 +126,44 @@ type TraceExport = {
 
 ## 附录 D、里程碑与验收标准 (工程版)
 
-### M0 (Week 2)
+### M0 (Week 4) - Core 可用
 
-- atom/computed/batch 可运行
+- atom/computed/batch/effect 可运行
 - TraceEvent 采集 write/effect
+- React 最小 Hook 适配器可用
 - Demo：计数器 + batch 渲染合并
 
-### M1 (Week 6)
+**Kill Criteria**：若 atom/computed 性能不及 Jotai 80%，重新评估技术选型
 
-- machine + atomAsync 可运行
+### M1 (Week 8) - Async 可用
+
+- atomAsync 可运行，缓存/取消/去重正确
 - effect 生命周期与 error 模型稳定
-- Demo：登录流程 + 异步取消
+- Demo：请求 + 取消 + 重试
 
-### M2 (Week 10)
+**Kill Criteria**：若取消语义无法实现，收缩为只做 Core
+
+### M2 (Week 12) - Machine 可用
+
+- machine + atom 集成可运行
+- Demo：登录流程状态机
+- 状态机事件序列可追踪
+
+**Kill Criteria**：若状态机与 atom 产生不可预测副作用，降级为可选扩展
+
+### M3 (Week 16) - v1.0 发布
+
+- DevTools 面板可回放
+- 完整 API 文档
+- React/Vue 适配器可用
+- 性能基准报告
+
+### M4 (Week 20+) - v1.1 协作层（可选）
 
 - atomSync PoC 可选启用
-- React 适配器最小版本可用
-- DevTools 面板可回放
+- CRDT 合并验证
+
+**Kill Criteria**：若 Yjs 集成包体积超 50KB 或 5 人协作性能严重劣化，推迟到 v2
 
 ---
 

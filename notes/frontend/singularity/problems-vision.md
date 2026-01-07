@@ -87,4 +87,31 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 **结论**：
 整体目标技术上可实现，但需要分阶段达成。1/2/3/5/7 属于核心能力，可通过核心原语与适配器落地；4（协作原生）难度最高，需要以 PoC 与性能验证逐步推进；6（开发者体验）依赖 API 简洁性与文档质量，需迭代优化。综合判断：可实现，但不是一次性全满分，而是按里程碑逐步逼近。
 
+### 3.4 明确不统一的边界 (Non-Unification Scope)
+
+> ⚠️ **重要**：避免陷入"万能抽象"陷阱，明确哪些状态**不纳入**奇点管理。
+
+| 场景           |    是否纳入    | 理由                                       |
+| :------------- | :------------: | :----------------------------------------- |
+| 全局/模块状态  |   ✅ 核心      | 主战场                                     |
+| 服务端缓存状态 | ✅ atomAsync   | 统一心智模型的关键                         |
+| 协作状态       | ✅ atomSync    | 按需启用，不强制（v1.1）                   |
+| **表单状态**   |   ❌ 不纳入    | React Hook Form / Formik 已足够好          |
+| **动画状态**   |   ❌ 不纳入    | Framer Motion / React Spring 专业领域      |
+| **路由状态**   |   ❌ 不纳入    | TanStack Router / React Router 已解决      |
+| **表格状态**   |   ❌ 不纳入    | TanStack Table 专业领域                    |
+| **拖拽状态**   |   ❌ 不纳入    | dnd-kit / react-beautiful-dnd 专业领域     |
+
+**设计原则**：奇点管"通用数据流"，不重复造领域专用轮子。
+
+```typescript
+// ✅ 正确的边界划分
+const formState = useForm();           // 用 React Hook Form
+const tableState = useTable();         // 用 TanStack Table
+const appState = atom({ user: null }); // 用奇点
+
+// ❌ 不要试图统一一切
+const form = atom({ fields: {}, errors: {}, touched: {} }); // 重复造轮子
+```
+
 ---
