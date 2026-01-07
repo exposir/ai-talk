@@ -82,6 +82,8 @@
 
 ## 一、前端状态管理库大全：实现原理与核心思想
 
+> 导读：按范式分类梳理实现原理，建立全局认知与对比框架。
+
 > 本章节收录了前端生态中**所有主流及小众**的状态管理方案，按技术范式分类，深入解析每个库的底层实现和设计哲学。
 
 ---
@@ -681,6 +683,8 @@ const fetchUser = createEffect(async (id) => {
 
 ## 二、现有前端状态管理库的核心问题
 
+> 导读：归纳当下方案的结构性问题，为后文设计目标提供依据。
+
 ### 1. 范式割裂 (Paradigm Fragmentation)
 
 | 问题                   | 具体表现                                                                            |
@@ -725,6 +729,8 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ## 三、「理想」的状态管理库应该长什么样？
 
+> 导读：明确奇点的目标/非目标/约束与价值判断标准。
+
 ### 3.1 目标 (Goals)
 
 - **单一心智模型**：本地/服务端/协作状态共享统一抽象
@@ -765,6 +771,7 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 ## 四、“奇点”状态管理系统设计构想
 
 > 本文将这一面向未来的状态管理系统命名为“奇点”(Singularity)。
+> 导读：给出设计原则、架构分层与 API 草案。
 
 ### 4.1 设计原则
 
@@ -880,6 +887,8 @@ legacyStore.subscribe(() => legacyState.refresh());
 
 ## 五、实施路线图
 
+> 导读：将实现拆成阶段，便于里程碑管理与风险控制。
+
 ### Phase 1: 核心原语 (Week 1-2)
 
 - [ ] 实现 `atom()` - 基于 Signal 的响应式原子
@@ -985,6 +994,8 @@ console.log('p95', p95);
 
 ## 七、API 细节与一致性语义
 
+> 导读：细化 API 与一致性语义，为实现提供硬规则。
+
 ### 7.1 状态类型与生命周期
 
 - **atom**：可变的原子值，允许同步更新与订阅
@@ -1051,6 +1062,8 @@ type TraceSnapshot = {
 
 ## 八、版本化与发布策略 (草案)
 
+> 导读：说明包结构与版本策略，明确发布节奏。
+
 ### 8.1 包结构
 
 - `@singularity/core`：核心原语与调度
@@ -1072,6 +1085,8 @@ type TraceSnapshot = {
 ---
 
 ## 九、文档结构建议 (草案)
+
+> 导读：规划对外文档结构，便于传播与使用。
 
 ### 9.1 快速上手
 
@@ -1097,6 +1112,8 @@ type TraceSnapshot = {
 ---
 
 ## 十、文档评审与改进建议
+
+> 导读：评审与反思区，不作为最终规范。
 
 > 本章节为 AI 辅助生成的文档评审，旨在提供客观的质量评估与可执行的改进建议。
 
@@ -1211,6 +1228,8 @@ const double = computed(() => legacyCounter.get().count * 2);
 
 ## QA
 
+> 导读：记录关键问答，回答基于本文既有内容与明确约束。
+
 > 本节记录对话中的关键问答，回答基于本文既有内容与明确约束。
 
 ### 1. 目前世界上没有我这样的项目吗？如果有类似的，我这个就无意义了？
@@ -1246,7 +1265,565 @@ const double = computed(() => legacyCounter.get().count * 2);
 
 ---
 
-## 十一、参考资源
+## 十一、奇点技术规格 (Draft)
+
+> 导读：将草案变成可执行规格的核心章节。
+
+### 11.1 核心 API 规范 (Core)
+
+```typescript
+type Atom<T> = {
+  id: string;
+  get(): T;
+  set(next: T | ((prev: T) => T)): void;
+  subscribe(listener: () => void): () => void;
+};
+
+type Computed<T> = {
+  id: string;
+  get(): T;
+  subscribe(listener: () => void): () => void;
+};
+
+type BatchFn = (fn: () => void) => void;
+
+type Effect = {
+  dispose(): void;
+};
+
+export function atom<T>(initial: T): Atom<T>;
+export function computed<T>(read: () => T): Computed<T>;
+export function batch(fn: () => void): void;
+export function effect(fn: () => void): Effect;
+```
+
+**语义说明**：
+- `atom.set` 在批次中合并通知，批次结束后统一触发。
+- `computed` 只读，依赖追踪在 `get()` 时建立。
+- `effect` 在依赖变化时重新执行，并允许显式 `dispose()`。
+
+### 11.2 Async API 规范 (Core)
+
+```typescript
+type AsyncOptions<T> = {
+  key: string;
+  staleTime?: number;
+  cacheTime?: number;
+  retry?: number;
+  retryDelay?: (attempt: number) => number;
+  optimistic?: boolean;
+};
+
+type AsyncAtom<T> = Atom<T | undefined> & {
+  status: Atom<'idle' | 'loading' | 'success' | 'error'>;
+  error: Atom<Error | null>;
+  refresh(): Promise<void>;
+};
+
+export function atomAsync<T>(
+  fetcher: () => Promise<T>,
+  options: AsyncOptions<T>,
+): AsyncAtom<T>;
+```
+
+**语义说明**：
+- `key` 必须显式传入，用于去重与缓存。
+- `refresh` 触发一次请求，若并发请求同 key，则合并。
+- `optimistic` 时允许先写入本地值，失败后回滚。
+
+### 11.3 Store 级能力 (Core)
+
+```typescript
+type Store = {
+  atom<T>(initial: T): Atom<T>;
+  computed<T>(read: () => T): Computed<T>;
+  batch(fn: () => void): void;
+  effect(fn: () => void): Effect;
+  snapshot(): Record<string, unknown>;
+};
+
+export function createStore(): Store;
+```
+
+**语义说明**：
+- `createStore` 用于 SSR 请求级隔离。
+- `snapshot` 提供可观测快照给 DevTools 与调试。
+
+### 11.4 框架适配器 API (React/Vue)
+
+```typescript
+// React
+export function useAtom<T>(node: Atom<T> | Computed<T>): T;
+export function useAtomValue<T>(node: Atom<T> | Computed<T>): T;
+export function useSetAtom<T>(node: Atom<T>): Atom<T>['set'];
+
+// Vue
+export function useAtomRef<T>(node: Atom<T> | Computed<T>): { value: T };
+```
+
+**语义说明**：
+- 适配器只负责订阅与更新，不改变核心语义。
+- React 适配器使用 `useSyncExternalStore` 保证并发安全。
+
+### 11.5 DevTools 事件格式 (Core)
+
+```typescript
+type TraceEvent = {
+  id: string;
+  ts: number;
+  type: 'read' | 'write' | 'effect' | 'async' | 'sync';
+  nodeId: string;
+  payload?: unknown;
+  batchId?: string;
+  error?: string;
+};
+
+type TraceSnapshot = {
+  nodes: Record<string, unknown>;
+  edges: Array<{ from: string; to: string }>;
+};
+```
+
+### 11.6 一致性与边界案例 (Core)
+
+- **嵌套 batch**：只形成一个顶层批次，内部不额外触发通知。
+- **循环依赖**：检测到循环时抛出错误并中止本次计算。
+- **异常恢复**：`computed` 抛错会标记 error 状态，下一次依赖变化时重试。
+- **并发写入**：同一批次内写入按最后一次为准。
+- **异步过期**：旧请求返回时若 key 已刷新，结果丢弃。
+
+### 11.7 最小实现结构 (Core)
+
+```
+packages/
+  singularity-core/
+    src/
+      atom.ts
+      computed.ts
+      batch.ts
+      effect.ts
+      store.ts
+      async.ts
+      devtools.ts
+      index.ts
+```
+
+---
+
+## 十二、状态机与协作层规格 (Draft)
+
+> 导读：补充状态机与协作层的具体接口。
+
+### 12.1 状态机 API 规范 (Machine)
+
+```typescript
+type MachineConfig<TState extends string, TEvent extends string> = {
+  id?: string;
+  initial: TState;
+  states: {
+    [K in TState]: {
+      on?: Partial<Record<TEvent, TState>>;
+      entry?: Array<() => void>;
+      exit?: Array<() => void>;
+    };
+  };
+};
+
+type Machine<TState extends string, TEvent extends string> = {
+  state: Atom<TState>;
+  send(event: TEvent): void;
+};
+
+export function machine<TState extends string, TEvent extends string>(
+  config: MachineConfig<TState, TEvent>,
+): Machine<TState, TEvent>;
+```
+
+**语义说明**：
+- `send` 触发状态转换，若无匹配转换则忽略。
+- `entry/exit` 在状态切换时执行，遵守 batch 语义。
+
+### 12.2 状态机与数据解耦 (Machine + Atom)
+
+```typescript
+const auth = machine({
+  initial: 'idle',
+  states: {
+    idle: { on: { LOGIN: 'loading' } },
+    loading: { on: { SUCCESS: 'authed', FAILURE: 'error' } },
+    authed: { on: { LOGOUT: 'idle' } },
+    error: { on: { RETRY: 'loading' } },
+  },
+});
+
+const token = atom<string | null>(null);
+
+effect(() => {
+  if (auth.state.get() === 'authed') {
+    token.set('token');
+  }
+});
+```
+
+### 12.3 协作层 API 规范 (Sync)
+
+```typescript
+type SyncOptions = {
+  id: string;
+  merge?: 'crdt';
+  offline?: boolean;
+};
+
+type SyncAtom<T> = Atom<T> & {
+  connect(): Promise<void>;
+  disconnect(): void;
+  status: Atom<'idle' | 'syncing' | 'error'>;
+};
+
+export function atomSync<T>(initial: T, options: SyncOptions): SyncAtom<T>;
+```
+
+**语义说明**：
+- `connect` 建立协作连接，`disconnect` 保留本地可写。
+- `offline` 为 true 时允许离线编辑，恢复后合并。
+
+### 12.4 协作冲突与合并策略
+
+- **字段级合并**：同一字段冲突按 CRDT 规则合并。
+- **时间线可回放**：所有协作事件进入 TraceEvent 流。
+- **离线优先**：本地写入不阻塞，恢复连接时自动同步。
+
+---
+
+## 十三、类型系统与规范约束 (Draft)
+
+> 导读：说明类型约束与泛型边界。
+
+### 13.1 Atom/Computed 泛型约束
+
+```typescript
+type ReadonlyAtom<T> = Pick<Atom<T>, 'id' | 'get' | 'subscribe'>;
+type WritableAtom<T> = Atom<T>;
+```
+
+**语义说明**：
+- 公开 API 中区分只读与可写，避免误用。
+
+### 13.2 事件类型约束
+
+```typescript
+type EventMap = Record<string, unknown>;
+type EventKey<T extends EventMap> = keyof T & string;
+```
+
+**语义说明**：
+- 状态机 `send` 只接受已声明事件。
+
+---
+
+## 十四、兼容层与共存策略 (Draft)
+
+> 导读：说明与旧系统共存的最小策略。
+
+### 14.1 兼容层 API
+
+```typescript
+export const compat = {
+  redux: <T>(getState: () => T, subscribe: (fn: () => void) => () => void) =>
+    atom.fromStore(getState, subscribe),
+  zustand: <T>(useStore: () => T) => atom.fromHook(useStore),
+};
+```
+
+### 14.2 共存边界
+
+- 兼容层只读，不直接写入旧系统。
+- 变更流进入新系统，旧系统仅提供快照。
+
+---
+
+## 十五、调度与错误处理细则 (Draft)
+
+> 导读：调度与错误规则是行为一致性的依据。
+
+### 15.1 批处理与调度规则
+
+- **单一批次**：嵌套 batch 合并为一个顶层批次
+- **提交时机**：批次结束后统一提交通知
+- **优先级**：同步写入优先于异步回写
+
+### 15.2 异步取消与回放规则
+
+- **取消语义**：新请求触发时取消旧请求，并标记为 `canceled`
+- **回放一致性**：异步结果进入时间线时带上关联 batchId
+- **过期写入**：若 key 已刷新，旧响应丢弃
+
+### 15.3 错误传播规则
+
+- **同步错误**：向调用者抛出，进入 TraceEvent
+- **异步错误**：写入 error atom，不阻断后续刷新
+- **协作错误**：通过事件流告警，不阻塞本地编辑
+
+---
+
+## 十六、DevTools UI 草案 (Draft)
+
+> 导读：描述 DevTools 交互目标与基本布局。
+
+### 16.1 面板布局
+
+- **左侧**：状态树 + 搜索
+- **中间**：时间线 (TraceEvent)
+- **右侧**：当前节点详情 + 依赖图
+
+### 16.2 交互能力
+
+- **时间旅行**：回放到任意事件
+- **过滤**：按 nodeId/type 筛选
+- **快照导出**：JSON 导出用于审计
+
+---
+
+## 十七、性能基准细化 (Draft)
+
+> 导读：给出基准场景与统计口径。
+
+### 17.1 Benchmark 场景
+
+- **读密集**：1k 订阅 + 10k 次只读访问
+- **写密集**：1k 订阅 + 1k 连续写入 (batch)
+- **异步密集**：100 并发请求 + 取消与重试
+
+### 17.2 统计口径
+
+- **均值**：总耗时 / 次数
+- **P95**：95 分位耗时
+- **内存**：操作前后堆内存差值
+
+---
+
+## 十八、Demo 骨架与验收脚本 (Draft)
+
+> 导读：Demo 与验收脚本是验证入口。
+
+### 18.1 Demo 目录结构
+
+```
+apps/
+  playground/
+    src/
+      demos/
+        m0-counter.tsx
+        m1-auth-machine.tsx
+        m2-collab-doc.tsx
+```
+
+### 18.2 验收脚本模板
+
+```typescript
+export function assertBatching(result: { renders: number }) {
+  if (result.renders > 1) {
+    throw new Error('batch failed');
+  }
+}
+```
+
+---
+
+## 十九、API 示例用例集 (Draft)
+
+> 导读：提供典型用法示例，便于理解 API。
+
+### 19.1 基本原子与派生
+
+```typescript
+const count = atom(0);
+const double = computed(() => count.get() * 2);
+
+effect(() => {
+  console.log('double', double.get());
+});
+```
+
+### 19.2 批处理更新
+
+```typescript
+batch(() => {
+  count.set(1);
+  count.set(2);
+});
+```
+
+### 19.3 异步请求与取消
+
+```typescript
+const user = atomAsync(fetchUser, { key: 'user:1', staleTime: 5_000 });
+user.refresh();
+```
+
+### 19.4 状态机驱动 UI
+
+```typescript
+const auth = machine({
+  initial: 'idle',
+  states: {
+    idle: { on: { LOGIN: 'loading' } },
+    loading: { on: { SUCCESS: 'authed', FAILURE: 'error' } },
+    authed: { on: { LOGOUT: 'idle' } },
+    error: { on: { RETRY: 'loading' } },
+  },
+});
+```
+
+---
+
+## 二十、边界测试清单 (Draft)
+
+> 导读：列出需要覆盖的边界测试用例。
+
+- **循环依赖**：computed 互相依赖时应抛错
+- **嵌套 batch**：多层 batch 只触发一次渲染
+- **并发刷新**：同 key 的 async 应去重
+- **过期写入**：旧请求响应不覆盖新值
+- **协作断连**：断网后可继续编辑，恢复后合并
+
+---
+
+## 二十一、发布验收清单 (Draft)
+
+> 导读：发布前的验收检查表。
+
+- **功能**：M0/M1 demo 可运行，API 行为稳定
+- **性能**：达到基线指标，P95 可控
+- **可观测性**：时间线与快照可导出
+- **稳定性**：错误模型可预期，异常可恢复
+- **兼容性**：React 适配器通过基础用例
+
+---
+
+## 二十二、版本迁移策略细则 (Draft)
+
+> 导读：版本迁移策略模板与原则。
+
+### 22.1 破坏性变更策略
+
+- **主版本**：允许破坏性变更，必须提供迁移指南
+- **次版本**：仅新增 API，保持向后兼容
+- **修订版本**：修复 bug，不改变行为
+
+### 22.2 迁移指南格式
+
+- **背景**：为何改动
+- **影响面**：哪些 API 受影响
+- **替代方案**：旧到新的映射
+- **风险**：可能的行为变化
+
+---
+
+## 二十三、架构决策记录 (ADR) 模板
+
+> 导读：ADR 模板用于记录关键决策。
+
+```text
+ADR-0001: 使用 Signal 作为核心响应式原语
+状态: 提案 / 通过 / 拒绝
+上下文: ...
+决策: ...
+影响: ...
+备选方案: ...
+```
+
+---
+
+## 二十四、安全与合规 (Draft)
+
+> 导读：安全与合规的最低要求。
+
+### 24.1 数据与日志
+
+- **最小采集**：默认不记录敏感数据
+- **可脱敏**：TraceEvent 支持字段脱敏策略
+- **可清理**：支持手动清空与过期清理
+
+### 24.2 协作合规
+
+- **审计需求**：支持日志导出与回放
+- **访问控制**：协作层由上层应用负责鉴权
+
+---
+
+## 二十五、跨平台与运行时兼容性 (Draft)
+
+> 导读：跨平台运行环境与支持范围。
+
+- **浏览器**：现代浏览器，降级到 `setTimeout` 调度
+- **SSR**：Node.js 环境隔离 store
+- **移动端**：React Native 通过适配层支持
+
+---
+
+## 二十六、生态与社区路线图 (Draft)
+
+> 导读：生态与社区发展的方向。
+
+### 26.1 生态扩展方向
+
+- **官方适配器**：React/Vue/Svelte/Solid
+- **数据层适配**：GraphQL/REST 客户端桥接
+- **状态机可视化**：可编辑的状态图工具
+
+### 26.2 社区参与
+
+- **RFC 流程**：重大变更走 RFC
+- **插件机制**：社区可扩展 DevTools 与适配层
+
+---
+
+## 二十七、学习路径与培训材料 (Draft)
+
+> 导读：学习路径与培训素材方向。
+
+- **入门**：1 小时上手教程
+- **进阶**：状态机与协作专题
+- **架构**：大型项目的分域治理案例
+
+---
+
+## 二十八、奇点项目 Todo List (我的执行计划)
+
+> 导读：执行计划与阶段划分。
+
+### 28.1 规格收敛
+
+- **整理 API**：补全 `atomAsync/atomSync/machine` 的签名与语义边界
+- **补足边界**：循环依赖、异常恢复、嵌套 batch 的明确规则
+- **冻结草案**：为 M0/M1 设定不可变更的最小范围
+
+### 28.2 核心原型
+
+- **实现核心**：`atom/computed/batch/effect` + 订阅系统
+- **可观测性**：TraceEvent 采集与快照导出
+- **异步层**：`atomAsync` 缓存/取消/去重
+- **状态机**：`machine` 最小实现 + 与 atom 绑定
+
+### 28.3 适配与验证
+
+- **React 适配器**：`useAtom/useAtomValue/useSetAtom`
+- **Vue 适配器**：`useAtomRef`
+- **Demo**：M0/M1 真实场景示例 + 验收脚本
+- **基准**：跑通最小 benchmark，记录均值与 P95
+
+### 28.4 协作与扩展
+
+- **协作原型**：`atomSync` + CRDT 合并 PoC
+- **DevTools**：时间线面板原型
+- **文档**：API 参考、调试与性能指南
+
+---
+
+## 二十九、参考资源
+
+> 导读：参考资料入口。
 
 ### 现有库深度研究
 
