@@ -2,7 +2,14 @@
 
 > 导读：将规格变成可执行规范的核心章节。
 
-### 12.1 核心 API 规范 (Core)
+### 12.1 术语与定义
+
+- **State Node**：可订阅、可组合的状态单元（atom/computed/async/sync）。
+- **Batch**：在单一批次中合并多次写入并统一通知。
+- **TraceEvent**：可观测事件流记录。
+
+
+### 12.2 核心 API 规范 (Core)
 
 ```typescript
 type Atom<T> = {
@@ -102,7 +109,7 @@ e.dispose();
 - **用途**：将 Hook 风格 store 桥接为 Atom。
 - **注意**：仅支持只读订阅，避免双写。
 
-### 12.2 Async API 规范 (Core)
+### 12.3 Async API 规范 (Core)
 
 ```typescript
 type AsyncOptions<T> = {
@@ -165,7 +172,7 @@ user.refresh();
 - **缓存淘汰**：无订阅达到 `cacheTime` 后清理。
 - **乐观更新**：失败时回滚到上一次 `success` 值。
 
-### 12.3 Store 级能力 (Core)
+### 12.4 Store 级能力 (Core)
 
 ```typescript
 type Store = {
@@ -198,7 +205,7 @@ export function createStore(): Store;
 - **一致性**：同一批次内快照为批次起点状态。
 - **隔离**：不同 Store 之间快照不共享。
 
-### 12.4 框架适配器 API (React/Vue)
+### 12.5 框架适配器 API (React/Vue)
 
 ```typescript
 // React
@@ -231,7 +238,7 @@ export function useAtomRef<T>(node: Atom<T> | Computed<T>): { value: T };
 **`useAtomRef<T>(node): Ref<T>`**
 - **用途**：返回 Vue `ref`，保持响应式。
 
-### 12.5 DevTools 事件格式 (Core)
+### 12.6 DevTools 事件格式 (Core)
 
 ```typescript
 type TraceExport = {
@@ -278,7 +285,7 @@ type TraceSnapshot = {
 - `nodes` 只包含可序列化值。
 - `edges` 代表依赖图方向：`from -> to`。
 
-### 12.6 一致性与边界案例 (Core)
+### 12.7 一致性与边界案例 (Core)
 
 - **嵌套 batch**：只形成一个顶层批次，内部不额外触发通知。
 - **循环依赖**：检测到循环时抛出错误并中止本次计算。
@@ -296,7 +303,7 @@ type TraceSnapshot = {
 - effect 的同步异常写入 TraceEvent，并不阻断后续更新。
  - effect 默认同步执行；如需异步调度，需由适配层显式引入。
 
-### 12.7 最小实现结构 (Core)
+### 12.8 最小实现结构 (Core)
 
 ```
 packages/
@@ -321,11 +328,10 @@ packages/
 - `async.ts`：缓存/取消/重试逻辑
 - `devtools.ts`：事件采集与快照导出
 
-### 12.8 兼容性与稳定性承诺
+### 12.9 兼容性与稳定性承诺
 
 - **API 稳定**：核心 API 进入 1.0 后仅通过主版本变更。
 - **行为稳定**：一致性语义与调度规则不得在次版本改变。
 - **可观测性**：TraceEvent 字段保证向后兼容。
 
 ---
-
