@@ -64,7 +64,8 @@ LLM 应用双引擎分层架构设计。
 
 - [概述](../case-studies/telegram/README.md) - 学习框架和资源
 - [MTProto 协议](../case-studies/telegram/protocol.md) - 移动优先加密协议设计 🚧
-- [客户端架构](../case-studies/telegram/client-architecture.md) - TDLib 跨平台复用 🚧
+- [客户端架构](../case-studies/telegram/client-architecture.md) -
+  TDLib 跨平台复用 🚧
 - [服务端架构](../case-studies/telegram/server-architecture.md) - 架构推测与实现 🚧
 - [安全模型](../case-studies/telegram/security.md) - 加密与威胁模型 🚧
 - [性能优化](../case-studies/telegram/optimization.md) - 核心优化策略 🚧
@@ -153,3 +154,11 @@ AI 模型、工具和技术的完整指南。
 
 - [你不知道的 JavaScript](../book/you-dont-know-js.md) - Kyle
   Simpson 经典深入系列
+
+---
+
+## 🎨 创作与思考
+
+关于内容创作、思维模型的深度思考与实践指南。
+
+- [破局：从“参数焦虑”到“第一性原理”的创作指南](../essays/vertical-video-guide.md)
