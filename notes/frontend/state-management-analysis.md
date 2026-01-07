@@ -1,48 +1,49 @@
-# 前端状态管理库深度分析与下一代方案构想
+# 前端状态管理库深度分析与“奇点”构想
 
-> 回顾人类所有代码库，前端领域的状态管理从来没有"完美"的方案。这份文档分析了现有方案的核心问题，并探讨下一代状态管理库的设计思路。
+> 回顾人类所有代码库，前端领域的状态管理从来没有"完美"的方案。这份文档分析了现有方案的核心问题，并探讨“奇点”状态管理系统的设计思路。
 
 ---
 
 ## 📊 状态管理库全景图
 
-| 派系                | 库                                                                                  | 作者/组织                      | Stars   | 核心思想                    | 超大型项目          |
-| :------------------ | :---------------------------------------------------------------------------------- | :----------------------------- | :------ | :-------------------------- | :------------------ |
-| **Flux 架构派**     | [Redux](https://github.com/reduxjs/redux)                                           | Dan Abramov / Redux Team       | ⭐ 60k  | 单一数据源 + 纯函数 Reducer | ✅ 久经考验         |
-|                     | [Redux Toolkit](https://github.com/reduxjs/redux-toolkit)                           | Redux Team                     | ⭐ 10k  | Redux 官方简化版            | ✅ 推荐             |
-|                     | [Zustand](https://github.com/pmndrs/zustand)                                        | Pmndrs (Dai Shi)               | ⭐ 40k  | 极简 Flux，无 Provider      | ✅ 配合分层架构     |
-| **原子化派**        | [Jotai](https://github.com/pmndrs/jotai)                                            | Pmndrs (Dai Shi)               | ⭐ 17k  | 自底向上的原子组合          | ⚠️ 需规范约束       |
-|                     | [Recoil](https://github.com/facebookexperimental/Recoil) ⚠️                         | Meta (Facebook)                | ⭐ 19k  | 已停止维护                  | ❌ 不推荐           |
-|                     | [Nano Stores](https://github.com/nanostores/nanostores)                             | Evil Martians                  | ⭐ 5k   | 框架无关，< 1KB             | ⚠️ 功能有限         |
-| **Proxy 响应式派**  | [MobX](https://github.com/mobxjs/mobx)                                              | Michel Weststrate              | ⭐ 27k  | 透明函数式响应编程          | ⚠️ 隐式依赖难追踪   |
-|                     | [MobX-State-Tree](https://github.com/mobxjs/mobx-state-tree)                        | Michel Weststrate              | ⭐ 6.9k | 结构化类型 + 快照           | ✅ 专为复杂场景     |
-|                     | [Valtio](https://github.com/pmndrs/valtio)                                          | Pmndrs (Dai Shi)               | ⭐ 8.5k | 像 Vue 一样可变             | ⚠️ 中小型更适合     |
-| **Signal 细粒度派** | [Preact Signals](https://github.com/preactjs/signals)                               | Preact Team                    | ⭐ 3.5k | 绕过 VDOM Diff              | ⚠️ 生态不成熟       |
-|                     | [Legend-State](https://github.com/LegendApp/legend-state)                           | Legend App                     | ⭐ 2.5k | 强调性能优势                | ⚠️ 社区较小         |
-|                     | [Solid.js](https://github.com/solidjs/solid)                                        | Ryan Carniato                  | ⭐ 30k  | 编译时 + 无 VDOM            | ✅ 框架级方案       |
-| **状态机派 (FSM)**  | [XState](https://github.com/statelyai/xstate)                                       | Stately (David Khourshid)      | ⭐ 26k  | W3C SCXML 标准实现 [^1]     | ✅ 关键业务首选     |
-|                     | [Robot](https://github.com/matthewp/robot)                                          | Matthew Phillips               | ⭐ 1.8k | 极简 FSM，< 1KB             | ❌ 功能太简         |
-| **服务端状态派**    | [TanStack Query](https://github.com/TanStack/query)                                 | Tanner Linsley                 | ⭐ 40k  | 服务端状态 = 缓存           | ✅ 必备组件         |
-|                     | [SWR](https://github.com/vercel/swr)                                                | Vercel                         | ⭐ 30k  | Stale-While-Revalidate      | ⚠️ 功能较少         |
-|                     | [RTK Query](https://github.com/reduxjs/redux-toolkit)                               | Redux Team                     | -       | Redux 生态方案              | ✅ Redux 项目首选   |
-| **RxJS 流式派**     | [RxJS](https://github.com/ReactiveX/rxjs)                                           | ReactiveX / Ben Lesh           | ⭐ 30k  | 一切皆流                    | ✅ 复杂异步必备     |
-|                     | [Elf](https://github.com/ngneat/elf)                                                | ngneat                         | ⭐ 1.5k | 基于 RxJS 的 Store          | ⚠️ 社区较小         |
-|                     | [Akita](https://github.com/datorama/akita)                                          | Datorama                       | ⭐ 3.7k | 实体管理                    | ✅ Angular 大型项目 |
-| **CRDT 协作派**     | [Yjs](https://github.com/yjs/yjs)                                                   | Kevin Jahns                    | ⭐ 15k  | 无冲突复制数据类型          | ✅ 协作场景唯一选择 |
-|                     | [Automerge](https://github.com/automerge/automerge)                                 | Ink & Switch                   | ⭐ 3k   | JSON 友好 CRDT              | ⚠️ 性能略逊         |
-|                     | [Liveblocks](https://liveblocks.io/)                                                | Liveblocks Inc.                | -       | CRDT + BaaS                 | ✅ 开箱即用         |
-| **GraphQL 派**      | [Apollo Client](https://github.com/apollographql/apollo-client)                     | Apollo GraphQL                 | ⭐ 19k  | 归一化缓存                  | ✅ GraphQL 标配     |
-|                     | [Relay](https://github.com/facebook/relay)                                          | Meta (Facebook)                | ⭐ 18k  | 编译期优化                  | ✅ Facebook 级别    |
-|                     | [URQL](https://github.com/urql-graphql/urql)                                        | urql-graphql                   | ⭐ 8.5k | 轻量级 GraphQL              | ⚠️ 中型项目         |
-| **其他特色**        | [Effector](https://github.com/effector/effector)                                    | Dmitry Boldyrev                | ⭐ 4.5k | 多向数据流                  | ✅ 类型完美         |
-|                     | [Hookstate](https://github.com/avkonst/hookstate)                                   | Andrey Konstantinov            | ⭐ 1.6k | Proxy + Hook 极简           | ⚠️ 中小型           |
-|                     | [Overmind](https://github.com/cerebral/overmind)                                    | Cerebral                       | ⭐ 1.3k | Flux + FSM + Proxy 融合     | ⚠️ 社区不活跃       |
-| **领域专用**        | [React Hook Form](https://github.com/react-hook-form/react-hook-form)               | Bill Luo                       | ⭐ 40k  | 表单状态                    | ✅ 表单必备         |
-|                     | [TanStack Router](https://github.com/TanStack/router)                               | Tanner Linsley                 | ⭐ 7k   | URL 即状态                  | ✅ 类型安全路由     |
-|                     | [TanStack Table](https://github.com/TanStack/table)                                 | Tanner Linsley                 | ⭐ 24k  | 表格状态                    | ✅ 复杂表格必备     |
-|                     | [RxDB](https://github.com/pubkey/rxdb) / [Dexie](https://github.com/dexie/Dexie.js) | Daniel Meyer / David Fahlander | -       | 本地数据库                  | ✅ 离线优先场景     |
+| 派系                | 库              | 作者/组织                | Stars  | 核心思想                    | 超大型项目适配 |
+| :------------------ | :-------------- | :----------------------- | :----- | :-------------------------- | :------------- |
+| **Flux 架构派**     | Redux           | Dan Abramov / Redux Team | ⭐ 60k | 单一数据源 + 纯函数 Reducer | 久经考验       |
+|                     | Redux Toolkit   | Redux Team               | ⭐ 10k | Redux 官方简化版            | 推荐           |
+|                     | Zustand         | Pmndrs (Dai Shi)         | ⭐ 40k | 极简 Flux，无 Provider      | 配合分层架构   |
+| **原子化派**        | Jotai           | Pmndrs (Dai Shi)         | ⭐ 17k | 自底向上的原子组合          | 需规范约束     |
+|                     | Recoil ⚠️       | Meta (Facebook)          | ⭐ 19k | 已停止维护                  | 不推荐         |
+|                     | Nano Stores     | Evil Martians            | ⭐ 5k  | 框架无关，< 1KB             | 功能有限       |
+| **Proxy 响应式派**  | MobX            | Michel Weststrate        | ⭐ 27k | 透明函数式响应编程          | 隐式依赖难追踪 |
+|                     | MobX-State-Tree | Michel Weststrate        | ⭐ 7k  | 结构化类型 + 快照           | 专为复杂场景   |
+|                     | Valtio          | Pmndrs (Dai Shi)         | ⭐ 9k  | 像 Vue 一样可变             | 中小型更适合   |
+| **Signal 细粒度派** | Preact Signals  | Preact Team              | ⭐ 4k  | 绕过 VDOM Diff              | 生态不成熟     |
+|                     | Legend-State    | Legend App               | ⭐ 3k  | 强调性能优势                | 社区较小       |
+|                     | Solid.js        | Ryan Carniato            | ⭐ 30k | 编译时 + 无 VDOM            | 框架级方案     |
+| **状态机派**        | XState          | Stately (D. Khourshid)   | ⭐ 26k | W3C SCXML 标准实现 [^1]     | 关键业务首选   |
+|                     | Robot           | Matthew Phillips         | ⭐ 2k  | 极简 FSM，< 1KB             | 功能太简       |
+| **服务端状态派**    | TanStack Query  | Tanner Linsley           | ⭐ 40k | 服务端状态 = 缓存           | 必备组件       |
+|                     | SWR             | Vercel                   | ⭐ 30k | Stale-While-Revalidate      | 功能较少       |
+|                     | RTK Query       | Redux Team               | -      | Redux 生态方案              | Redux 项目首选 |
+| **RxJS 流式派**     | RxJS            | ReactiveX / Ben Lesh     | ⭐ 30k | 一切皆流                    | 复杂异步必备   |
+|                     | Elf             | ngneat                   | ⭐ 2k  | 基于 RxJS 的 Store          | 社区较小       |
+|                     | Akita           | Datorama                 | ⭐ 4k  | 实体管理                    | Angular 大型   |
+| **CRDT 协作派**     | Yjs             | Kevin Jahns              | ⭐ 15k | 无冲突复制数据类型          | 协作场景唯一   |
+|                     | Automerge       | Ink & Switch             | ⭐ 3k  | JSON 友好 CRDT              | 性能略逊       |
+|                     | Liveblocks      | Liveblocks Inc.          | -      | CRDT + BaaS                 | 开箱即用       |
+| **GraphQL 派**      | Apollo Client   | Apollo GraphQL           | ⭐ 19k | 归一化缓存                  | GraphQL 标配   |
+|                     | Relay           | Meta (Facebook)          | ⭐ 18k | 编译期优化                  | Facebook 级别  |
+|                     | URQL            | urql-graphql             | ⭐ 9k  | 轻量级 GraphQL              | 中型项目       |
+| **其他特色**        | Effector        | Dmitry Boldyrev          | ⭐ 5k  | 多向数据流                  | 类型完美       |
+|                     | Hookstate       | Andrey Konstantinov      | ⭐ 2k  | Proxy + Hook 极简           | 中小型         |
+|                     | Overmind        | Cerebral                 | ⭐ 1k  | Flux + FSM + Proxy 融合     | 社区不活跃     |
+| **领域专用**        | React Hook Form | Bill Luo                 | ⭐ 40k | 表单状态                    | 表单必备       |
+|                     | TanStack Router | Tanner Linsley           | ⭐ 7k  | URL 即状态                  | 类型安全路由   |
+|                     | TanStack Table  | Tanner Linsley           | ⭐ 24k | 表格状态                    | 复杂表格必备   |
+|                     | RxDB / Dexie    | D. Meyer / D. Fahlander  | -      | 本地数据库                  | 离线优先场景   |
 
-> Stars 为粗略量级，可能随时间变化；超大型项目评估是经验性判断。
+> **说明**:
+> Stars 数据为 2026 年 1 月粗略量级；超大型项目适配基于社区实践经验评估。库名称链接已省略以提升表格可读性，详见后续各章节的详细介绍。
 
 ### 快速选择指南
 
@@ -58,14 +59,14 @@
 
 ### 规模适配评估维度
 
-| 维度               | 关注点                                              | 小型项目偏好              | 超大型项目偏好                      |
-| :----------------- | :-------------------------------------------------- | :------------------------ | :---------------------------------- |
-| **心智模型**       | 需要掌握的核心概念数量                              | 概念少、上手快            | 概念可分层、可渐进引入              |
-| **可观测性**       | 调试/时间旅行/状态可视化                            | 简洁日志即可              | DevTools 完整、审计能力强           |
-| **一致性**         | 本地/服务端/协作状态能否统一                         | 允许多库组合              | 单一模型或低摩擦整合                |
-| **迁移成本**       | 从现有方案迁移的门槛                                | 直接替换 Hook             | 可增量接入、支持分层/分域迁移        |
-| **性能模型**       | 渲染/订阅开销是否可预测                              | 默认够快                  | 细粒度订阅、可控更新边界            |
-| **组织协作**       | 多团队协作、边界划分、规范化                         | 轻规范                    | 约定清晰、工具链配套                |
+| 维度         | 关注点                       | 小型项目偏好   | 超大型项目偏好                |
+| :----------- | :--------------------------- | :------------- | :---------------------------- |
+| **心智模型** | 需要掌握的核心概念数量       | 概念少、上手快 | 概念可分层、可渐进引入        |
+| **可观测性** | 调试/时间旅行/状态可视化     | 简洁日志即可   | DevTools 完整、审计能力强     |
+| **一致性**   | 本地/服务端/协作状态能否统一 | 允许多库组合   | 单一模型或低摩擦整合          |
+| **迁移成本** | 从现有方案迁移的门槛         | 直接替换 Hook  | 可增量接入、支持分层/分域迁移 |
+| **性能模型** | 渲染/订阅开销是否可预测      | 默认够快       | 细粒度订阅、可控更新边界      |
+| **组织协作** | 多团队协作、边界划分、规范化 | 轻规范         | 约定清晰、工具链配套          |
 
 [^1]:
     **什么是状态机？**
@@ -761,12 +762,13 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ---
 
-## 四、下一代状态管理库设计构想
+## 四、“奇点”状态管理系统设计构想
+
+> 本文将这一面向未来的状态管理系统命名为“奇点”(Singularity)。
 
 ### 4.1 设计原则
 
-1. **统一抽象**：设计通用「State Node」原语，可表达原子、派生、
-   异步、协作状态
+1. **统一抽象**：设计通用「State Node」原语，可表达原子、派生、异步、协作状态
 2. **逻辑分离**：把"数据"与"状态机"作为两个正交维度
 3. **渐进增强**：简单场景极简 API，复杂场景可插拔扩展
 4. **可观测性优先**：所有状态变更可序列化、可回放
@@ -780,12 +782,12 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ### 4.2.1 方案对比与取舍
 
-| 方案               | 优势                                           | 代价/风险                          | 取舍结论                     |
-| :----------------- | :--------------------------------------------- | :--------------------------------- | :--------------------------- |
-| **Signal**         | 细粒度更新、性能可预测                         | 需要适配 React 等框架调度          | 作为核心响应式原语           |
-| **Proxy**          | 写法自然、侵入性低                             | 隐式依赖难追踪、调试成本高          | 仅作为可选语法糖             |
-| **Observable**     | 异步建模能力强                                 | 心智负担大、组件集成需胶水层        | 用于异步层，不作为核心状态   |
-| **Immutable Tree** | 可预测、利于时间旅行                           | 性能与心智成本高                   | 用于 DevTools，而非强约束    |
+| 方案               | 优势                   | 代价/风险                    | 取舍结论                   |
+| :----------------- | :--------------------- | :--------------------------- | :------------------------- |
+| **Signal**         | 细粒度更新、性能可预测 | 需要适配 React 等框架调度    | 作为核心响应式原语         |
+| **Proxy**          | 写法自然、侵入性低     | 隐式依赖难追踪、调试成本高   | 仅作为可选语法糖           |
+| **Observable**     | 异步建模能力强         | 心智负担大、组件集成需胶水层 | 用于异步层，不作为核心状态 |
+| **Immutable Tree** | 可预测、利于时间旅行   | 性能与心智成本高             | 用于 DevTools，而非强约束  |
 
 ### 4.2.2 竞争优势与必然权衡
 
@@ -795,15 +797,15 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ### 4.2.3 与主流方案对比矩阵 (草案)
 
-| 方案             | 统一心智模型 | 可观测性 | 逻辑/数据解耦 | 协作原生 | 迁移成本 |
-| :--------------- | :----------: | :------: | :-----------: | :------: | :------: |
-| **Redux Toolkit** |      ◐       |    ●     |      ◐        |    ✕     |    ◐     |
-| **Zustand**       |      ◐       |    ◐     |      ✕        |    ✕     |    ●     |
-| **Jotai**         |      ◐       |    ◐     |      ✕        |    ✕     |    ◐     |
-| **XState**        |      ✕       |    ●     |      ●        |    ✕     |    ◐     |
-| **React Query**   |      ✕       |    ●     |      ✕        |    ✕     |    ◐     |
-| **Yjs**           |      ✕       |    ◐     |      ✕        |    ●     |    ✕     |
-| **下一代方案**    |      ●       |    ●     |      ●        |    ●     |    ◐     |
+| 方案              | 统一心智模型 | 可观测性 | 逻辑/数据解耦 | 协作原生 | 迁移成本 |
+| :---------------- | :----------: | :------: | :-----------: | :------: | :------: |
+| **Redux Toolkit** |      ◐       |    ●     |       ◐       |    ✕     |    ◐     |
+| **Zustand**       |      ◐       |    ◐     |       ✕       |    ✕     |    ●     |
+| **Jotai**         |      ◐       |    ◐     |       ✕       |    ✕     |    ◐     |
+| **XState**        |      ✕       |    ●     |       ●       |    ✕     |    ◐     |
+| **React Query**   |      ✕       |    ●     |       ✕       |    ✕     |    ◐     |
+| **Yjs**           |      ✕       |    ◐     |       ✕       |    ●     |    ✕     |
+| **奇点**          |      ●       |    ●     |       ●       |    ●     |    ◐     |
 
 > 图例：● 强，◐ 中，✕ 弱。迁移成本越低越好。
 
@@ -811,7 +813,7 @@ XState 是个例外，但大多数库把"数据存储"和"业务逻辑流程"混
 
 ```typescript
 // 梦想中的 API
-import { atom, machine, sync } from 'next-state';
+import { atom, machine, sync } from 'singularity';
 
 // 1. 原子状态 (like Jotai)
 const countAtom = atom(0);
@@ -907,9 +909,9 @@ legacyStore.subscribe(() => legacyState.refresh());
 
 ### Phase 5: 框架适配 (Week 9-10)
 
-- [ ] React 适配器 (`@next-state/react`) - 最小可用版本
+- [ ] React 适配器 (`@singularity/react`) - 最小可用版本
 - [ ] DevTools 扩展
-- [ ] Vue 适配器 (`@next-state/vue`)
+- [ ] Vue 适配器 (`@singularity/vue`)
 
 ### 里程碑 (M0/M1/M2)
 
@@ -1051,10 +1053,10 @@ type TraceSnapshot = {
 
 ### 8.1 包结构
 
-- `@next-state/core`：核心原语与调度
-- `@next-state/react`：React 适配器
-- `@next-state/devtools`：DevTools 协议与面板
-- `@next-state/sync`：协作层 (CRDT 适配)
+- `@singularity/core`：核心原语与调度
+- `@singularity/react`：React 适配器
+- `@singularity/devtools`：DevTools 协议与面板
+- `@singularity/sync`：协作层 (CRDT 适配)
 
 ### 8.2 语义版本与兼容承诺
 
@@ -1094,7 +1096,157 @@ type TraceSnapshot = {
 
 ---
 
-## 六、参考资源
+## 十、文档评审与改进建议
+
+> 本章节为 AI 辅助生成的文档评审，旨在提供客观的质量评估与可执行的改进建议。
+
+### 10.1 文档质量评估
+
+| 维度         |    评分    | 评价                                   |
+| :----------- | :--------: | :------------------------------------- |
+| **完整性**   | ⭐⭐⭐⭐⭐ | 几乎涵盖了所有主流和小众方案，分类合理 |
+| **深度**     |  ⭐⭐⭐⭐  | 每个库都有核心原理代码示例，非常实用   |
+| **前瞻性**   | ⭐⭐⭐⭐⭐ | "奇点构想"部分有独到见解               |
+| **实用性**   |  ⭐⭐⭐⭐  | 快速选择指南、迁移策略都很务实         |
+| **可执行性** |   ⭐⭐⭐   | 路线图较乐观，需更多风险缓冲           |
+
+### 10.2 核心亮点
+
+1. **问题诊断精准**
+   - 准确抓住"范式割裂"痛点：Zustand 管本地、React
+     Query 管服务端、XState 管逻辑、Yjs 管协作——需要"组合拳"
+   - "这个数据是服务端的还是客户端的？"这个问题每天困扰无数开发者
+
+2. **"奇点"的定位清晰**
+
+   ```
+   统一心智模型 > 可观测性 > 逻辑/数据解耦 > 协作原生
+   ```
+
+   四个目标排序合理，体现了**从根本上解决问题**而非缝缝补补的思路。
+
+3. **API 设计草案务实**
+   ```typescript
+   const docAtom = atom.sync({ title: '', content: '' });
+   ```
+   "渐进增强"的 API 设计（`atom` → `atom.async` → `atom.sync`）是正确的方向。
+
+### 10.3 潜在风险与建议
+
+#### 风险 1：时间表过于乐观
+
+- **问题**：10 周从零到 React 适配器 + DevTools + CRDT 协作？这几乎是不可能的
+- **建议**：M0 周期翻倍，CRDT 集成作为 v1.1 而非 v1.0 目标
+
+#### 风险 2："统一心智模型"的悖论
+
+- **问题**：文档追求"一个抽象解决所有问题"，但历史证明——一旦抽象足够通用，它就会变得和 Redux 一样复杂
+- **建议**：明确"不统一什么"——例如表单状态、动画状态可能就不该统一
+
+#### 风险 3：Signal vs React 调和机制
+
+- **问题**：文档提到"Signal 破坏 React 单向数据流哲学"，但又选择 Signal 作为核心
+- **需解决**：
+  - 如何与 `useTransition`、`Suspense` 等并发特性兼容？
+- **建议**：增加一节"React 适配挑战"专门讨论此问题
+
+#### 风险 4：缺少"失败条件"定义
+
+- **问题**：路线图只定义了"如何成功"，没有定义"何时应该放弃"
+  - 如果 M1 延期 4 周怎么办？
+  - 如果 CRDT 集成证明不可行怎么办？
+- **建议**：增加 Kill Criteria 章节
+
+### 10.4 补充建议
+
+#### 建议 1：增加"竞品跟踪"章节
+
+- **Legend-State** 和 **TanStack Store**（Tanner
+  Linsley 即将发布）都在朝类似方向努力
+- 需要持续跟踪它们的进展，避免重复造轮子
+
+#### 建议 2：增加"真实案例优先"策略
+
+在写代码之前，先用现有库组合"模拟"出目标 API：
+
+```typescript
+// 用 Zustand + React Query + XState 组合，模拟出目标 API
+const { atom, machine } = createNextStateSimulator(zustand, reactQuery, xstate);
+```
+
+这样可以**验证 API 设计是否真的解决问题**，再决定是否从头实现。
+
+#### 建议 3：补充"渐进式采用"示例
+
+企业不会一次性迁移。需要一个**可以和 Redux/Zustand 共存**的最小方案，而不是"全有或全无"。
+
+```typescript
+// 示例：桥接层允许新旧状态共存
+import { bridge } from '@singularity/compat';
+
+// 将现有 Zustand store 桥接为 State Node
+const legacyCounter = bridge.zustand(useCounterStore);
+
+// 新代码可以直接订阅
+const double = computed(() => legacyCounter.get().count * 2);
+```
+
+#### 建议 4：调整里程碑节奏
+
+| 原计划       | 建议调整            | 理由                     |
+| :----------- | :------------------ | :----------------------- |
+| M0 (Week 2)  | M0 (Week 4)         | 可观测性比预期复杂       |
+| M1 (Week 6)  | M1 (Week 10)        | 异步取消语义需要充分测试 |
+| M2 (Week 10) | M2 (Week 16) / v1.1 | CRDT 应作为独立版本发布  |
+
+### 10.5 执行建议总结
+
+1. **砍掉 50% 的范围**：先做好 `atom` + `computed` + React 适配器
+2. **CRDT 作为 v2 目标**：不要在 v1 里冒险
+3. **找一个真实项目试点**：用实际反馈驱动迭代
+4. **增加竞品跟踪**：Legend-State / TanStack Store 的进展可能改变决策
+5. **定义失败条件**：明确何时应该放弃或转向
+
+---
+
+## QA
+
+> 本节记录对话中的关键问答，回答基于本文既有内容与明确约束。
+
+### 1. 目前世界上没有我这样的项目吗？如果有类似的，我这个就无意义了？
+
+**答**：不是没有“类似点”，但目前看不到一个项目同时满足本文的关键约束。现有方案大多只覆盖单点能力：例如 XState 强在逻辑层，React Query 强在异步/缓存，Yjs 强在协作，Signal 生态强在细粒度更新。你的文档要解决的是“统一心智模型 + 逻辑/数据解耦 + 协作原生 + 可观测协议 + 迁移可行”的组合问题，这种整体性目前多依赖多库拼接而非单一体系。  
+“无意义”与否不取决于“有没有类似”，而取决于你能否提供两个可验证的价值：  
+1) **统一性**：用同一套原语覆盖本地/服务端/协作状态，减少模型切换与胶水代码；  
+2) **迁移可行性**：让现有项目能渐进接入，而不是推倒重来。  
+如果这两点在真实项目里成立，即便存在部分相似的方案，你的项目仍然有明确价值。
+
+### 2. 我的项目能否支持简单项目和超大型前端架构项目？
+
+**答**：从文档目标与约束来看，设计是“可同时覆盖”，但成立与否取决于两条路径是否都能被验证。  
+对**简单项目**，关键是“低心智、低配置、低体积”。文档中已经强调“渐进增强”“低配置成本”“可树摇”，并在路线图中把 `atom/computed/batch` 定义为最小可用原语。如果最终 API 能做到“只用 atom 也不需要理解机器/协作层”，并且默认性能足够，那就能胜任小项目。  
+对**超大型项目**，关键是“可观测性、分域治理、一致性与性能”。如果你明确只面向未来新项目，**迁移路径不是必需条件**，但仍需要满足：  
+1) **可观测性**覆盖跨团队协作的审计需求（时间线、回放、依赖图）。  
+2) **分域治理**可让不同团队在边界内独立演进。  
+3) **一致性与性能**在 1k+ 订阅、并发更新与 SSR 场景下稳定。  
+因此，答案是“设计上可支持，但必须通过原型与真实项目验证”。若 M0/M1 demo 在小项目中保持极简体验，同时在大型架构中证明可观测与分域治理能力，那么两端都成立。
+
+### 3. 能否同时支持 Vue 和 React？
+
+**答**：可以，但需要把“核心”与“适配器”严格分层。文档里已经定义了 `@singularity/core` 与框架适配器的包结构，这种架构天然支持多框架：  
+1) **核心层**只负责状态原语、调度、可观测协议，不依赖任何框架；  
+2) **适配器层**分别对接 React/Vue 的渲染与订阅机制。  
+可行性取决于适配器的质量与一致性语义能否保持一致，但从架构上是可行且符合本文约束的。
+
+### 4. 心智模型和上手难度能否极为简易？
+
+**答**：可以设计得极简，但前提是“默认路径足够短、进阶功能可推迟理解”。文档已强调“渐进增强”“低配置成本”和最小原语，这意味着新用户只需理解 `atom/computed/batch` 就能完成大多数小项目需求。  
+难度的关键不在概念数量，而在**是否强迫理解复杂层**。只要状态机、协作、异步缓存都保持“按需启用”，并且默认案例不涉及它们，上手就能保持极简。  
+所以，结论是“可以做到极简”，但需要在 API 设计与文档中明确**默认路径**与**进阶路径**的边界。
+
+---
+
+## 十一、参考资源
 
 ### 现有库深度研究
 
