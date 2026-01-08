@@ -54,9 +54,54 @@ packages/
 
 ---
 
-## 二、开发环境
+## 二、技术栈与依赖
 
-### 2.1 初始化
+### 2.1 技术栈
+
+| 类别       | 选型       | 版本  | 说明                   |
+| :--------- | :--------- | :---- | :--------------------- |
+| **语言**   | TypeScript | ^5.0  | 严格模式               |
+| **包管理** | pnpm       | ^8.0  | workspace 支持         |
+| **构建**   | tsup       | ^8.0  | esbuild 封装，快速构建 |
+| **测试**   | vitest     | ^1.0  | 兼容 Jest API          |
+| **框架**   | React      | ^18.0 | useSyncExternalStore   |
+
+### 2.2 第三方库
+
+| 包名           | 用途         | 必需 |
+| :------------- | :----------- | :--- |
+| `typescript`   | 类型检查     | ✅   |
+| `tsup`         | 打包构建     | ✅   |
+| `vitest`       | 单元测试     | ✅   |
+| `react`        | React 适配器 | ✅   |
+| `react-dom`    | React 渲染   | ✅   |
+| `@types/react` | React 类型   | ✅   |
+
+### 2.3 开发工具
+
+| 工具       | 用途       | 推荐    |
+| :--------- | :--------- | :------ |
+| VS Code    | 编辑器     | ✅      |
+| ESLint     | 代码规范   | 可选    |
+| Prettier   | 代码格式化 | 可选    |
+| Changesets | 版本管理   | v1.0 后 |
+
+### 2.4 浏览器兼容
+
+| 浏览器  | 最低版本 |
+| :------ | :------- |
+| Chrome  | 80+      |
+| Firefox | 78+      |
+| Safari  | 14+      |
+| Edge    | 80+      |
+
+> **Node.js 要求**：>=18.0.0
+
+---
+
+## 三、开发环境
+
+### 3.1 初始化
 
 ```bash
 mkdir singularity && cd singularity
@@ -76,7 +121,7 @@ mkdir -p packages/react/src packages/react/__tests__
 pnpm add -D typescript tsup vitest -w
 ```
 
-### 2.2 TypeScript 配置
+### 3.2 TypeScript 配置
 
 ```json
 // tsconfig.json
@@ -91,7 +136,7 @@ pnpm add -D typescript tsup vitest -w
 }
 ```
 
-### 2.3 包配置
+### 3.3 包配置
 
 ```json
 // packages/core/package.json
@@ -110,7 +155,7 @@ pnpm add -D typescript tsup vitest -w
 
 ---
 
-## 三、核心实现
+## 四、核心实现
 
 ### 数据流概览
 
@@ -416,7 +461,7 @@ export function trackDependency(node: any): void {
 
 ---
 
-## 四、React 适配器
+## 五、React 适配器
 
 ### 4.1 useAtom.ts
 
@@ -463,7 +508,7 @@ export function useAtomValue<T>(atom: Atom<T> | Computed<T>): T {
 
 ---
 
-## 五、测试用例
+## 六、测试用例
 
 ### 6.1 atom 测试
 
@@ -553,7 +598,7 @@ describe('batch', () => {
 
 ---
 
-## 六、性能基准
+## 七、性能基准
 
 ```typescript
 // benchmark.ts
@@ -585,7 +630,7 @@ console.timeEnd('computed');
 
 ---
 
-## 七、开发里程碑
+## 八、开发里程碑
 
 ### Week 1：项目初始化 + atom
 
@@ -774,7 +819,7 @@ cd packages/react && pnpm build && npm publish --access public
 
 ---
 
-## 八、完整项目结构
+## 九、完整项目结构
 
 开发完成后，项目应包含以下文件：
 
