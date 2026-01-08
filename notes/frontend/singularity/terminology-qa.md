@@ -277,6 +277,35 @@ if (process.env.NODE_ENV !== 'production') {
 
 > **一句话总结**：细粒度 = 用一点写入开销，换来更少渲染 + 更爽开发
 
+### Q8.6: 用 Singularity 可以减少 useMemo/useCallback 吗？
+
+**A**: ✅ **是的，可以大幅减少**。
+
+| 问题                       | 传统 React       | Singularity          |
+| :------------------------- | :--------------- | :------------------- |
+| 父组件更新导致子组件重渲染 | useMemo 包裹计算 | 细粒度更新，不重渲染 |
+| 函数引用变化导致重渲染     | useCallback 包裹 | 状态变化只影响订阅者 |
+| 派生数据重复计算           | useMemo 缓存     | `computed` 自动缓存  |
+
+**对比示例**：
+
+```typescript
+// ❌ 传统 React（需要大量优化）
+const expensive = useMemo(() => items.filter(...), [items]);
+const handler = useCallback(() => setCount(c => c + 1), []);
+
+// ✅ Singularity（自动优化）
+const items = atom([...]);
+const filtered = computed(() => items.get().filter(...)); // 自动缓存
+// handler 直接用 items.set()，无需 useCallback
+```
+
+**原因**：
+
+- `computed` 替代了 `useMemo`（自动缓存 + 依赖追踪）
+- 细粒度更新减少了因引用变化导致的重渲染
+- 状态在组件外部，函数不需要 `useCallback` 稳定引用
+
 ### Q9: 能支持超大型前端项目吗？
 
 **A**: ⚠️ **能用，但不是最佳选择**。
