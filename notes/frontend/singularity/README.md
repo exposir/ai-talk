@@ -138,12 +138,12 @@ const [state, send] = useMachine(authMachine);
 
 | 文档                               | 说明                   |
 | :--------------------------------- | :--------------------- |
+| [竞品调研](./landscape.md)         | 现有库全景分析         |
 | [核心概念](./problems-vision.md)   | 为什么要用 Singularity |
 | [API 规格](./specs-core.md)        | 完整 API 规范          |
 | [设计路线图](./design-roadmap.md)  | 设计原则与实施计划     |
 | [开发指南](./development-guide.md) | 开发实施文档           |
 | [术语与 QA](./terminology-qa.md)   | 常见问题与最佳实践     |
-| [竞品调研](./landscape.md)         | 现有库全景分析         |
 | [历史评论](./reviews.md)           | 项目演进记录           |
 
 ---
