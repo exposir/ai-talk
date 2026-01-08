@@ -174,6 +174,8 @@ export type Atom<T> = ReturnType<typeof atom<T>>;
 ### 3.2 computed.ts
 
 ```typescript
+import { Tracker, startTracking, stopTracking, trackDependency } from './trace';
+
 let computedId = 0;
 
 export function computed<T>(read: () => T) {
@@ -181,6 +183,7 @@ export function computed<T>(read: () => T) {
   let cachedValue: T;
   let dirty = true;
   const listeners = new Set<() => void>();
+  const tracker = new Tracker(markDirty); // 依赖变化时触发 markDirty
 
   const markDirty = () => {
     if (!dirty) {
@@ -196,7 +199,10 @@ export function computed<T>(read: () => T) {
       trackDependency(this);
 
       if (dirty) {
-        startTracking(markDirty);
+        // 清理旧的依赖订阅，避免内存泄漏
+        tracker.cleanup();
+
+        startTracking(tracker);
         try {
           cachedValue = read();
         } finally {
@@ -221,6 +227,8 @@ export type Computed<T> = ReturnType<typeof computed<T>>;
 ### 3.3 effect.ts
 
 ```typescript
+import { Tracker, startTracking, stopTracking } from './trace';
+
 let effectId = 0;
 
 export function effect(fn: () => void | (() => void)) {
@@ -231,12 +239,16 @@ export function effect(fn: () => void | (() => void)) {
   const run = () => {
     if (isDisposed) return;
 
+    // 清理用户的 cleanup 函数
     if (cleanup) {
       cleanup();
       cleanup = undefined;
     }
 
-    startTracking(run);
+    // 清理旧的依赖订阅
+    tracker.cleanup();
+
+    startTracking(tracker);
     try {
       cleanup = fn();
     } finally {
@@ -244,11 +256,16 @@ export function effect(fn: () => void | (() => void)) {
     }
   };
 
+  // 创建 Tracker，依赖变化时触发 run
+  const tracker = new Tracker(run);
+
+  // 立即执行一次
   run();
 
   return {
     dispose() {
       isDisposed = true;
+      tracker.cleanup(); // 清理所有订阅
       if (cleanup) cleanup();
     },
   };
@@ -289,19 +306,57 @@ export function schedulePendingUpdate(fn: () => void): void {
 ### 3.5 trace.ts（依赖追踪）
 
 ```typescript
-let currentTracking: ((dependency: any) => void) | null = null;
+type Unsubscribe = () => void;
+type OnInvalidate = () => void;
 
-export function startTracking(onDependency: () => void): void {
-  currentTracking = onDependency;
+// 当前正在追踪的 Tracker
+let currentTracker: Tracker | null = null;
+
+/**
+ * Tracker 管理依赖订阅的生命周期
+ * 每次重新计算前清理旧订阅，避免内存泄漏
+ */
+export class Tracker {
+  private subscriptions: Unsubscribe[] = [];
+  private onInvalidate: OnInvalidate;
+
+  constructor(onInvalidate: OnInvalidate) {
+    this.onInvalidate = onInvalidate;
+  }
+
+  // 记录一个新的订阅
+  track(unsubscribe: Unsubscribe): void {
+    this.subscriptions.push(unsubscribe);
+  }
+
+  // 触发失效回调
+  invalidate(): void {
+    this.onInvalidate();
+  }
+
+  // 清理所有旧订阅
+  cleanup(): void {
+    this.subscriptions.forEach((unsub) => unsub());
+    this.subscriptions = [];
+  }
+}
+
+export function startTracking(tracker: Tracker): void {
+  currentTracker = tracker;
 }
 
 export function stopTracking(): void {
-  currentTracking = null;
+  currentTracker = null;
 }
 
 export function trackDependency(node: any): void {
-  if (currentTracking) {
-    node.subscribe(currentTracking);
+  if (currentTracker) {
+    const tracker = currentTracker;
+    // 订阅依赖变化，变化时触发失效回调
+    const unsubscribe = node.subscribe(() => {
+      tracker.invalidate();
+    });
+    tracker.track(unsubscribe);
   }
 }
 ```
