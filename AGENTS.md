@@ -8,9 +8,9 @@
 ## 项目结构与模块组织
 
 这是一个以文档为主的 AI/LLM 知识库项目。核心内容位于 `notes/`，按主题组织（例如
-`notes/ai-fundamentals/`、`notes/architecture/`、`notes/claude-code/`）。VitePress
-站点配置与主题在 `docs/.vitepress/`，静态文档文件在 `docs/`。支持材料存放于
-`library/` 与 `prompts/`，对话归档在 `sessions/`。
+`notes/ai-fundamentals/`、`notes/architecture/`、`notes/claude-code/`）。VitePress站点配置与主题在
+`docs/.vitepress/`，静态文档文件在 `docs/`。支持材料存放于 `library/` 与
+`prompts/`，对话归档在 `sessions/`。
 
 ## 构建、测试与开发命令
 
@@ -32,8 +32,8 @@
 
 ## 测试指南
 
-当前没有自动化测试套件，`npm test` 会故意报错退出。请使用
-`npm run docs:dev` 进行本地检查，重点验证链接与页面布局。
+当前没有自动化测试套件，`npm test` 会故意报错退出。请使用 `npm run docs:dev`
+进行本地检查，重点验证链接与页面布局。
 
 ## 提交与 PR 指南
 
@@ -52,5 +52,11 @@
 
 ## Agent 专用说明
 
-- 通用规范以本文件为准；如需工具专用指引，参考 `CLAUDE.md`（Claude Code）。
-- 如未来引入其他 AI 工具的专用规范，建议新增对应文件并在此处建立索引。
+- **通用规范**: 以本文件为准。
+- **Claude Code**: 专用指引参考 [CLAUDE.md](./CLAUDE.md)。
+- **Antigravity**: 专用规则参考
+  [.antigravity/rules.md](./.antigravity/rules.md)。
+- **Codex**: 专用指令参考 [CODEX.md](./CODEX.md)。
+- **Gemini**: 上下文规则参考 [GEMINI.md](./GEMINI.md)。
+
+> 未经允许禁止在根目录创建新配置文件。

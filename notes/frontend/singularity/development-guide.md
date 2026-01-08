@@ -68,14 +68,18 @@ packages/
 
 ### 2.2 第三方库
 
-| 包名           | 用途         | 必需 |
-| :------------- | :----------- | :--- |
-| `typescript`   | 类型检查     | ✅   |
-| `tsup`         | 打包构建     | ✅   |
-| `vitest`       | 单元测试     | ✅   |
-| `react`        | React 适配器 | ✅   |
-| `react-dom`    | React 渲染   | ✅   |
-| `@types/react` | React 类型   | ✅   |
+| 包名                   | 用途              | 必需 |
+| :--------------------- | :---------------- | :--- |
+| `typescript`           | 类型检查          | ✅   |
+| `tsup`                 | 打包构建          | ✅   |
+| `vitest`               | 单元测试          | ✅   |
+| `react`                | React 适配器      | ✅   |
+| `react-dom`            | React 渲染        | ✅   |
+| `@types/react`         | React 类型        | ✅   |
+| `@types/react-dom`     | React DOM 类型    | ✅   |
+| `@testing-library/react` | React Hook 测试 | ✅   |
+| `jsdom`                | 测试 DOM 环境     | ✅   |
+| `tsx`                  | 运行 TS 脚本      | ✅   |
 
 ### 2.3 开发工具
 
@@ -118,7 +122,9 @@ mkdir -p packages/core/src packages/core/__tests__
 mkdir -p packages/react/src packages/react/__tests__
 
 # 安装依赖
-pnpm add -D typescript tsup vitest -w
+pnpm add -D typescript tsup vitest tsx -w
+pnpm add -D react react-dom @types/react @types/react-dom -w
+pnpm add -D @testing-library/react jsdom -w
 ```
 
 ### 3.2 TypeScript 配置
@@ -150,6 +156,40 @@ pnpm add -D typescript tsup vitest -w
     "build": "tsup src/index.ts --format esm --dts",
     "test": "vitest"
   }
+}
+```
+
+```json
+// packages/react/package.json
+{
+  "name": "@singularity/react",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "@singularity/core": ">=0.1.0"
+  },
+  "devDependencies": {
+    "@singularity/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest --environment jsdom"
+  }
+}
+```
+
+```json
+// packages/react/tsconfig.json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom"]
+  },
+  "include": ["src"]
 }
 ```
 
@@ -712,6 +752,40 @@ describe('batch', () => {
 });
 ```
 
+### 6.4 React Hook 测试
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { atom, computed } from '@singularity/core';
+import { useAtom, useAtomValue } from '../src';
+
+describe('react hooks', () => {
+  it('useAtom should return value and update', () => {
+    const count = atom(0);
+    const { result } = renderHook(() => useAtom(count));
+    expect(result.current).toBe(0);
+
+    act(() => {
+      count.set(1);
+    });
+    expect(result.current).toBe(1);
+  });
+
+  it('useAtomValue should work with computed', () => {
+    const count = atom(2);
+    const double = computed(() => count.get() * 2);
+    const { result } = renderHook(() => useAtomValue(double));
+    expect(result.current).toBe(4);
+
+    act(() => {
+      count.set(3);
+    });
+    expect(result.current).toBe(6);
+  });
+});
+```
+
 ---
 
 ## 七、性能基准
@@ -768,10 +842,12 @@ mkdir -p packages/core/src packages/core/__tests__
 mkdir -p packages/react/src packages/react/__tests__
 
 # 4. 安装依赖
-pnpm add -D typescript tsup vitest -w
+pnpm add -D typescript tsup vitest tsx -w
+pnpm add -D react react-dom @types/react @types/react-dom -w
+pnpm add -D @testing-library/react jsdom -w
 
-# 5. 创建 tsconfig.json（复制 2.2 章节内容）
-# 6. 创建 packages/core/package.json（复制 2.3 章节内容）
+# 5. 创建 tsconfig.json（复制 3.2 章节内容）
+# 6. 创建 packages/core/package.json（复制 3.3 章节内容）
 ```
 
 **检查清单**：
@@ -807,7 +883,7 @@ cd packages/core && pnpm test
 
 **检查清单**：
 
-- [ ] 4 个测试用例全部通过
+- [ ] 5 个测试用例全部通过
 - [ ] `history()` 返回变化记录
 
 **🎯 里程碑 1**：`pnpm test` 通过 atom 测试
@@ -826,6 +902,8 @@ cd packages/core && pnpm test
 - [ ] computed 正确计算派生值
 - [ ] 依赖变化时自动重算
 - [ ] 缓存生效
+- [ ] 循环依赖抛错
+- [ ] computed 内写入抛错
 
 #### Day 4-5：实现 effect.ts
 
@@ -864,7 +942,7 @@ ls dist/  # 应有 index.js, index.d.ts
 创建 `packages/core/benchmark.ts`，复制六、性能基准章节代码。
 
 ```bash
-npx ts-node benchmark.ts
+npx tsx benchmark.ts
 ```
 
 **检查清单**：
@@ -880,19 +958,14 @@ npx ts-node benchmark.ts
 
 #### Day 1-2：创建 react 包
 
-```bash
-cat > packages/react/package.json << 'EOF'
-{
-  "name": "@singularity/react",
-  "version": "0.1.0",
-  "peerDependencies": {
-    "react": ">=18.0.0",
-    "@singularity/core": ">=0.1.0"
-  }
-}
-EOF
-pnpm add -D react react-dom @types/react -w
-```
+创建 `packages/react/package.json` 与 `packages/react/tsconfig.json`，复制
+3.3 章节内容。
+
+**关键点**：
+
+- `@singularity/core` 需要出现在 `peerDependencies`（运行时约束），
+  并在 `devDependencies` 用 `workspace:*` 安装，保证构建期可解析类型。
+- `react` 保持 `peerDependencies`，由使用方提供。
 
 #### Day 3-5：实现 Hooks
 
@@ -902,7 +975,12 @@ pnpm add -D react react-dom @types/react -w
 
 #### Day 6-10：测试
 
+创建 `packages/react/__tests__/hooks.test.tsx`，复制 6.4 章节代码。
+
 ```bash
+cd packages/react && pnpm test
+
+# 手动验证（可选）
 npx create-vite test-app --template react-ts
 cd test-app
 pnpm add ../packages/core ../packages/react
@@ -919,6 +997,104 @@ pnpm add ../packages/core ../packages/react
 ---
 
 ### Week 6：发布
+
+#### Day 1-2：准备 LICENSE 与示例
+
+**LICENSE（MIT）**：
+
+```bash
+cat > LICENSE << 'EOF'
+MIT License
+
+Copyright (c) 2026 Singularity
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+EOF
+```
+
+**示例项目（counter）**：
+
+```bash
+pnpm create vite examples/counter --template react-ts
+cd examples/counter
+pnpm install
+pnpm add ../packages/core ../packages/react
+```
+
+Vite 模板会生成额外文件（如 `vite.config.ts`），这里只展示关键文件。
+
+创建 `examples/counter/src/store.ts`：
+
+```typescript
+import { atom, computed } from '@singularity/core';
+
+export const count = atom(0);
+export const double = computed(() => count.get() * 2);
+```
+
+覆盖 `examples/counter/src/App.tsx`：
+
+```tsx
+import { useAtom } from '@singularity/react';
+import { count, double } from './store';
+
+export function App() {
+  const value = useAtom(count);
+  const twice = useAtom(double);
+
+  return (
+    <div>
+      <button onClick={() => count.set((v) => v + 1)}>
+        Count: {value}
+      </button>
+      <div>Double: {twice}</div>
+    </div>
+  );
+}
+```
+
+覆盖 `examples/counter/src/main.tsx`：
+
+```tsx
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+
+const root = createRoot(document.getElementById('root')!);
+root.render(<App />);
+```
+
+确认 `examples/counter/index.html`：
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Singularity Counter</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
 
 ```bash
 # 发布
@@ -1007,6 +1183,12 @@ singularity/
 | `core/benchmark.ts`               | 六章节   | 复制代码 |
 | `react/src/useAtom.ts`            | 4.1 章节 | 复制代码 |
 | `react/src/useAtomValue.ts`       | 4.2 章节 | 复制代码 |
+| `react/__tests__/hooks.test.tsx`  | 6.4 章节 | 复制代码 |
+| `LICENSE`                         | Week 6   | MIT 文本 |
+| `examples/counter/src/store.ts`   | Week 6   | 示例状态 |
+| `examples/counter/src/App.tsx`    | Week 6   | 示例组件 |
+| `examples/counter/src/main.tsx`   | Week 6   | 示例入口 |
+| `examples/counter/index.html`     | Week 6   | 示例页面 |
 
 ### 文件数量统计
 
