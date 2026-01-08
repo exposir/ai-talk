@@ -14,26 +14,61 @@
 ### 1.2 模型层 (Model Layer)
 
 - **Transformer**: 现代 LLM 的基石架构，引入了自注意力机制（Self-Attention）。
+- **Attention
+  (注意力机制)**: 让模型在处理序列时动态关注最相关的部分，而非平均对待所有输入。
+- **MoE (Mixture of Experts
+  / 混合专家)**: 模型内部有多个"专家"子网络，每次只激活部分专家，实现大参数量但低计算成本（如 DeepSeek、Mixtral）。
 - **Foundation Model
-  (基座模型)**: 通过海量数据预训练（Pre-training）得到的通用模型，拥有广泛的知识但缺乏特定领域的专精。
+  (基座模型)**: 通过海量数据预训练得到的通用模型，拥有广泛知识但缺乏特定领域专精。
 - **LLM
   (大语言模型)**: 参数量巨大（通常 >10B）的基座模型，展现出涌现能力（Emergent
   Abilities）。
+- **Multimodal
+  (多模态)**: 能同时理解和生成多种形式内容（文本、图像、音频、视频）的模型，如 GPT-4o、Gemini。
+- **Embedding
+  (向量嵌入)**: 将文本/图像等转换为高维向量，使语义相似的内容在向量空间中距离相近，是 RAG 和语义搜索的基础。
+- **Tokenizer
+  (分词器)**: 将文本切分为 Token 的工具，不同模型有不同分词策略（BPE、SentencePiece 等）。
 
 ### 1.3 训练与微调层 (Training & Tuning)
 
 - **Pre-training (预训练)**: 让模型学习语言规律和世界知识（"通识教育"）。
-- **SFT
-  (监督微调)**: 使用高质量的一问一答数据，教模型如何遵循指令（"职业培训"）。
+- **SFT (监督微调)**: 使用高质量的问答数据，教模型如何遵循指令（"职业培训"）。
 - **RLHF (人类反馈强化学习)**: 使用奖惩机制让模型对齐人类价值观（"道德规范"）。
+- **DPO (直接偏好优化)**: RLHF 的简化替代方案，无需训练额外的奖励模型。
+- **Alignment
+  (对齐)**: 让 AI 行为符合人类意图和价值观的过程，安全研究的核心议题。
+- **LoRA (低秩适配)**: 高效微调方法，只训练少量参数，大幅降低微调成本。
+- **Quantization
+  (量化)**: 将模型参数从高精度（FP16）压缩到低精度（INT8/INT4），减少显存占用，是本地部署的关键技术。
+- **Knowledge Distillation
+  (知识蒸馏)**: 用大模型（教师）训练小模型（学生），迁移能力同时压缩体积。
+- **Synthetic Data (合成数据)**: 用 AI 生成训练数据，解决高质量数据稀缺问题。
 
 ### 1.4 应用与交互层 (Application Layer)
 
 - **Prompt Engineering (提示词工程)**: 不改变模型参数，通过设计输入来引导输出。
+- **In-Context Learning / ICL
+  (上下文学习)**: 不更新参数，仅通过在 Prompt 中提供示例让模型学会任务。
+- **Zero-shot / Few-shot**:
+  Zero-shot 无需示例直接执行任务；Few-shot 提供少量示例引导。
+- **Chain-of-Thought / CoT
+  (思维链)**: 引导模型"一步步思考"，显著提升复杂推理能力。
 - **RAG
   (检索增强生成)**: 给模型外挂知识库，解决幻觉和知识过时问题（"开卷考试"）。
 - **Agent
   (智能体)**: 具备感知、规划、工具使用和执行能力的 AI 系统（"全能助手"）。
+- **Multi-Agent (多智能体)**: 多个 Agent 协作完成复杂任务，各司其职。
+- **Memory (记忆)**:
+  Agent 的能力扩展——短期记忆（上下文）和长期记忆（向量数据库）。
+- **Planning (规划)**: Agent 核心能力，将复杂任务分解为可执行的子步骤。
+- **Reflection (反思)**: Agent 自我检查和纠错的能力，提升任务成功率。
+- **Hallucination
+  (幻觉)**: 模型生成看似合理但实际错误或不存在的信息，是 AI 安全的核心挑战。
+- **Temperature /
+  Top-p**: 控制生成随机性的参数。Temperature 越高越有创意但可能胡说；越低越确定但可能重复。
+- **Benchmark
+  (评测基准)**: 评估模型能力的标准化测试，如 MMLU（知识）、HumanEval（编程）、SWE-bench（工程）。
 
 ---
 
@@ -225,20 +260,31 @@ mindmap
   root((人工智能 AI))
     模型架构
       Transformer
-      MoE (混合专家)
       Attention 机制
+      MoE (混合专家)
+      Embedding (向量嵌入)
+      Multimodal (多模态)
     训练阶段
       Pre-training (预训练)
       SFT (监督微调)
       RLHF / DPO (对齐)
+      LoRA (高效微调)
+      Quantization (量化)
+      Distillation (蒸馏)
     能力增强
-      RAG (知识外挂)
-      CoT (思维链)
       Prompt Engineering
+      ICL (上下文学习)
+      CoT (思维链)
+      RAG (知识外挂)
       Tool Use (工具调用)
     应用形态
       Chatbot (对话机器人)
       Copilot (副驾驶/辅助)
       Agent (自主智能体)
-      Skill (可复用的能力模块)
+      Multi-Agent (多智能体)
+      Skill (可复用技能)
+    安全与评估
+      Alignment (对齐)
+      Hallucination (幻觉)
+      Benchmark (评测)
 ```
