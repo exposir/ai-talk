@@ -210,6 +210,35 @@ if (process.env.NODE_ENV !== 'production') {
 
 **A**: 使用 XState。Singularity 不做状态机，专注核心能力。
 
+### Q5.5: 什么时候用 useState / useRef / Singularity？
+
+**A**: 根据状态的作用范围和特性选择。
+
+| 状态类型         | 选择          | 原因                   |
+| :--------------- | :------------ | :--------------------- |
+| 组件内临时状态   | `useState`    | 不需要跨组件共享       |
+| 不触发重渲染的值 | `useRef`      | 如 DOM 引用、定时器 ID |
+| 跨组件共享状态   | `Singularity` | 如主题、用户、购物车   |
+
+**详细场景**：
+
+| 场景                 | 推荐            | 示例                                      |
+| :------------------- | :-------------- | :---------------------------------------- |
+| 表单输入（受控）     | useState        | `const [value, setValue] = useState('')`  |
+| 模态框开关（单组件） | useState        | `const [open, setOpen] = useState(false)` |
+| DOM 引用             | useRef          | `const inputRef = useRef(null)`           |
+| 定时器 ID            | useRef          | `const timerId = useRef()`                |
+| 全局主题             | **Singularity** | `const theme = atom('dark')`              |
+| 用户登录状态         | **Singularity** | `const user = atom(null)`                 |
+| 购物车               | **Singularity** | `const cart = atom([])`                   |
+| 需要追踪调试         | **Singularity** | 任何需要 `history()` 的状态               |
+
+**简单判断**：
+
+- 只有一个组件用？→ `useState`
+- 不需要触发渲染？→ `useRef`
+- 多个组件共享 / 需要追踪？→ `Singularity`
+
 ### Q6: history() 会导致内存泄漏吗？
 
 **A**: 不会。历史记录限制 100 条，超出自动丢弃旧记录。
