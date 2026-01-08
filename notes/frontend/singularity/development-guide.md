@@ -568,70 +568,189 @@ console.timeEnd('computed');
 
 ### Week 1：项目初始化 + atom
 
-| 步骤 | 任务                   | 验收标准        |
-| :--- | :--------------------- | :-------------- |
-| 1.1  | 执行初始化脚本（2.1）  | 项目结构创建    |
-| 1.2  | 配置 TypeScript（2.2） | tsconfig.json   |
-| 1.3  | 配置包（2.3）          | package.json    |
-| 1.4  | 实现 batch.ts（3.4）   | 导出 isBatching |
-| 1.5  | 实现 trace.ts（3.6）   | 导出 Tracker    |
-| 1.6  | 实现 atom.ts（3.1）    | atom 测试通过   |
+#### Day 1-2：项目初始化
 
-**里程碑 1**：`pnpm test` 通过 atom 测试 ✅
+```bash
+# 1. 创建项目
+mkdir singularity && cd singularity
+pnpm init
+
+# 2. 配置 workspace
+cat > pnpm-workspace.yaml << 'EOF'
+packages:
+  - 'packages/*'
+EOF
+
+# 3. 创建目录
+mkdir -p packages/core/src packages/core/__tests__
+mkdir -p packages/react/src packages/react/__tests__
+
+# 4. 安装依赖
+pnpm add -D typescript tsup vitest -w
+
+# 5. 创建 tsconfig.json（复制 2.2 章节内容）
+# 6. 创建 packages/core/package.json（复制 2.3 章节内容）
+```
+
+**检查清单**：
+
+- [ ] `pnpm install` 无报错
+- [ ] 目录结构与 1.4 章节一致
+
+#### Day 3：实现 batch.ts
+
+创建 `packages/core/src/batch.ts`，复制 3.4 章节代码。
+
+**检查清单**：
+
+- [ ] 导出 `batch`, `isBatching`, `schedulePendingUpdate`
+
+#### Day 4：实现 trace.ts
+
+创建 `packages/core/src/trace.ts`，复制 3.6 章节代码。
+
+**检查清单**：
+
+- [ ] 导出 `Tracker`, `startTracking`, `stopTracking`, `trackDependency`
+
+#### Day 5-7：实现 atom.ts + 测试
+
+创建 `packages/core/src/atom.ts`，复制 3.1 章节代码。创建
+`packages/core/__tests__/atom.test.ts`，复制 5.1 章节代码。
+
+```bash
+cd packages/core && pnpm test
+```
+
+**检查清单**：
+
+- [ ] 4 个测试用例全部通过
+- [ ] `history()` 返回变化记录
+
+**🎯 里程碑 1**：`pnpm test` 通过 atom 测试
 
 ---
 
 ### Week 2：computed + effect
 
-| 步骤 | 任务                    | 验收标准          |
-| :--- | :---------------------- | :---------------- |
-| 2.1  | 实现 computed.ts（3.2） | computed 测试通过 |
-| 2.2  | 实现 effect.ts（3.3）   | effect 测试通过   |
-| 2.3  | 实现 batch 集成         | batch 测试通过    |
+#### Day 1-3：实现 computed.ts
 
-**里程碑 2**：Core 所有测试通过 ✅
+创建 `packages/core/src/computed.ts`，复制 3.2 章节代码。创建
+`packages/core/__tests__/computed.test.ts`，复制 5.2 章节代码。
+
+**检查清单**：
+
+- [ ] computed 正确计算派生值
+- [ ] 依赖变化时自动重算
+- [ ] 缓存生效
+
+#### Day 4-5：实现 effect.ts
+
+创建 `packages/core/src/effect.ts`，复制 3.3 章节代码。
+
+**检查清单**：
+
+- [ ] 依赖变化时自动执行
+- [ ] `dispose()` 正确清理
+
+#### Day 6-7：batch 集成测试
+
+创建 `packages/core/__tests__/batch.test.ts`，复制 5.3 章节代码。
+
+**检查清单**：
+
+- [ ] batch 内多次 set 只触发一次更新
+
+**🎯 里程碑 2**：Core 所有测试通过
 
 ---
 
 ### Week 3：集成 + 性能
 
-| 步骤 | 任务                 | 验收标准          |
-| :--- | :------------------- | :---------------- |
-| 3.1  | 实现 index.ts（3.5） | 统一导出          |
-| 3.2  | 运行性能基准（七）   | 有性能报告        |
-| 3.3  | 性能调优             | ≥ Jotai 80%       |
-| 3.4  | 构建测试             | `pnpm build` 成功 |
+#### Day 1-2：实现 index.ts + 构建
 
-**里程碑 3**：`@singularity/core` 可发布 ✅
+创建 `packages/core/src/index.ts`，复制 3.5 章节代码。
+
+```bash
+cd packages/core && pnpm build
+ls dist/  # 应有 index.js, index.d.ts
+```
+
+#### Day 3-5：性能基准测试
+
+创建 `packages/core/benchmark.ts`，复制六、性能基准章节代码。
+
+```bash
+npx ts-node benchmark.ts
+```
+
+**检查清单**：
+
+- [ ] atom 性能 ≥ Jotai 80%
+- [ ] computed 性能 ≥ Jotai 80%
+
+**🎯 里程碑 3**：`@singularity/core` 可发布
 
 ---
 
 ### Week 4-5：React 适配器
 
-| 步骤 | 任务                        | 验收标准  |
-| :--- | :-------------------------- | :-------- |
-| 4.1  | 创建 react 包               | 目录结构  |
-| 4.2  | 实现 useAtom.ts（4.1）      | Hook 可用 |
-| 4.3  | 实现 useAtomValue.ts（4.2） | Hook 可用 |
-| 4.4  | SSR 支持验证                | 无报错    |
-| 4.5  | React 18 并发模式测试       | 无撕裂    |
+#### Day 1-2：创建 react 包
 
-**里程碑 4**：`@singularity/react` 可发布 ✅
+```bash
+cat > packages/react/package.json << 'EOF'
+{
+  "name": "@singularity/react",
+  "version": "0.1.0",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "@singularity/core": ">=0.1.0"
+  }
+}
+EOF
+pnpm add -D react react-dom @types/react -w
+```
+
+#### Day 3-5：实现 Hooks
+
+创建 `packages/react/src/useAtom.ts`，复制 4.1 章节代码。创建
+`packages/react/src/useAtomValue.ts`，复制 4.2 章节代码。创建
+`packages/react/src/index.ts`。
+
+#### Day 6-10：测试
+
+```bash
+npx create-vite test-app --template react-ts
+cd test-app
+pnpm add ../packages/core ../packages/react
+```
+
+**检查清单**：
+
+- [ ] useAtom 正常工作
+- [ ] SSR 无报错
+- [ ] 并发模式无撕裂
+
+**🎯 里程碑 4**：`@singularity/react` 可发布
 
 ---
 
 ### Week 6：发布
 
-| 步骤 | 任务                    | 验收标准   |
-| :--- | :---------------------- | :--------- |
-| 6.1  | 准备 README             | 文档完整   |
-| 6.2  | 准备 LICENSE            | MIT        |
-| 6.3  | 发布 @singularity/core  | npm 可安装 |
-| 6.4  | 发布 @singularity/react | npm 可安装 |
-| 6.5  | 创建 Demo 项目          | 可运行示例 |
+```bash
+# 发布
+cd packages/core && pnpm build && npm publish --access public
+cd packages/react && pnpm build && npm publish --access public
+```
 
-**里程碑 5**：v0.1.0 发布 🎉
+**检查清单**：
+
+- [ ] `npm i @singularity/core` 可安装
+- [ ] `npm i @singularity/react` 可安装
+- [ ] Demo 项目可运行
+
+**🎯 里程碑 5**：v0.1.0 发布 🎉
 
 ---
 
-_实施文档 v3.0 - 2026-01-08_
+_实施文档 v4.0 - 2026-01-08_
