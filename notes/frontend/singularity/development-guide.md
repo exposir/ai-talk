@@ -442,32 +442,7 @@ export function useAtomValue<T>(atom: Atom<T> | Computed<T>): T {
 
 ---
 
-## 五、开发任务
-
-### Phase 1：Core (Week 1-3)
-
-- [ ] atom 实现 + 历史记录
-- [ ] computed 实现 + 依赖追踪
-- [ ] effect 实现 + 清理函数
-- [ ] batch 实现 + 嵌套支持
-- [ ] 单元测试 100% 覆盖
-
-### Phase 2：React (Week 4-5)
-
-- [ ] useAtom 实现
-- [ ] useAtomValue 实现
-- [ ] SSR 支持验证
-- [ ] React 18 并发模式测试
-
-### Phase 3：发布 (Week 6)
-
-- [ ] npm 发布
-- [ ] 文档完善
-- [ ] Demo 项目
-
----
-
-## 六、测试用例
+## 五、测试用例
 
 ### 6.1 atom 测试
 
@@ -557,7 +532,7 @@ describe('batch', () => {
 
 ---
 
-## 七、性能基准
+## 六、性能基准
 
 ```typescript
 // benchmark.ts
@@ -589,7 +564,7 @@ console.timeEnd('computed');
 
 ---
 
-## 八、开发里程碑
+## 七、开发里程碑
 
 ### Week 1：项目初始化 + atom
 
