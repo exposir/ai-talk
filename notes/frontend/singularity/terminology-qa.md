@@ -241,7 +241,20 @@ if (process.env.NODE_ENV !== 'production') {
 
 ### Q8: history() 会导致内存泄漏吗？
 
-**A**: 不会。历史记录限制 100 条，超出自动丢弃旧记录。
+**A**: ✅ **不会**。
+
+| 环境         | 行为                                        |
+| :----------- | :------------------------------------------ |
+| **生产环境** | history 功能完全禁用，不占用任何内存        |
+| **开发环境** | 记录历史，但限制 100 条，超出自动丢弃旧记录 |
+
+```typescript
+// 只在开发模式记录
+if (process.env.NODE_ENV !== 'production') {
+  history.push({ from, to, time });
+  if (history.length > 100) history.shift();
+}
+```
 
 ### Q9: 心智模型优秀吗？
 
