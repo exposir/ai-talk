@@ -10,6 +10,19 @@
 
 **Singularity** = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度
 
+### 1.2 为什么从底层设计？
+
+| 问题                | 能用插件解决吗？ | 原因                            |
+| :------------------ | :--------------- | :------------------------------ |
+| 给 Zustand 加追踪   | ✅ 能            | 中间件已存在                    |
+| 给 Jotai 加追踪     | ✅ 能            | devtools 已存在                 |
+| 给 Zustand 加细粒度 | ❌ **不能**      | 架构决定（单 store + selector） |
+| 给 Jotai 简化 API   | ❌ **不能**      | 原子组合是核心设计哲学          |
+
+> Zustand 的「非细粒度」是架构问题，Jotai 的「API 复杂」是设计哲学。三合一组合必须从底层重新设计。
+
+### 1.3 目标指标
+
 | 指标     | 目标        |
 | :------- | :---------- |
 | API 数量 | ≤ 5 个      |
@@ -183,7 +196,6 @@ export function computed<T>(read: () => T) {
   let cachedValue: T;
   let dirty = true;
   const listeners = new Set<() => void>();
-  const tracker = new Tracker(markDirty); // 依赖变化时触发 markDirty
 
   const markDirty = () => {
     if (!dirty) {
@@ -191,6 +203,9 @@ export function computed<T>(read: () => T) {
       listeners.forEach((fn) => fn());
     }
   };
+
+  // 创建 Tracker，依赖变化时触发 markDirty
+  const tracker = new Tracker(markDirty);
 
   return {
     id,
