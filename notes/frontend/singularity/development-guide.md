@@ -115,6 +115,9 @@ pnpm add -D typescript tsup vitest -w
 ### 3.1 atom.ts
 
 ```typescript
+import { trackDependency } from './trace';
+import { isBatching, schedulePendingUpdate } from './batch';
+
 type Listener = () => void;
 
 interface HistoryEntry<T> {
@@ -318,6 +321,20 @@ export function schedulePendingUpdate(fn: () => void): void {
 }
 ```
 
+### 3.6 index.ts（导出文件）
+
+```typescript
+// packages/core/src/index.ts
+export { atom, type Atom } from './atom';
+export { computed, type Computed } from './computed';
+export { effect, type Effect } from './effect';
+export { batch } from './batch';
+
+// packages/react/src/index.ts
+export { useAtom } from './useAtom';
+export { useAtomValue } from './useAtomValue';
+```
+
 ### 3.5 trace.ts（依赖追踪）
 
 ```typescript
@@ -383,7 +400,7 @@ export function trackDependency(node: any): void {
 ### 4.1 useAtom.ts
 
 ```typescript
-import { useSyncExternalStore, useCallback } from 'react';
+import { useSyncExternalStore, useCallback, useRef } from 'react';
 import type { Atom, Computed } from '@singularity/core';
 
 export function useAtom<T>(atom: Atom<T> | Computed<T>): T;
@@ -392,9 +409,16 @@ export function useAtom<T, R>(
   atom: Atom<T> | Computed<T>,
   selector?: (value: T) => R,
 ): T | R {
+  // 稳定 selector 引用，避免每次渲染创建新函数
+  const selectorRef = useRef(selector);
+  selectorRef.current = selector;
+
   const getSnapshot = useCallback(
-    () => (selector ? selector(atom.get()) : atom.get()),
-    [atom, selector],
+    () => {
+      const value = atom.get();
+      return selectorRef.current ? selectorRef.current(value) : value;
+    },
+    [atom], // selector 通过 ref 引用，不需要作为依赖
   );
 
   return useSyncExternalStore(
