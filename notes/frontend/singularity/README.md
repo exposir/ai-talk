@@ -2,7 +2,7 @@
 
 > **天生简单，天生可追踪**
 
-Singularity 是一个极简的 React 状态管理库，结合了 Zustand 的简单性和 Redux 的可追踪性。
+Singularity 是一个极简的 React 状态管理库，结合了 Zustand 的简单性、Redux 的可追踪性和 Jotai 的细粒度更新。
 
 ---
 

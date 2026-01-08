@@ -11,7 +11,7 @@
 ### 新定位
 
 > **「天生简单，天生可追踪」**  
-> Singularity = Zustand 的简单 + Redux 的可追踪
+> Singularity = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度
 
 ### 主要变更
 

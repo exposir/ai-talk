@@ -8,7 +8,7 @@
 
 ### 1.1 定位
 
-**Singularity** = Zustand 的简单 + Redux 的可追踪
+**Singularity** = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度
 
 | 指标     | 目标        |
 | :------- | :---------- |
