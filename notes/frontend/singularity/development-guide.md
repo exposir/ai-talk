@@ -506,6 +506,62 @@ export function useAtomValue<T>(atom: Atom<T> | Computed<T>): T {
 }
 ```
 
+### 5.3 Vue 适配器（⏳ v1.0 计划，暂不开发）
+
+> **说明**：Vue 适配器计划在 v1.0 实现，当前版本仅支持 React。
+
+**实现思路**：使用 Vue 3 的 `customRef` 桥接 Singularity 核心。
+
+```typescript
+// packages/vue/src/useAtom.ts（规划代码）
+import { customRef, onUnmounted } from 'vue';
+import type { Atom, Computed } from '@singularity/core';
+
+export function useAtom<T>(atom: Atom<T> | Computed<T>) {
+  return customRef<T>((track, trigger) => {
+    // 订阅 atom 变化
+    const unsubscribe = atom.subscribe(() => {
+      trigger(); // 通知 Vue 更新
+    });
+
+    // 组件卸载时取消订阅
+    onUnmounted(() => unsubscribe());
+
+    return {
+      get() {
+        track(); // 收集 Vue 依赖
+        return atom.get();
+      },
+      set(value: T) {
+        if ('set' in atom) atom.set(value);
+      },
+    };
+  });
+}
+```
+
+**使用示例**：
+
+```vue
+<script setup>
+import { atom } from '@singularity/core';
+import { useAtom } from '@singularity/vue';
+
+const countAtom = atom(0);
+const count = useAtom(countAtom);
+</script>
+
+<template>
+  <button @click="countAtom.set((c) => c + 1)">Count: {{ count }}</button>
+</template>
+```
+
+| 对比           | React 适配器           | Vue 适配器  |
+| :------------- | :--------------------- | :---------- |
+| 核心 API       | `useSyncExternalStore` | `customRef` |
+| peerDependency | react ^18              | vue ^3      |
+| 状态           | ✅ v0.1                | ⏳ v1.0     |
+
 ---
 
 ## 六、测试用例
