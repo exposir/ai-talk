@@ -134,6 +134,7 @@ AI 模型、工具和技术的完整指南。
 
 ## 📁 项目规划
 
+- [GEB 分形文档系统协议解读](./geb-protocol-explained.md)
 - [命名规范](../project-meta/naming-conventions.md) - 项目、目录、文件命名最佳实践
 - [项目规范与最佳实践](../project-meta/project-standards.md) - 项目统一规范与执行要点
 - [项目分析](../project-meta/project-analysis.md)

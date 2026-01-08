@@ -7,6 +7,7 @@
 - **在线文档**: https://exposir.github.io/ai-talk/
 - **完整目录**: [查看全部文档](./notes/guide/index.md)
 - **项目规范**: [规范与最佳实践](./notes/project-meta/project-standards.md)
+- **GEB 文档协议**: [分形文档系统](./notes/guide/geb-protocol-explained.md)
 
 ---
 

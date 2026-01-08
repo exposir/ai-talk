@@ -1,7 +1,7 @@
 <!--
 [INPUT]: 基于 linus-torvalds-geb-protocol.md 的解读
 [OUTPUT]: GEB 分形文档系统协议的完整说明文档
-[POS]: prompts/library 的教学文档，面向希望理解和应用 GEB 协议的开发者
+[POS]: notes/guide 的协议解读文档，面向希望理解和应用 GEB 协议的开发者
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
