@@ -753,4 +753,86 @@ cd packages/react && pnpm build && npm publish --access public
 
 ---
 
-_实施文档 v4.0 - 2026-01-08_
+## 八、完整项目结构
+
+开发完成后，项目应包含以下文件：
+
+```
+singularity/
+├── pnpm-workspace.yaml              # workspace 配置
+├── tsconfig.json                     # TypeScript 配置
+├── package.json                      # 根 package
+├── README.md                         # 项目说明
+├── LICENSE                           # MIT 许可证
+│
+├── packages/
+│   ├── core/                         # @singularity/core
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── src/
+│   │   │   ├── index.ts              # 导出入口
+│   │   │   ├── atom.ts               # 原子状态
+│   │   │   ├── computed.ts           # 派生状态
+│   │   │   ├── effect.ts             # 副作用
+│   │   │   ├── batch.ts              # 批处理
+│   │   │   └── trace.ts              # 依赖追踪
+│   │   ├── __tests__/
+│   │   │   ├── atom.test.ts          # atom 测试
+│   │   │   ├── computed.test.ts      # computed 测试
+│   │   │   └── batch.test.ts         # batch 测试
+│   │   ├── benchmark.ts               # 性能基准
+│   │   └── dist/                      # 构建产物
+│   │       ├── index.js
+│   │       └── index.d.ts
+│   │
+│   └── react/                         # @singularity/react
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── src/
+│       │   ├── index.ts              # 导出入口
+│       │   ├── useAtom.ts            # useAtom Hook
+│       │   └── useAtomValue.ts       # useAtomValue Hook
+│       ├── __tests__/
+│       │   └── hooks.test.tsx        # React Hook 测试
+│       └── dist/                      # 构建产物
+│           ├── index.js
+│           └── index.d.ts
+│
+└── examples/                          # 示例项目
+    └── counter/
+        ├── package.json
+        ├── src/
+        │   ├── main.tsx
+        │   ├── App.tsx
+        │   └── store.ts              # 状态定义
+        └── index.html
+```
+
+### 文件说明
+
+| 文件                              | 来源     | 说明     |
+| :-------------------------------- | :------- | :------- |
+| `core/src/atom.ts`                | 3.1 章节 | 复制代码 |
+| `core/src/computed.ts`            | 3.2 章节 | 复制代码 |
+| `core/src/effect.ts`              | 3.3 章节 | 复制代码 |
+| `core/src/batch.ts`               | 3.4 章节 | 复制代码 |
+| `core/src/index.ts`               | 3.5 章节 | 复制代码 |
+| `core/src/trace.ts`               | 3.6 章节 | 复制代码 |
+| `core/__tests__/atom.test.ts`     | 5.1 章节 | 复制代码 |
+| `core/__tests__/computed.test.ts` | 5.2 章节 | 复制代码 |
+| `core/__tests__/batch.test.ts`    | 5.3 章节 | 复制代码 |
+| `core/benchmark.ts`               | 六章节   | 复制代码 |
+| `react/src/useAtom.ts`            | 4.1 章节 | 复制代码 |
+| `react/src/useAtomValue.ts`       | 4.2 章节 | 复制代码 |
+
+### 文件数量统计
+
+| 包                 | 源码文件 | 测试文件 | 合计   |
+| :----------------- | :------- | :------- | :----- |
+| @singularity/core  | 6        | 3        | 9      |
+| @singularity/react | 3        | 1        | 4      |
+| **总计**           | **9**    | **4**    | **13** |
+
+---
+
+_实施文档 v5.0 - 2026-01-08_
