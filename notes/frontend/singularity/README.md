@@ -110,6 +110,8 @@ console.log(user.history());
 user.restore(0); // 恢复到第一个状态
 ```
 
+restore 会回到 `history[index].from`，不会新增历史记录。
+
 **不需要 Redux DevTools，不需要任何配置。**
 
 ---

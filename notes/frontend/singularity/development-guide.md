@@ -181,7 +181,7 @@ flowchart LR
 ### 3.1 atom.ts
 
 ```typescript
-import { trackDependency } from './trace';
+import { trackDependency, assertWritable } from './trace';
 import { isBatching, schedulePendingUpdate } from './batch';
 
 type Listener = () => void;
@@ -213,6 +213,7 @@ export function atom<T>(initial: T) {
     },
 
     set(next: T | ((prev: T) => T)) {
+      assertWritable();
       const newValue =
         typeof next === 'function' ? (next as (prev: T) => T)(value) : next;
 
@@ -243,8 +244,15 @@ export function atom<T>(initial: T) {
     },
 
     restore(index: number) {
-      if (history[index]) {
-        this.set(history[index].from);
+      assertWritable();
+      const entry = history[index];
+      if (!entry) return;
+
+      value = entry.from; // restore 不应新增历史记录
+      if (isBatching()) {
+        schedulePendingUpdate(notify);
+      } else {
+        notify();
       }
     },
   };
@@ -259,6 +267,19 @@ export type Atom<T> = ReturnType<typeof atom<T>>;
 import { Tracker, startTracking, stopTracking, trackDependency } from './trace';
 
 let computedId = 0;
+const computingStack: string[] = [];
+
+function enterComputed(id: string): void {
+  if (computingStack.includes(id)) {
+    const chain = [...computingStack, id].join(' -> ');
+    throw new Error(`Circular dependency detected: ${chain}`);
+  }
+  computingStack.push(id);
+}
+
+function exitComputed(): void {
+  computingStack.pop();
+}
 
 export function computed<T>(read: () => T) {
   const id = `computed:${++computedId}`;
@@ -286,11 +307,13 @@ export function computed<T>(read: () => T) {
         // 清理旧的依赖订阅，避免内存泄漏
         tracker.cleanup();
 
-        startTracking(tracker);
+        enterComputed(id);
+        startTracking(tracker, 'computed');
         try {
           cachedValue = read();
         } finally {
           stopTracking();
+          exitComputed();
         }
         dirty = false;
       }
@@ -332,7 +355,7 @@ export function effect(fn: () => void | (() => void)) {
     // 清理旧的依赖订阅
     tracker.cleanup();
 
-    startTracking(tracker);
+    startTracking(tracker, 'effect');
     try {
       cleanup = fn();
     } finally {
@@ -406,9 +429,11 @@ export { useAtomValue } from './useAtomValue';
 ```typescript
 type Unsubscribe = () => void;
 type OnInvalidate = () => void;
+type TrackingKind = 'computed' | 'effect';
 
 // 当前正在追踪的 Tracker
 let currentTracker: Tracker | null = null;
+let currentKind: TrackingKind | null = null;
 
 /**
  * Tracker 管理依赖订阅的生命周期
@@ -439,12 +464,20 @@ export class Tracker {
   }
 }
 
-export function startTracking(tracker: Tracker): void {
+export function startTracking(tracker: Tracker, kind: TrackingKind): void {
   currentTracker = tracker;
+  currentKind = kind;
 }
 
 export function stopTracking(): void {
   currentTracker = null;
+  currentKind = null;
+}
+
+export function assertWritable(): void {
+  if (currentKind === 'computed') {
+    throw new Error('Writes are not allowed inside computed().');
+  }
 }
 
 export function trackDependency(node: any): void {
@@ -600,6 +633,16 @@ describe('atom', () => {
     count.set(2);
     expect(count.history()).toHaveLength(2);
   });
+
+  it('should restore without adding history', () => {
+    const count = atom(0);
+    count.set(1);
+    count.set(2);
+    const before = count.history().length;
+    count.restore(0);
+    expect(count.get()).toBe(0);
+    expect(count.history()).toHaveLength(before);
+  });
 });
 ```
 
@@ -620,6 +663,23 @@ describe('computed', () => {
     expect(double.get()).toBe(2);
     a.set(5);
     expect(double.get()).toBe(10);
+  });
+
+  it('should throw on circular dependency', () => {
+    let a: any;
+    let b: any;
+    a = computed(() => b.get());
+    b = computed(() => a.get());
+    expect(() => a.get()).toThrow(/Circular dependency/);
+  });
+
+  it('should throw on writes inside computed', () => {
+    const count = atom(0);
+    const bad = computed(() => {
+      count.set(1);
+      return count.get();
+    });
+    expect(() => bad.get()).toThrow(/Writes are not allowed/);
   });
 });
 ```
@@ -733,7 +793,8 @@ pnpm add -D typescript tsup vitest -w
 
 **检查清单**：
 
-- [ ] 导出 `Tracker`, `startTracking`, `stopTracking`, `trackDependency`
+- [ ] 导出 `Tracker`, `startTracking`, `stopTracking`, `trackDependency`,
+  `assertWritable`
 
 #### Day 5-7：实现 atom.ts + 测试
 

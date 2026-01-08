@@ -40,7 +40,12 @@ interface Atom<T> {
   /** 获取变化历史（开发模式） */
   history(): HistoryEntry<T>[];
 
-  /** 恢复到历史状态（开发模式） */
+  /**
+   * 恢复到历史状态（开发模式）
+   * - 目标值为 history[index].from
+   * - 不新增历史记录，但会通知订阅者
+   * - index 越界时无操作
+   */
   restore(index: number): void;
 }
 
@@ -269,8 +274,9 @@ function atom<T>(initial: T): Atom<T> {
     },
     history: () => [...history],
     restore: (index) => {
-      if (history[index]) {
-        value = history[index].from;
+      const entry = history[index];
+      if (entry) {
+        value = entry.from; // restore 不应新增历史记录
         notify();
       }
     },
@@ -319,6 +325,14 @@ export type { Atom, Computed, Effect, HistoryEntry };
 | computed 内写入        | 抛出错误       |
 | 嵌套 batch             | 合并为单一批次 |
 | 生产模式调用 history() | 返回空数组     |
+
+**说明：**
+
+- 循环依赖检测使用 computed 计算栈；当某个 computed 在计算中再次
+  被访问时，抛错并停止追踪。
+- computed 计算阶段禁止任何写入（set/restore）；effect 内写入允许。
+- restore 只回退到 history[index].from，不追加历史记录，但会通知订阅者；
+  index 越界时无操作。
 
 ---
 
