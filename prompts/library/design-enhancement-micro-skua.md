@@ -1,9 +1,9 @@
-/\*\*
-
-- [INPUT]: 依赖 shadcn/ui 组件、CSS 变量、color-mix
-- [OUTPUT]: 微拟物光影质感设计规范、Button/Card 升级范例
-- [POS]: prompts/library 的 UI 设计增强指南，配合 shadcn 使用
-- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+<!--
+[INPUT]: 依赖 shadcn/ui 组件、CSS 变量、color-mix
+[OUTPUT]: 微拟物光影质感设计规范、Button/Card 升级范例
+[POS]: prompts/library 的 UI 设计增强指南，配合 shadcn 使用
+[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
 
 ## 设计提升：微拟物光影质感
 
@@ -84,10 +84,10 @@ sm: 16px | default: 20px | lg: 24px | xl: 32px
 
 ```jsx
 /**
- * [INPUT]: variant, size, isLoading, leftIcon, rightIcon, asChild, className
- * [OUTPUT]: 统一风格按钮组件（立体渐变效果）
- * [POS]: UI基础层 - 核心交互原语
- */
+[INPUT]: variant, size, isLoading, leftIcon, rightIcon, asChild, className
+[OUTPUT]: 统一风格按钮组件（立体渐变效果）
+[POS]: UI基础层 - 核心交互原语
+-->
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
