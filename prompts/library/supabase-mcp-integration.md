@@ -1,3 +1,10 @@
+/\*\*
+
+- [INPUT]: 依赖 Supabase、MCP Server、AI IDE 工具
+- [OUTPUT]: Supabase MCP 连接配置（Cursor/Windsurf/Claude Desktop/Claude Code）
+- [POS]: prompts/library 的数据库 MCP 配置指南，让 AI 直接操作数据库
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+
 ````markdown
 ## Supabase MCP 连接：让 AI 直接操作你的数据库
 

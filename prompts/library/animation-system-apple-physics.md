@@ -1,3 +1,10 @@
+/\*\*
+
+- [INPUT]: 依赖 Framer Motion、设计系统 tokens
+- [OUTPUT]: Apple 级动效配置、Spring 物理引擎参数、动画模式库
+- [POS]: prompts/library 的 UI 动画规范，用于落地页/Web 应用的动效升级
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+
 ## 动画提升：Apple 级动效体验
 
 > **前置条件**：必须先完成第三步（设计系统）和第五步（页面内容）。本步骤使用 Framer

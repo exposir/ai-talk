@@ -1,3 +1,10 @@
+/\*\*
+
+- [INPUT]: 依赖 Node.js、npm、Vite
+- [OUTPUT]: Vite + React + TailwindCSS v4 项目初始化完整流程
+- [POS]: prompts/library 的项目脚手架，新项目启动首选
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+
 ## 环境初始化：Vite + React + TailwindCSS v4
 
 ### 0. 检查 Node.js 环境

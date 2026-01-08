@@ -1,3 +1,10 @@
+/\*\*
+
+- [INPUT]: 依赖设计系统、shadcn 组件、Framer Motion
+- [OUTPUT]: 生产级落地页架构规范、Section 组件设计、Motion 预设
+- [POS]: prompts/library 的落地页生成核心 prompt，一次性生成完整页面
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+
 ## Landing Page 架构规范：一次性生成生产级落地页
 
 > **前置条件**：必须先完成第三步（设计系统）和第四步（设计提升）。

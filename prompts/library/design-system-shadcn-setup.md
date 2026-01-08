@@ -1,3 +1,10 @@
+/\*\*
+
+- [INPUT]: 依赖 npm/npx、shadcn CLI
+- [OUTPUT]: shadcn/ui 组件库安装配置指南、分批安装策略
+- [POS]: prompts/library 的设计系统配置入口，Vite + React 项目专用
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+
 ## 设计系统配置：shadcn/ui 组件库集成
 
 ### 1. 初始化 shadcn/ui
