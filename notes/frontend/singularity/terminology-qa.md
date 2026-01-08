@@ -193,6 +193,7 @@ if (process.env.NODE_ENV !== 'production') {
 | 库              | 心智模型       | 读取语法      | 学习曲线 |
 | :-------------- | :------------- | :------------ | :------- |
 | **Singularity** | Signal         | `.get()` 显式 | 低       |
+| Zustand         | 单 Store       | selector      | 低       |
 | MobX            | Proxy          | 隐式读取      | 最低     |
 | Jotai           | 原子组合       | `.get()` 显式 | 中       |
 | Redux           | Action/Reducer | dispatch      | 高       |
@@ -204,12 +205,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 **A**: ✅ **良好，但不是极致**。目标是 Jotai 的 80%。
 
-| 指标       | Singularity | Jotai     | 说明                     |
-| :--------- | :---------- | :-------- | :----------------------- |
-| 读写速度   | ≥80%        | 100%      | 基准线                   |
-| 细粒度更新 | ✅ Signal   | ✅ Signal | 相同                     |
-| 生产包体积 | ~3KB        | 3.5KB     | 稍小                     |
-| 内存占用   | 相近        | 基准      | history 开发模式额外占用 |
+| 指标       | Singularity | Zustand     | Jotai     | 说明                     |
+| :--------- | :---------- | :---------- | :-------- | :----------------------- |
+| 读写速度   | ≈Jotai 80%  | 最快        | 基准      | Zustand 最简单所以最快   |
+| 细粒度更新 | ✅ Signal   | ❓ selector | ✅ Signal | Zustand 需 useShallow    |
+| 生产包体积 | ~3KB        | 2.8KB       | 3.5KB     | 都很小                   |
+| 内存占用   | 相近        | 基准        | 相近      | history 开发模式额外占用 |
 
 **定位**：不追求极致性能，而是**在三合一组合（简单+追踪+细粒度）下的最佳平衡**。
 
