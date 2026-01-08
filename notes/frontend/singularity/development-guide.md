@@ -30,7 +30,7 @@
 | 包体积   | ≤ 4KB       |
 | 性能     | ≥ Jotai 80% |
 
-### 1.2 包结构
+### 1.4 包结构
 
 ```
 packages/
@@ -321,7 +321,7 @@ export function schedulePendingUpdate(fn: () => void): void {
 }
 ```
 
-### 3.6 index.ts（导出文件）
+### 3.5 index.ts（导出文件）
 
 ```typescript
 // packages/core/src/index.ts
@@ -335,7 +335,7 @@ export { useAtom } from './useAtom';
 export { useAtomValue } from './useAtomValue';
 ```
 
-### 3.5 trace.ts（依赖追踪）
+### 3.6 trace.ts（依赖追踪）
 
 ```typescript
 type Unsubscribe = () => void;
