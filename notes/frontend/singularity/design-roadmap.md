@@ -1,6 +1,8 @@
 # 设计与路线图
 
-> Singularity 的设计原则、技术选型与实施路线图。
+> **Singularity = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度**
+>
+> 本文档包含设计原则、技术选型与实施路线图。
 
 ---
 

@@ -29,6 +29,12 @@
   (向量嵌入)**: 将文本/图像等转换为高维向量，使语义相似的内容在向量空间中距离相近，是 RAG 和语义搜索的基础。
 - **Tokenizer
   (分词器)**: 将文本切分为 Token 的工具，不同模型有不同分词策略（BPE、SentencePiece 等）。
+- **Reasoning Model
+  (推理模型)**: 专注于长链推理的模型，在回答前进行深度"思考"（如 o1/o3、DeepSeek-R1），适合数学、编程、科学问题。
+- **Scaling Laws
+  (缩放定律)**: 模型能力与参数量、数据量、计算量之间的幂律关系——资源投入越多，模型越强，是"大力出奇迹"的理论基础。
+- **World Model
+  (世界模型)**: 模型对现实世界的内部表征和模拟能力，被认为是通向 AGI 的关键。
 
 ### 1.3 训练与微调层 (Training & Tuning)
 
@@ -71,6 +77,8 @@
   (评测基准)**: 评估模型能力的标准化测试，如 MMLU（知识）、HumanEval（编程）、SWE-bench（工程）。
 - **Spec (规格说明)**:
   AI 编程的核心范式——用自然语言描述"要什么"（What），让 AI 生成"怎么做"（How）。Spec 文件定义需求、约束和验收标准，Agent 据此自主实现代码。
+- **MCP (Model Context Protocol)**:
+  Anthropic 提出的标准化协议，定义 AI 模型与外部工具/数据源的交互接口，实现"即插即用"的 Tool 集成。
 
 ---
 
@@ -334,6 +342,25 @@ Agent (Claude Code / GPT-4)
 | **MetaGPT**             | 模拟软件公司，PM/架构师/开发者协作 |
 | **ChatDev**             | AI 驱动的虚拟软件开发团队          |
 
+### 3.14 Reasoning Model (推理模型) 举例
+
+| 模型                                      | 厂商      | 特点                         |
+| :---------------------------------------- | :-------- | :--------------------------- |
+| **o1 / o1-pro**                           | OpenAI    | 首个推理模型，深度思考后回答 |
+| **o3 / o4-mini**                          | OpenAI    | 新一代推理模型，性能更强     |
+| **DeepSeek-R1**                           | DeepSeek  | 开源推理模型，可本地部署     |
+| **Claude 3.5 Sonnet (Extended Thinking)** | Anthropic | Claude 的长思考模式          |
+| **Gemini 2.0 Flash Thinking**             | Google    | Gemini 的推理增强版本        |
+
+### 3.15 MCP (Model Context Protocol) 举例
+
+| 产品/工具                | 说明                                                  |
+| :----------------------- | :---------------------------------------------------- |
+| **Claude Desktop + MCP** | 官方 MCP 实现，连接本地文件系统、数据库等             |
+| **MCP Servers 生态**     | 社区开发的 MCP 服务器（GitHub、Slack、PostgreSQL 等） |
+| **Cursor MCP 支持**      | IDE 内集成 MCP 协议                                   |
+| **Zed MCP 支持**         | 新一代编辑器的 MCP 集成                               |
+
 ---
 
 ## 4. 常见误区澄清
@@ -357,6 +384,7 @@ mindmap
       MoE (混合专家)
       Embedding (向量嵌入)
       Multimodal (多模态)
+      Reasoning Model (推理模型)
     训练阶段
       Pre-training (预训练)
       SFT (监督微调)
@@ -364,12 +392,14 @@ mindmap
       LoRA (高效微调)
       Quantization (量化)
       Distillation (蒸馏)
+      Scaling Laws (缩放定律)
     能力增强
       Prompt Engineering
       ICL (上下文学习)
       CoT (思维链)
       RAG (知识外挂)
       Tool Use (工具调用)
+      MCP (标准化协议)
     应用形态
       Chatbot (对话机器人)
       Copilot (副驾驶/辅助)
@@ -380,4 +410,35 @@ mindmap
       Alignment (对齐)
       Hallucination (幻觉)
       Benchmark (评测)
+      World Model (世界模型)
 ```
+
+---
+
+## 6. 学习资源推荐
+
+### 课程与教程
+
+| 资源                              | 说明                           |
+| :-------------------------------- | :----------------------------- |
+| **Andrej Karpathy - AI 入门**     | 前 Tesla AI 总监的深入浅出系列 |
+| **fast.ai**                       | 实践导向的深度学习课程         |
+| **Hugging Face NLP Course**       | Transformer 和 NLP 免费课程    |
+| **DeepLearning.AI Short Courses** | Andrew Ng 团队的短期专题课     |
+
+### 社区与资讯
+
+| 资源                 | 说明                                   |
+| :------------------- | :------------------------------------- |
+| **Hugging Face**     | 开源模型社区、论文、讨论               |
+| **r/LocalLLaMA**     | Reddit 本地部署社区                    |
+| **AI Twitter/X**     | 关注 @karpathy @ylecun @AnthropicAI 等 |
+| **Papers With Code** | 最新论文及其代码实现                   |
+
+### 开发工具文档
+
+| 资源                            | 说明                   |
+| :------------------------------ | :--------------------- |
+| **OpenAI Docs**                 | GPT API 官方文档       |
+| **Anthropic Docs**              | Claude API 及 MCP 文档 |
+| **LangChain / LlamaIndex Docs** | RAG 和 Agent 框架文档  |

@@ -1,6 +1,8 @@
 # 核心 API 规格
 
-> Singularity 的完整 API 规范，可直接用于开发。
+> **Singularity = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度**
+>
+> 本文档包含完整 API 规范，可直接用于开发。
 
 ---
 
