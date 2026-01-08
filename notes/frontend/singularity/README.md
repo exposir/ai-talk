@@ -120,21 +120,15 @@ const [state, send] = useMachine(authMachine);
 
 ## 文档目录
 
-### 入门
-
-- [核心概念](./problems-vision.md)
-- [API 规格](./specs-core.md)
-
-### 进阶
-
-- [设计与路线图](./design-roadmap.md)
-- [开发实施文档](./IMPLEMENTATION.md)
-
-### 参考
-
-- [术语与 QA](./terminology-qa.md)
-- [性能与调试](./performance-devtools.md)
-- [现有库调研](./landscape.md)
+| 文档                              | 说明                   |
+| :-------------------------------- | :--------------------- |
+| [核心概念](./problems-vision.md)  | 为什么要用 Singularity |
+| [API 规格](./specs-core.md)       | 完整 API 规范          |
+| [设计路线图](./design-roadmap.md) | 设计原则与实施计划     |
+| [开发指南](./IMPLEMENTATION.md)   | 开发实施文档           |
+| [术语与 QA](./terminology-qa.md)  | 常见问题与最佳实践     |
+| [竞品调研](./landscape.md)        | 现有库全景分析         |
+| [历史评论](./reviews.md)          | 项目演进记录           |
 
 ---
 
