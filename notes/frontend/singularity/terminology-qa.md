@@ -148,7 +148,7 @@ const ydoc = new Y.Doc();
 
 ## 四、常见问题
 
-### Q0: 我为什么要用 Singularity？
+### Q1: 我为什么要用 Singularity？
 
 **A**: 如果你需要**同时满足以下三个条件**：
 
@@ -176,7 +176,7 @@ const ydoc = new Y.Doc();
 - 复杂状态机 → 用 XState
 - 实时协作 → 用 Yjs
 
-### Q1: 为什么不直接给 Zustand/Jotai 加插件？
+### Q2: 为什么不直接给 Zustand/Jotai 加插件？
 
 **A**:
 
@@ -187,12 +187,12 @@ const ydoc = new Y.Doc();
 Singularity 从底层同时实现：Zustand 的简单 API +
 Jotai 的细粒度 + 内置追踪。这是插件无法解决的组合。
 
-### Q2: 和 Redux 有什么区别？
+### Q3: 和 Redux 有什么区别？
 
 **A**:
 Redux 功能强大但复杂（Action/Reducer），Singularity 保持简单（一行代码创建状态），同时提供追踪能力。
 
-### Q3: 生产环境追踪会影响性能吗？
+### Q4: 生产环境追踪会影响性能吗？
 
 **A**: 不会。生产模式下追踪功能完全禁用：
 
@@ -202,15 +202,15 @@ if (process.env.NODE_ENV !== 'production') {
 }
 ```
 
-### Q4: 服务端状态怎么管理？
+### Q5: 服务端状态怎么管理？
 
 **A**: 使用 React Query。Singularity 专注于客户端状态，与 React Query 完美配合。
 
-### Q5: 需要复杂状态机怎么办？
+### Q6: 需要复杂状态机怎么办？
 
 **A**: 使用 XState。Singularity 不做状态机，专注核心能力。
 
-### Q5.5: 什么时候用 useState / useRef / Singularity？
+### Q7: 什么时候用 useState / useRef / Singularity？
 
 **A**: 根据状态的作用范围和特性选择。
 
@@ -239,11 +239,11 @@ if (process.env.NODE_ENV !== 'production') {
 - 不需要触发渲染？→ `useRef`
 - 多个组件共享 / 需要追踪？→ `Singularity`
 
-### Q6: history() 会导致内存泄漏吗？
+### Q8: history() 会导致内存泄漏吗？
 
 **A**: 不会。历史记录限制 100 条，超出自动丢弃旧记录。
 
-### Q7: 心智模型优秀吗？
+### Q9: 心智模型优秀吗？
 
 **A**: ✅ **简单直观，但有权衡**。
 
@@ -258,7 +258,7 @@ if (process.env.NODE_ENV !== 'production') {
 **权衡**：`.get()`
 语法略显繁琐，但换来**可预测的依赖追踪**和**明确的数据流向**。
 
-### Q8: 性能很优秀吗？
+### Q10: 性能很优秀吗？
 
 **A**: ✅ **良好，但不是极致**。目标是 Jotai 的 80%。
 
@@ -271,7 +271,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 **定位**：不追求极致性能，而是**在三合一组合（简单+追踪+细粒度）下的最佳平衡**。
 
-### Q8.5: 细粒度更新为什么不是最快？有什么好处？
+### Q11: 细粒度更新为什么不是最快？有什么好处？
 
 **A**: 细粒度需要额外开销，但带来更大的收益。
 
@@ -306,7 +306,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 > **一句话总结**：细粒度 = 用一点写入开销，换来更少渲染 + 更爽开发
 
-### Q8.6: 用 Singularity 可以减少 useMemo/useCallback 吗？
+### Q12: 用 Singularity 可以减少 useMemo/useCallback 吗？
 
 **A**: ✅ **是的，可以大幅减少**。
 
@@ -335,7 +335,7 @@ const filtered = computed(() => items.get().filter(...)); // 自动缓存
 - 细粒度更新减少了因引用变化导致的重渲染
 - 状态在组件外部，函数不需要 `useCallback` 稳定引用
 
-### Q9: 能支持超大型前端项目吗？
+### Q13: 能支持超大型前端项目吗？
 
 **A**: ⚠️ **能用，但不是最佳选择**。
 
