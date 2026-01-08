@@ -11,6 +11,7 @@ Code 的 Memory Files 机制，但其本质是 **跨 AI 通用的项目上下文
 - Cursor → .cursor/rules.md 或 .cursorrules
 - Windsurf → .windsurfrules
 - Google Gemini → GEMINI.md
+- Google Deepmind Antigravity → .antigravity/rules.md
 - OpenAI → AGENTS.md 或 CODEX.md
 
 **核心职责**：作为 AI
