@@ -22,15 +22,25 @@
 
 ---
 ## 目录
-- [全景与库综述](./landscape.md)
-- [核心问题与愿景](./problems-vision.md)
-- [设计与路线图](./design-roadmap.md)
-- [术语与 QA](./terminology-qa.md)
-- [API 细节与治理](./api-governance.md)
-- [核心规格](./specs-core.md)
-- [扩展规格](./specs-advanced.md)
-- [性能与 DevTools](./performance-devtools.md)
-- [验证与发布](./validation-release.md)
-- [运维与生态](./ops-community.md)
-- [附录](./appendices.md)
-- [参考资源](./references.md)
+
+### 📘 开发必读
+- **[开发实施文档](./IMPLEMENTATION.md)** ⭐ - 开发指南，阅读后可立即开始编码
+- [第三方评论与分析](./reviews.md) - Gemini / Antigravity / Claude 的评估报告
+
+### 📚 设计文档
+- [全景与库综述](./landscape.md) - 25+ 主流状态管理库对比
+- [核心问题与愿景](./problems-vision.md) - 痛点分析与设计目标
+- [设计与路线图](./design-roadmap.md) - 架构设计与版本规划
+- [术语与 QA](./terminology-qa.md) - 关键问题解答
+
+### 📐 技术规格
+- [核心规格](./specs-core.md) - atom/computed/batch/effect API
+- [扩展规格](./specs-advanced.md) - machine/atomSync API
+- [API 细节与治理](./api-governance.md) - 版本策略与一致性语义
+
+### 🔧 工程文档
+- [性能与 DevTools](./performance-devtools.md) - 基准测试与开发者工具
+- [验证与发布](./validation-release.md) - 测试策略与发布流程
+- [运维与生态](./ops-community.md) - 社区与生态规划
+- [附录](./appendices.md) - 路线图与模板
+- [参考资源](./references.md) - 学习资料
