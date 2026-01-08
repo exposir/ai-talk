@@ -74,6 +74,45 @@
 
 ---
 
+### 1.5 AI 编程范式 (AI Programming Paradigms)
+
+AI 正在重塑软件开发的方式，以下是核心编程范式：
+
+- **Spec-driven Development
+  (规格驱动开发)**: 用自然语言编写 Spec 文件（描述"要什么"），AI
+  Agent 自主生成实现代码（"怎么做"）。Spec 定义需求、约束和验收标准。
+- **Vibe Coding (氛围编程)**: Andrej
+  Karpathy 提出的概念——完全拥抱 AI，用自然语言描述意图，让 AI 全权负责代码生成，开发者只需"感受"和验证结果。
+- **Copilot Mode (副驾驶模式)**:
+  AI 作为辅助，开发者主导。AI 提供代码补全、建议和解释，开发者决定是否采纳。代表产品：GitHub
+  Copilot、Cursor Tab。
+- **Agentic Coding (自主编程)**: AI
+  Agent 自主完成复杂开发任务——规划、编写、测试、调试，人类只需审核。代表产品：Claude
+  Code、Cursor Agent、Devin。
+- **Chat-based Coding
+  (对话式编程)**: 通过对话与 AI 交互完成开发，如"帮我写一个登录页面"。适合探索和原型开发。
+- **Context Engineering
+  (上下文工程)**: 精心设计提供给 AI 的上下文（代码库索引、文档、历史对话），以获得更精准的输出。
+- **Human-in-the-Loop (人在回路)**:
+  AI 执行任务过程中，关键节点需要人类确认或干预，平衡自动化与可控性。
+- **Test-Driven AI Coding
+  (测试驱动 AI 编程)**: 先写测试用例，AI 根据测试自动生成通过测试的代码实现。
+- **Prompt-to-Code**: 直接用自然语言 Prompt 生成代码片段，适合快速实验。
+
+```mermaid
+graph LR
+    A[传统编码] -->|AI 辅助| B[Copilot Mode]
+    B -->|更多自主权| C[Agentic Coding]
+    C -->|完全托管| D[Vibe Coding]
+
+    style A fill:#f5f5f5,stroke:#9e9e9e
+    style B fill:#e3f2fd,stroke:#1976d2
+    style C fill:#e8f5e9,stroke:#388e3c
+    style D fill:#fff3e0,stroke:#f57c00
+```
+
+---
+
 ## 2. 概念关系解析
 
 ### 2.1 训练流程的关系
