@@ -1,12 +1,11 @@
 # history/
 
-> L2 | 父级:
-> [notes/CLAUDE.md](../CLAUDE.md)
+> L2 | 父级: [notes/CLAUDE.md](../CLAUDE.md)
 
 历史相关笔记。
 
 ## 成员清单
 
-（待补充）
+- `trotsky-vs-stalin.md`: 托洛茨基 vs 斯大林
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
