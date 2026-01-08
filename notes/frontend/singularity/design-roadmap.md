@@ -130,37 +130,7 @@ packages/
 
 ## 五、实施路线图
 
-### Phase 1：Core MVP (Week 1-3)
-
-- [ ] atom/computed/effect/batch 实现
-- [ ] TraceEvent 历史记录
-- [ ] 单元测试 100% 覆盖
-
-**验收标准**：基准性能不低于 Jotai 80%
-
-### Phase 2：React 适配 (Week 4-5)
-
-- [ ] useAtom/useAtomValue 实现
-- [ ] useSyncExternalStore 集成
-- [ ] SSR 支持
-
-**验收标准**：React 18 Concurrent Mode 兼容
-
-### Phase 3：发布 v0.1 (Week 6)
-
-- [ ] npm 发布
-- [ ] 完整文档
-- [ ] Demo 项目
-
-**验收标准**：可以在真实项目中使用
-
-### Phase 4：DevTools UI (Week 7-10)
-
-- [ ] 时间线面板
-- [ ] 状态快照
-- [ ] 回放功能
-
-**验收标准**：可视化调试可用
+> 详细开发任务请参阅 [development-guide.md](./development-guide.md)
 
 ---
 
