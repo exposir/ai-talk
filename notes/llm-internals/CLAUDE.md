@@ -1,7 +1,7 @@
 # llm-internals/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 LLM 内部原理深度解析，涵盖 Transformer 架构、注意力机制、训练优化等核心技术。
 

@@ -1,7 +1,7 @@
 # news/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 行业新闻与动态。
 

@@ -1,7 +1,7 @@
 # case-studies/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 实战案例研究，记录真实项目的设计与实现。
 

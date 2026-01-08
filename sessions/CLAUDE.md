@@ -1,6 +1,6 @@
 # sessions/
 
-> L2 | 父级: [/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/CLAUDE.md)
+> L2 | 父级: [/CLAUDE.md](../CLAUDE.md)
 
 会话记录，按年份归档 AI 对话记录。
 

@@ -1,6 +1,6 @@
 # prompts/
 
-> L2 | 父级: [/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/CLAUDE.md)
+> L2 | 父级: [/CLAUDE.md](../CLAUDE.md)
 
 提示词库，包含系统提示词、用户提示词和通用提示词模板。
 

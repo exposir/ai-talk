@@ -1,7 +1,7 @@
 # system/
 
 > L2 | 父级:
-> [prompts/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/prompts/CLAUDE.md)
+> [prompts/CLAUDE.md](../CLAUDE.md)
 
 系统级提示词，用于 AI Agent 的系统指令配置。
 

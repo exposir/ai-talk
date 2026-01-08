@@ -1,7 +1,7 @@
 # claude-code/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 Claude Code 使用指南，涵盖基础用法、Hook、MCP、快捷键等核心功能。
 

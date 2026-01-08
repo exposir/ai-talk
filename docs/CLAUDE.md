@@ -1,6 +1,6 @@
 # docs/
 
-> L2 | 父级: [/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/CLAUDE.md)
+> L2 | 父级: [/CLAUDE.md](../CLAUDE.md)
 
 文档站，基于 VitePress 构建。
 

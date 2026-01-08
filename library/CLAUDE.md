@@ -1,6 +1,6 @@
 # library/
 
-> L2 | 父级: [/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/CLAUDE.md)
+> L2 | 父级: [/CLAUDE.md](../CLAUDE.md)
 
 资源库，存放论文、参考资料、教程等外部资源。
 

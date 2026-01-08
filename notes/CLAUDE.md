@@ -1,6 +1,6 @@
 # notes/
 
-> L2 | 父级: [/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/CLAUDE.md)
+> L2 | 父级: [/CLAUDE.md](../CLAUDE.md)
 
 知识笔记库，涵盖 AI 基础、LLM 原理、工具实践、案例研究等多个领域。
 

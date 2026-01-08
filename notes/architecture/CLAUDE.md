@@ -1,7 +1,7 @@
 # architecture/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 架构设计笔记，记录系统设计、成本分析、使用指南等。
 

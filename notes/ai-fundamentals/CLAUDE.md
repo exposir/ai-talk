@@ -1,7 +1,7 @@
 # ai-fundamentals/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 AI 基础知识模块，涵盖核心概念、模型介绍、术语表等入门内容。
 

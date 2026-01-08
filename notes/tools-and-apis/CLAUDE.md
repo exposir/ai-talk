@@ -1,7 +1,7 @@
 # tools-and-apis/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 工具与 API 规范，包含 AI 配置文件标准等。
 

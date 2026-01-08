@@ -1,7 +1,7 @@
 # user/
 
 > L2 | 父级:
-> [prompts/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/prompts/CLAUDE.md)
+> [prompts/CLAUDE.md](../CLAUDE.md)
 
 用户自定义提示词。
 

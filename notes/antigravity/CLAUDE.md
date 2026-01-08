@@ -1,7 +1,7 @@
 # antigravity/
 
 > L2 | 父级:
-> [notes/CLAUDE.md](file:///Users/menglingyu/My/ai-talk/notes/CLAUDE.md)
+> [notes/CLAUDE.md](../CLAUDE.md)
 
 Google Deepmind Antigravity 工具使用指南，涵盖入门、最佳实践、快捷键等。
 
