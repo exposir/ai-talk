@@ -118,6 +118,16 @@ total.get(); // 300 (自动重新计算)
 - 自动依赖追踪：无需手动声明
 - 缓存结果：依赖不变时不重复计算
 
+**Computed 状态流转：**
+
+```mermaid
+stateDiagram-v2
+    [*] --> Clean: 初始化
+    Clean --> Dirty: 依赖变化
+    Dirty --> Clean: get() 重新计算
+    Clean --> Clean: get() 返回缓存
+```
+
 ---
 
 ### 2.3 effect

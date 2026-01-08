@@ -103,6 +103,51 @@ if (process.env.NODE_ENV !== 'production') {
 └─────────────────────────────────────────────┘
 ```
 
+### 依赖流向图
+
+```mermaid
+flowchart TB
+    subgraph React["React 组件"]
+        useAtom["useAtom()"]
+        useAtomValue["useAtomValue()"]
+    end
+
+    subgraph Core["@singularity/core"]
+        Atom["Atom"]
+        Computed["Computed"]
+        Effect["Effect"]
+        Tracker["Tracker"]
+    end
+
+    useAtom --> Atom
+    useAtomValue --> Computed
+    Computed --> Atom
+    Effect --> Atom
+    Computed --> Tracker
+    Effect --> Tracker
+```
+
+### 状态变化流程
+
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant A as Atom
+    participant T as Tracker
+    participant C as Computed
+    participant R as React
+
+    U->>A: set(newValue)
+    A->>A: 记录 history
+    A->>T: notify subscribers
+    T->>C: invalidate()
+    C->>C: 标记 dirty
+    C->>R: 触发重渲染
+    R->>C: get()
+    C->>A: 读取依赖
+    C->>R: 返回计算值
+```
+
 ---
 
 ## 四、包结构

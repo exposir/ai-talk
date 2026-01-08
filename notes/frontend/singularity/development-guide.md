@@ -112,6 +112,27 @@ pnpm add -D typescript tsup vitest -w
 
 ## 三、核心实现
 
+### 数据流概览
+
+```mermaid
+flowchart LR
+    subgraph 写入
+        User["用户"] --> |"set()"| Atom
+    end
+
+    subgraph 响应式
+        Atom --> |"订阅"| Tracker
+        Tracker --> |"invalidate"| Computed
+        Tracker --> |"run"| Effect
+    end
+
+    subgraph 读取
+        Computed --> |"get()"| Atom
+        React["React"] --> |"useAtom"| Atom
+        React --> |"useAtomValue"| Computed
+    end
+```
+
 ### 3.1 atom.ts
 
 ```typescript
