@@ -23,7 +23,7 @@ Singularity 是一个极简的 React 状态管理库，结合了 Zustand 的简�
 | 细粒度更新 | ❌      | ❌        | ✅              |
 | 体积       | 2.8KB   | 16KB      | **~4KB**        |
 
-**Singularity = Zustand 的简单 + Redux 的追踪**
+**Singularity = Zustand 的简单 + Redux 的追踪 + Jotai 的细粒度**
 
 ---
 
