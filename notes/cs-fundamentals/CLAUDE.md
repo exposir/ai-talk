@@ -7,6 +7,6 @@
 
 ## 成员清单
 
-（待补充）
+- `domain-driven-design.md`: 领域驱动设计 (DDD) 深度解析
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
