@@ -148,10 +148,16 @@ const ydoc = new Y.Doc();
 
 ## 四、常见问题
 
-### Q1: 为什么不用 Zustand/Jotai？
+### Q1: 为什么不直接给 Zustand/Jotai 加插件？
 
 **A**:
-Singularity 的核心差异是**内置追踪**。Zustand/Jotai 需要额外配置才能追踪状态变化，而 Singularity 开箱即用。
+
+- **追踪**可以用插件解决（已有 devtools 中间件）
+- **但 Zustand 的细粒度限制是架构问题**（单 store + selector 设计）
+- **Jotai 的 API 复杂是设计哲学**（原子组合是核心理念）
+
+Singularity 从底层同时实现：Zustand 的简单 API +
+Jotai 的细粒度 + 内置追踪。这是插件无法解决的组合。
 
 ### Q2: 和 Redux 有什么区别？
 
