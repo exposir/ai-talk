@@ -341,12 +341,23 @@ JS 解析器会在某些换行处自动插入分号，试图"修正"你的代码
 **理由**：为了让这种"容错"机制不变成"捣乱"机制，我们必须知道它的行为。
 
 ```javascript
-return; // 引擎在这里自动插入了分号！
-{
-  a: 1;
+// 典型陷阱：return 后换行
+function getUser() {
+  return
+    { name: 'Kyle' }  // ASI 在 return 后插入分号，函数返回 undefined！
 }
-// 结果函数返回了 undefined，而不是对象。
+
+// 正确写法：左花括号与 return 同行
+function getUser() {
+  return {
+    name: 'Kyle'
+  }
+}
 ```
+
+**ASI 触发规则**：
+- `return`, `throw`, `break`, `continue`, `yield` 后遇到换行时会插入分号
+- 后缀 `++`/`--` 与操作数之间不能有换行
 
 ---
 
@@ -388,7 +399,7 @@ Promise 的出现主要是为了解决回调的**信任问题**。
 
 **为什么 Promise 靠谱？**
 
-1.  **状态不可变**：一旦 Promise 决议（成功或失败），它的状态就**永远固定**了。第三方库无法多次调用它。
+1.  **状态不可变**：Promise 有三种状态：`pending`（待定）→ `fulfilled`（已兑现）或 `rejected`（已拒绝）。一旦从 pending 变为 settled（fulfilled 或 rejected），状态就**永远固定**。第三方库无法多次决议它。
 2.  **标准化的完成**：无论同步还是异步，`.then()`
     总是以异步微任务形式执行，保证了执行顺序的一致性。
 3.  **错误冒泡**：异常会自动沿着 Promise 链传递，不会被轻易吞掉。
@@ -406,10 +417,19 @@ Promise 的语法糖，它让你不再需要手动编写运行器 (Runner)。
 
 为什么 `Promise.then` 比 `setTimeout` 先执行？
 
-- **宏任务 (MacroTask)**：`setTimeout`, `setInterval`。排在普通的长队里。
-- **微任务 (MicroTask)**：`Promise.then`。排在**VIP 快速通道**。
+| 类型                      | 来源                                                                   | 比喻           |
+| :------------------------ | :--------------------------------------------------------------------- | :------------- |
+| **宏任务 (MacroTask)**    | `setTimeout`, `setInterval`, I/O 回调, `requestAnimationFrame`         | 普通队列       |
+| **微任务 (MicroTask)**    | `Promise.then/catch/finally`, `await` 后续代码, `queueMicrotask()`, `MutationObserver` | VIP 快速通道   |
 
-**规则**：**每次宏任务执行完，引擎会优先清空微任务队列中的所有任务**，然后再去执行下一个宏任务。这就是为什么 Promise 回调总是那么"急迫"。
+**执行规则**：
+
+1. 执行当前宏任务（初始时是整个 `<script>` 块）
+2. **清空微任务队列**（期间新增的微任务也会被执行）
+3. 渲染更新（如果需要）
+4. 取下一个宏任务，回到步骤 1
+
+**理由**：微任务设计用于处理"当前任务的后续逻辑"，必须在下一个宏任务前完成。这也是为什么 `await` 后的代码总是比 `setTimeout(..., 0)` 先执行。
 
 ---
 
@@ -451,6 +471,16 @@ Symbol 是独特且唯一的标识符。 **理由与用途**：
 **Reflect**：它是 Proxy 的搭档。它提供了一套标准化的底层对象操作 API。
 _理由_：在 Proxy 内部，当你拦截了一个操作后，通常还希望执行默认行为，这时直接调用
 `Reflect` 对应方法是最安全、最标准的方式。
+
+**可撤销代理**：`Proxy.revocable()` 创建可撤销的代理对象。
+
+```javascript
+const { proxy, revoke } = Proxy.revocable(target, handler);
+// 使用 proxy...
+revoke();  // 撤销后，任何操作都会抛出 TypeError
+```
+
+_理由_：用于权限控制场景——临时授予访问权限，事后可完全切断。比如：API 令牌过期后禁止访问、沙箱环境的资源回收。
 
 ### 5.4 迭代器协议：统一数据消费接口 ⭐⭐
 
