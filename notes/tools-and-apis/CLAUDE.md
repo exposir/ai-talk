@@ -5,9 +5,11 @@
 工具与 API 规范。
 
 成员清单
+
 - `CLAUDE.md`: markdown, module map, tools-and-apis 索引
 - `ai-coding-tools.md`: markdown, reference, AI 编程工具
 - `ai-config-standards.md`: markdown, standards, 配置文件位置
+- `macos-for-ai-dev.md`: markdown, guide, macOS 命令行优势解析
 
 法则: 成员完整·一行一文件·父级链接·技术词前置
 
