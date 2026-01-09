@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Artifacts 系统 文档
+- [POS]: 位于 notes/antigravity 模块的 Artifacts 系统 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Artifacts 系统
 
 Artifacts 是 Antigravity

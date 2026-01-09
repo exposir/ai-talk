@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 IDE 集成 文档
+- [POS]: 位于 notes/claude-code 模块的 IDE 集成 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # IDE 集成
 
 ## VS Code 扩展

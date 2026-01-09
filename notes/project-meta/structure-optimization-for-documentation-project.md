@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/project-meta/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 文档项目目录结构优化建议 文档
+- [POS]: 位于 notes/project-meta 模块的 文档项目目录结构优化建议 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 文档项目目录结构优化建议
 
 ## 项目定位

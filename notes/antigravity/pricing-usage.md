@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 订阅与用量 文档
+- [POS]: 位于 notes/antigravity 模块的 订阅与用量 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 订阅与用量
 
 Antigravity 的订阅计划、用量限制与配额管理。

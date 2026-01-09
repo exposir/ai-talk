@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/project-meta/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 项目命名规范 文档
+- [POS]: 位于 notes/project-meta 模块的 项目命名规范 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 项目命名规范
 
 统一的命名规范让项目更易读、易维护。本文档覆盖前后端主流技术栈。

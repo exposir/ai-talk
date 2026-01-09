@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/guide/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 文档目录 文档
+- [POS]: 位于 notes/guide 模块的 文档目录 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 文档目录
 
 个人 AI 学习笔记项目，记录 LLM 应用架构设计与开发实践。

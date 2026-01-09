@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/llm-internals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 长上下文 文档
+- [POS]: 位于 notes/llm-internals 模块的 长上下文 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 长上下文
 
 扩展 LLM 上下文窗口的技术。

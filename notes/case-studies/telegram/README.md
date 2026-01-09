@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/telegram/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Telegram 工程实践案例研究 文档
+- [POS]: 位于 notes/case-studies/telegram 模块的 Telegram 工程实践案例研究 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Telegram 工程实践案例研究
 
 > 🚧 **学习中** - 研究 Telegram 的优雅实现和核心算法

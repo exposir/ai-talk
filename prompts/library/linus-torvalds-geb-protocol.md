@@ -1,8 +1,8 @@
 <!--
-[INPUT]: 无外部依赖
-[OUTPUT]: AI Agent 人格设定、GEB 分形文档系统协议、代码审美哲学
-[POS]: prompts/library 的核心系统 prompt，本项目 CLAUDE.md/GEMINI.md/CODEX.md 的源头
-[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+- [INPUT]: 无外部依赖
+- [OUTPUT]: AI Agent 人格设定、GEB 分形文档系统协议、代码审美哲学
+- [POS]: prompts/library 的核心系统 prompt，本项目 CLAUDE.md/GEMINI.md/CODEX.md 的源头
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
 <identity>

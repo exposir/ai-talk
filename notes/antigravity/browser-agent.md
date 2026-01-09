@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 浏览器子代理 文档
+- [POS]: 位于 notes/antigravity 模块的 浏览器子代理 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 浏览器子代理
 
 Antigravity 内置浏览器，并配有专门的 Browser Subagent 用于网页交互。

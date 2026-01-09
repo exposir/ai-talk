@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/telegram/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Telegram Web Z 前端架构解析 文档
+- [POS]: 位于 notes/case-studies/telegram 模块的 Web Z 前端架构笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Telegram Web Z (telegram-tt) 前端架构深度解析
 
 > 事无巨细地剖析 Telegram Web Z 的前端工程实现，适合前端开发者深度学习

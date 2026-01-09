@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 .github/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出本文件内容
+- [POS]: 位于 .github 模块 的文档
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 <terminology>
 ## 术语说明：CLAUDE.md
 

@@ -1,3 +1,9 @@
+/**
+- [INPUT]: 依赖 vitepress defineConfig，读取 notes/ 目录结构
+- [OUTPUT]: 导出站点配置（导航、侧边栏、主题设置）
+- [POS]: docs/.vitepress 核心配置入口，供 dev/build 加载
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+*/
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({

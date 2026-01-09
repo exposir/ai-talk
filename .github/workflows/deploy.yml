@@ -1,3 +1,7 @@
+# - [INPUT]: 依赖 GitHub Actions runner 与 npm scripts
+# - [OUTPUT]: 构建并部署 VitePress 站点到 GitHub Pages
+# - [POS]: .github/workflows 的部署流水线
+# - [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 name: Deploy VitePress site to Pages
 
 on:

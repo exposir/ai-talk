@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/architecture/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 2025 双引擎架构接入与使用指南 文档
+- [POS]: 位于 notes/architecture 模块的 2025 架构接入与使用指南 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 2025 双引擎架构接入与使用指南 (Integration & Usage Guide)
 
 本指南定义了**控制平面 (Control Plane)**

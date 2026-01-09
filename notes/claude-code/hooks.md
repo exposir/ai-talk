@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 钩子系统 (Hooks) 文档
+- [POS]: 位于 notes/claude-code 模块的 钩子系统 (Hooks) 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 钩子系统 (Hooks)
 
 Hooks 允许在特定事件发生时执行自定义脚本或 LLM 提示。

@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Claude Code 最佳实践 文档
+- [POS]: 位于 notes/claude-code 模块的 Claude Code 最佳实践 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Claude Code 最佳实践
 
 基于官方文档整理的最佳实践和经验总结。

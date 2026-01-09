@@ -4,12 +4,11 @@
 
 行业新闻与动态。
 
-## 成员清单
+成员清单
+- `CLAUDE.md`: markdown, module map, news 索引
+- `daily-news.md`: markdown, news digest, 每日新闻摘要
+- `assets/`: dir, asset store, 新闻配图
 
-- `daily-news.md`: 每日新闻摘要与深度分析，包含国际政治/财经/科技板块及第一性原理洞察
-
-### 子目录
-
-- `assets/`: 新闻资源文件
+法则: 成员完整·一行一文件·父级链接·技术词前置
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

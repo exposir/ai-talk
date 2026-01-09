@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/llm-internals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 GPT 系列 文档
+- [POS]: 位于 notes/llm-internals 模块的 GPT 系列 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # GPT 系列
 
 OpenAI GPT 模型的架构演进。

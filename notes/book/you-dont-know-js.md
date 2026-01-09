@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/book/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 你不知道的 JavaScript (深度解析版) 文档
+- [POS]: 位于 notes/book 模块的 你不知道的 JavaScript (深度解析版) 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 你不知道的 JavaScript (深度解析版)
 
 > "对于你不了解的东西，你无法真正拥有它。" —— Kyle Simpson

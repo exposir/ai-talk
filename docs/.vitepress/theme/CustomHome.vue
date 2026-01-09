@@ -1,4 +1,10 @@
 <script setup>
+/**
+- [INPUT]: 依赖 vitepress 的 withBase 与主题样式
+- [OUTPUT]: 导出 CustomHome 首页组件
+- [POS]: docs/.vitepress/theme 的首页渲染器
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+*/
 import { withBase } from 'vitepress';
 </script>
 

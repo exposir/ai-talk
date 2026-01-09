@@ -1,8 +1,8 @@
 <!--
-[INPUT]: 依赖 Supabase、Google Cloud Console
-[OUTPUT]: Supabase + Google OAuth 登录完整配置流程
-[POS]: prompts/library 的认证配置指南，从零实现 Google 登录
-[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+- [INPUT]: 依赖 Supabase、Google Cloud Console
+- [OUTPUT]: Supabase + Google OAuth 登录完整配置流程
+- [POS]: prompts/library 的认证配置指南，从零实现 Google 登录
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
 ## Supabase 集成：从零实现 Google 登录

@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/telegram/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Telegram Web K (tweb) 前端架构深度解析 文档
+- [POS]: 位于 notes/case-studies/telegram 模块的 Telegram Web K (tweb) 前端架构深度解析 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Telegram Web K (tweb) 前端架构深度解析
 
 > 事无巨细地剖析 Telegram Web

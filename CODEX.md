@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 /CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出本文件内容
+- [POS]: 位于 项目根目录 的文档
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 <terminology>
 ## 术语说明：CLAUDE.md
 

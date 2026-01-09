@@ -1,8 +1,8 @@
 <!--
-[INPUT]: 依赖 shadcn/ui 组件、CSS 变量、color-mix
-[OUTPUT]: 微拟物光影质感设计规范、Button/Card 升级范例
-[POS]: prompts/library 的 UI 设计增强指南，配合 shadcn 使用
-[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+- [INPUT]: 依赖 shadcn/ui 组件、CSS 变量、color-mix
+- [OUTPUT]: 微拟物光影质感设计规范、Button/Card 升级范例
+- [POS]: prompts/library 的 UI 设计增强指南，配合 shadcn 使用
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
 ## 设计提升：微拟物光影质感

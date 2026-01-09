@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/architecture/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 2025 双引擎架构用量与成本模型分析 (Cost & Usage Model) 文档
+- [POS]: 位于 notes/architecture 模块的 2025 双引擎架构用量与成本模型分析 (Cost & Usage Model) 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 2025 双引擎架构用量与成本模型分析 (Cost & Usage Model)
 
 本文档基于“双引擎（Dual-Engine）”架构，对系统的 Token 用量与运行成本进行理论推算。核心结论：通过**语义路由**与**分层处理**，相比“大一统”模型架构，综合成本可降低约

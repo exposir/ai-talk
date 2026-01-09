@@ -1,0 +1,111 @@
+# assets/
+
+> L2 | 父级: [notes/news/CLAUDE.md](../CLAUDE.md)
+
+新闻配图与素材资源。
+
+成员清单
+- `CLAUDE.md`: markdown, module map, news assets 索引
+- `alphafold_malaria_cell.png`: png, news asset, alphafold malaria cell
+- `andhra_investment.png`: png, news asset, andhra investment
+- `apple_ar_glasses.png`: png, news asset, apple ar glasses
+- `apple_homeos.png`: png, news asset, apple homeos
+- `artemis_ii_rollout.png`: png, news asset, artemis ii rollout
+- `asean_naval_exercise.png`: png, news asset, asean naval exercise
+- `asml_backlog.png`: png, news asset, asml backlog
+- `atlas_crashes_united.png`: png, news asset, atlas crashes united
+- `bangalore_water_crisis.png`: png, news asset, bangalore water crisis
+- `bci_typing_record.png`: png, news asset, bci typing record
+- `berlin_infrastructure_fire.png`: png, news asset, berlin infrastructure fire
+- `bitcoin_record_91k.png`: png, news asset, bitcoin record 91k
+- `blackrock_token_exchange.png`: png, news asset, blackrock token exchange
+- `blue_origin_orbital_reef.png`: png, news asset, blue origin orbital reef
+- `boj_yen_intervention.png`: png, news asset, boj yen intervention
+- `brazil_border_clash.png`: png, news asset, brazil border clash
+- `brazil_border_troops.png`: png, news asset, brazil border troops
+- `california_ai_fine.png`: png, news asset, california ai fine
+- `carbon_market_crash.png`: png, news asset, carbon market crash
+- `china_carbon_market.png`: png, news asset, china carbon market
+- `china_moon_base.png`: png, news asset, china moon base
+- `china_pakistan_meeting.png`: png, news asset, china pakistan meeting
+- `china_sanctions_us_defense.png`: png, news asset, china sanctions us defense
+- `china_saudi_iran_talks.png`: png, news asset, china saudi iran talks
+- `coinbase_eu_license.png`: png, news asset, coinbase eu license
+- `copper_mining_rush.png`: png, news asset, copper mining rush
+- `crimea_bridge_attack.png`: png, news asset, crimea bridge attack
+- `darknet_ai_bust.png`: png, news asset, darknet ai bust
+- `deepseek_coder_v4.png`: png, news asset, deepseek coder v4
+- `digital_euro_app.png`: png, news asset, digital euro app
+- `disney_ai_short.png`: png, news asset, disney ai short
+- `estonia_ai_court.png`: png, news asset, estonia ai court
+- `eu_africa_hydrogen_pipeline.png`: png, news asset, eu africa hydrogen pipeline
+- `eu_robot_tax.png`: png, news asset, eu robot tax
+- `eu_troops_guiana.png`: png, news asset, eu troops guiana
+- `fed_policy_outlook.png`: png, news asset, fed policy outlook
+- `fragile_digital_infrastructure.png`: png, news asset, fragile digital infrastructure
+- `france_flight_ban.png`: png, news asset, france flight ban
+- `fusion_energy_plant.png`: png, news asset, fusion energy plant
+- `gold_hits_3000.png`: png, news asset, gold hits 3000
+- `gold_price_record.png`: png, news asset, gold price record
+- `google_gemini_3_flash.png`: png, news asset, google gemini 3 flash
+- `great_barrier_reef_recovery.png`: png, news asset, great barrier reef recovery
+- `greece_atc_glitch.png`: png, news asset, greece atc glitch
+- `guardian_google_ai_investigation.png`: png, news asset, guardian google ai investigation
+- `hollywood_stunt_strike.png`: png, news asset, hollywood stunt strike
+- `hyper_hurricane_satellite.png`: png, news asset, hyper hurricane satellite
+- `india_rice_production.png`: png, news asset, india rice production
+- `iran_internet_blackout.png`: png, news asset, iran internet blackout
+- `ireland_pm_china_visit.png`: png, news asset, ireland pm china visit
+- `israel_iran_cyber.png`: png, news asset, israel iran cyber
+- `kaist_specedge.png`: png, news asset, kaist specedge
+- `korea_metaverse_law.png`: png, news asset, korea metaverse law
+- `korea_quad_talks.png`: png, news asset, korea quad talks
+- `lithium_price_drop.png`: png, news asset, lithium price drop
+- `lloyds_insurance_freeze.png`: png, news asset, lloyds insurance freeze
+- `london_blackout_cyber.png`: png, news asset, london blackout cyber
+- `london_power_restore.png`: png, news asset, london power restore
+- `mars_return_mission.png`: png, news asset, mars return mission
+- `mexico_border_closed.png`: png, news asset, mexico border closed
+- `microsoft_nuclear_datacenter.png`: png, news asset, microsoft nuclear datacenter
+- `neuralink_blindsight.png`: png, news asset, neuralink blindsight
+- `nigeria_cash_riot.png`: png, news asset, nigeria cash riot
+- `nk_missile_japan_sea.png`: png, news asset, nk missile japan sea
+- `nk_missile_launch.png`: png, news asset, nk missile launch
+- `nordic_naval_drill.png`: png, news asset, nordic naval drill
+- `nvidia_acquires_groq.png`: png, news asset, nvidia acquires groq
+- `nvidia_market_cap_5t.png`: png, news asset, nvidia market cap 5t
+- `ocean_garbage_cleanup.png`: png, news asset, ocean garbage cleanup
+- `oil_price_surge_95.png`: png, news asset, oil price surge 95
+- `openai_atlas_browser.png`: png, news asset, openai atlas browser
+- `openai_gpt_5_2.png`: png, news asset, openai gpt 5 2
+- `panama_canal_surcharge.png`: png, news asset, panama canal surcharge
+- `pfas_enzyme_breakthrough.png`: png, news asset, pfas enzyme breakthrough
+- `phil_uae_deal.png`: png, news asset, phil uae deal
+- `russia_arctic_base.png`: png, news asset, russia arctic base
+- `samsung_ballie_robot.png`: png, news asset, samsung ballie robot
+- `singapore_ai_edu.png`: png, news asset, singapore ai edu
+- `sp500_forecast_2026.png`: png, news asset, sp500 forecast 2026
+- `spacex_ipo.png`: png, news asset, spacex ipo
+- `starship_v3_static_fire.png`: png, news asset, starship v3 static fire
+- `swiss_ski_bar_fire.png`: png, news asset, swiss ski bar fire
+- `syria_airstrikes.png`: png, news asset, syria airstrikes
+- `tehran_curfew.png`: png, news asset, tehran curfew
+- `tesla_berlin_protest.png`: png, news asset, tesla berlin protest
+- `tesla_optimus_gen3_line.png`: png, news asset, tesla optimus gen3 line
+- `thwaites_glacier_crack.png`: png, news asset, thwaites glacier crack
+- `toyota_solid_state_car.png`: png, news asset, toyota solid state car
+- `turkey_bosphorus_ship.png`: png, news asset, turkey bosphorus ship
+- `unga_venezuela_vote.png`: png, news asset, unga venezuela vote
+- `unsc_venezuela_clash.png`: png, news asset, unsc venezuela clash
+- `us_antiwar_protest.png`: png, news asset, us antiwar protest
+- `us_arrests_maduro.png`: png, news asset, us arrests maduro
+- `us_congress_gridlock.png`: png, news asset, us congress gridlock
+- `us_finance_ddos.png`: png, news asset, us finance ddos
+- `venezuela_oil_geopolitics.png`: png, news asset, venezuela oil geopolitics
+- `vietnam_export_record.png`: png, news asset, vietnam export record
+- `vietnam_stock_drop.png`: png, news asset, vietnam stock drop
+- `who_h5n8_warning.png`: png, news asset, who h5n8 warning
+
+法则: 成员完整·一行一文件·父级链接·技术词前置
+
+[PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

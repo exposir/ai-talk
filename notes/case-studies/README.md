@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 工程案例研究 文档
+- [POS]: 位于 notes/case-studies 模块的 工程案例研究 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 工程案例研究
 
 优秀项目的技术实现和工程经验学习。

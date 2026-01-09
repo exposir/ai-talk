@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 快捷键速查 文档
+- [POS]: 位于 notes/claude-code 模块的 快捷键速查 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 快捷键速查
 
 ## 通用控制

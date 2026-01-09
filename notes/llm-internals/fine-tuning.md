@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/llm-internals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 微调技术 文档
+- [POS]: 位于 notes/llm-internals 模块的 微调技术 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 微调技术
 
 在预训练基础上进行任务适配。

@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/telegram/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 MTProto 协议深度解析 文档
+- [POS]: 位于 notes/case-studies/telegram 模块的 MTProto 协议深度解析 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # MTProto 协议深度解析
 
 > 深入分析 Telegram 自研的移动优先加密协议

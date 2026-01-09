@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/llm-internals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Transformer 架构 文档
+- [POS]: 位于 notes/llm-internals 模块的 Transformer 架构 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Transformer 架构
 
 Transformer 模型的核心原理和组件详解。

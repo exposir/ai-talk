@@ -4,9 +4,11 @@
 
 通用指南文档。
 
-## 成员清单
+成员清单
+- `CLAUDE.md`: markdown, module map, guide 索引
+- `geb-protocol-explained.md`: markdown, guide, GEB 协议解读
+- `index.md`: markdown, index, 指南目录
 
-- `geb-protocol-explained.md`: GEB 分形文档系统协议解读
-- `index.md`: 指南索引
+法则: 成员完整·一行一文件·父级链接·技术词前置
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

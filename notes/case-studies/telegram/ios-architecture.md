@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/case-studies/telegram/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Telegram iOS 前端架构深度解析 文档
+- [POS]: 位于 notes/case-studies/telegram 模块的 Telegram iOS 前端架构深度解析 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Telegram iOS 前端架构深度解析
 
 > 事无巨细地剖析 Telegram iOS 的工程实现，适合 iOS 开发者深度学习

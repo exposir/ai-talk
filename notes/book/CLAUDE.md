@@ -4,9 +4,11 @@
 
 书籍阅读笔记。
 
-## 成员清单
+成员清单
+- `CLAUDE.md`: markdown, module map, book 索引
+- `ecma-262.md`: markdown, book notes, ECMA-262
+- `you-dont-know-js.md`: markdown, book notes, You Don't Know JS
 
-- `ecma-262.md`: ECMA-262 规范笔记
-- `you-dont-know-js.md`: 《你不知道的 JavaScript》笔记
+法则: 成员完整·一行一文件·父级链接·技术词前置
 
 [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md

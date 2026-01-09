@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 高级配置 文档
+- [POS]: 位于 notes/antigravity 模块的 高级配置 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 高级配置
 
 Antigravity 的进阶配置选项，用于自定义 Agent 行为和工作流程。

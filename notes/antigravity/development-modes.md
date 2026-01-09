@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 开发模式详解 文档
+- [POS]: 位于 notes/antigravity 模块的 开发模式详解 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 开发模式详解
 
 Antigravity 提供三种开发模式，适应不同场景需求。

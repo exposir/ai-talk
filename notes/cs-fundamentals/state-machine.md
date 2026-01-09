@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/cs-fundamentals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 状态机 (State Machine) 文档
+- [POS]: 位于 notes/cs-fundamentals 模块的 状态机 (State Machine) 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 状态机 (State Machine)
 
 ## 什么是状态机？

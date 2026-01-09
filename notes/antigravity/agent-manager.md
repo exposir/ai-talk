@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Agent Manager 详解 文档
+- [POS]: 位于 notes/antigravity 模块的 Agent Manager 详解 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Agent Manager 详解
 
 Agent Manager 是 Antigravity 的核心控制中心，用于创建、管理和监控 AI Agent。

@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/ai-fundamentals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 AI 术语表 文档
+- [POS]: 位于 notes/ai-fundamentals 模块的 AI 术语表 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # AI 术语表
 
 > 常见 AI/LLM 术语解释

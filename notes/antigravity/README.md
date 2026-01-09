@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Google Antigravity 使用指南 文档
+- [POS]: 位于 notes/antigravity 模块的 Google Antigravity 使用指南 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Google Antigravity 使用指南
 
 Google Antigravity 是由 Google DeepMind 于 2025 年 11 月推出的 **Agent-First**

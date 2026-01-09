@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/tools-and-apis/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 AI 开发工具汇总 文档
+- [POS]: 位于 notes/tools-and-apis 模块的 AI 开发工具汇总 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # AI 开发工具汇总
 
 业内最新 AI 编程助手与开发工具。

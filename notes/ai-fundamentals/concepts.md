@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/ai-fundamentals/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 AI 概念与关系图谱 文档
+- [POS]: 位于 notes/ai-fundamentals 模块的 AI 概念与关系图谱 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # AI 概念与关系图谱
 
 本文档旨在梳理人工智能领域的核心概念，重点阐述它们在技术栈中的位置及其相互之间的逻辑关系。

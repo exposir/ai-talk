@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Claude Code 大型前端项目最佳实践 文档
+- [POS]: 位于 notes/claude-code 模块的 Claude Code 大型前端项目最佳实践 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Claude Code 大型前端项目最佳实践
 
 使用 Claude Code 设计和开发大型前端项目的**社区验证**实战指南。

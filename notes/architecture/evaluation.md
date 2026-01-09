@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/architecture/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 2025 通用助手架构方案评审对比 文档
+- [POS]: 位于 notes/architecture 模块的 2025 通用助手架构方案评审对比 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 2025 通用助手架构方案评审对比
 
 本文档对 `architecture_design_2025.md`（标准版）与

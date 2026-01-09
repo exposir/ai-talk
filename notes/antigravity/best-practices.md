@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/antigravity/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 Antigravity 最佳实践 文档
+- [POS]: 位于 notes/antigravity 模块的 Antigravity 最佳实践 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # Antigravity 最佳实践
 
 高效使用 Antigravity 的社区验证经验和进阶技巧。

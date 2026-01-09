@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/claude-code/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 业内实践经验 文档
+- [POS]: 位于 notes/claude-code 模块的 业内实践经验 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 业内实践经验
 
 来自社区和资深用户的实战经验总结。

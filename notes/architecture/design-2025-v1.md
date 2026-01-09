@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 notes/architecture/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出 2025 双引擎（Dual-Engine）通用助手架构设计 文档
+- [POS]: 位于 notes/architecture 模块的 2025 双引擎（Dual-Engine）通用助手架构设计 笔记
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # 2025 双引擎（Dual-Engine）通用助手架构设计
 
 这是一个基于 **2025 年 Q1** 技术水位（DeepSeek-R1/OpenAI

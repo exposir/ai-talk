@@ -1,3 +1,10 @@
+<!--
+- [INPUT]: 依赖 docs/CLAUDE.md 的模块定位与索引
+- [OUTPUT]: 输出本文件内容
+- [POS]: 位于 docs 模块 的文档
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
+
 # CLAUDE.md
 
 本文件为 Claude Code (claude.ai/code) 在此仓库中工作时提供指导。
