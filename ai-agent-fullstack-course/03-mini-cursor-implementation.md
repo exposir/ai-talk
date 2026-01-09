@@ -158,5 +158,14 @@ await executor.invoke({
 
 - 如果命令执行报错了怎么办？
 - 如果无限循环了怎么办？
-- 如果它把系统文件删了怎么办？我们需要引入更高级的循环控制和状态管理 ——
-  **LangGraph**.
+- 如果它把系统文件删了怎么办？
+
+我们需要引入更高级的循环控制和状态管理 —— **LangGraph**。
+
+但在进入复杂的 LangGraph 之前，我们还有两个核心能力需要解锁：
+
+1.  **MCP (Model Context
+    Protocol)**: 让 Agent 能够跨进程、跨语言调用工具（下一章）。
+2.  **RAG (Retrieval-Augmented Generation)**: 让 Agent 拥有外部知识库。
+
+做好准备，下一章我们将打破 Node.js 的边界，探索 MCP 的世界。
