@@ -16,11 +16,11 @@
 - **[第 1 章: AI Agent 开发全景与技术栈](./01-introduction.md)**
 - **[第 2 章: 从 Tool 开始：让大模型长出"手脚"](./02-tool-fundamentals.md)**
 - **[第 3 章: 实现 Mini Cursor：大模型自动调用 Tool 执行命令](./03-mini-cursor-implementation.md)**
+- **[第 4 章: MCP (Model Context Protocol) - 可跨进程调用的 Tool](./04-mcp-fundamentals.md)**
+- **[第 5 章: 高德 MCP + 浏览器 MCP：复用别人的 MCP Server 有多爽！](./05-mcp-server-reuse.md)**
 - **Prompt Engineering**: 提示词工程进阶与最佳实践
 - **RAG (Retrieval-Augmented Generation)**: 检索增强生成原理与实战
 - **Memory**: Agent 记忆机制设计 (Short-term vs Long-term)
-- **Tools**: 让 LLM 连接外部世界 (Function Calling)
-- **MCP (Model Context Protocol)**: 标准化上下文与能力协议
 
 ### 2. 框架实战
 
