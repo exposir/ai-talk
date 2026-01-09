@@ -1,9 +1,9 @@
-/\*\*
-
+<!--
 - [INPUT]: 依赖 Node.js 环境, LangChain/LangGraph 框架
 - [OUTPUT]: 对外提供 AI Agent 全栈开发课程内容与实战项目
 - [POS]: ai-agent-fullstack-course 的核心入口文档
-- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
 
 # 前端转 AI Agent 全栈通关秘籍
 
@@ -14,6 +14,8 @@
 ### 1. 核心技术基石
 
 - **[第 1 章: AI Agent 开发全景与技术栈](./01-introduction.md)**
+- **[第 2 章: 从 Tool 开始：让大模型长出"手脚"](./02-tool-fundamentals.md)**
+- **[第 3 章: 实现 Mini Cursor：大模型自动调用 Tool 执行命令](./03-mini-cursor-implementation.md)**
 - **Prompt Engineering**: 提示词工程进阶与最佳实践
 - **RAG (Retrieval-Augmented Generation)**: 检索增强生成原理与实战
 - **Memory**: Agent 记忆机制设计 (Short-term vs Long-term)

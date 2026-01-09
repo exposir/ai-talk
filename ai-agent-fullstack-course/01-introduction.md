@@ -1,9 +1,9 @@
-/\*\*
-
+<!--
 - [INPUT]: 依赖无，基于用户提供的课程核心理念
 - [OUTPUT]: 对外提供第一章课程内容：Agent 核心概念与技术栈选择
 - [POS]: ai-agent-fullstack-course 的第一章
-- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
 
 # 第一章：AI Agent 开发要学什么？—— 从大模型到智能体
 
