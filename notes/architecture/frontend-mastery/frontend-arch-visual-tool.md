@@ -1,7 +1,7 @@
 <!--
 - [INPUT]: 依赖 无
 - [OUTPUT]: 输出 前端架构可视化学习工具设计文档
-- [POS]: 位于 notes/architecture 模块的 前端架构可视化学习工具设计文档
+- [POS]: 位于 notes/architecture/frontend-mastery 模块的 前端架构可视化学习工具设计文档
 - [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
