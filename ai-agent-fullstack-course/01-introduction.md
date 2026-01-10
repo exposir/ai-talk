@@ -68,12 +68,13 @@ Agent（智能体）本质上是一个以大模型为核心控制器，具备感
 
 ### 核心框架
 
-1.  **LangChain (Node.js 版)**：
+1.  **LangChain (Node.js 版)**
+    [[GitHub](https://github.com/langchain-ai/langchainjs)]：
     - _定位_：Agent 开发的"瑞士军刀"。
     - _用途_：封装了模型调用、Prompt 模板、RAG 检索、工具链等底层能力。
     - _场景_：开发单个 Agent，处理标准化的任务流。
 
-2.  **LangGraph**：
+2.  **LangGraph** [[GitHub](https://github.com/langchain-ai/langgraphjs)]：
     - _定位_：多 Agent 协作的"指挥官"。
     - _用途_：处理复杂的、有状态的、循环的工作流。
     - _场景_：当任务复杂到需要一个 Agent 写代码，另一个 Agent 审核代码，通过复杂的循环交互来完成时，LangGraph 是必选方案。

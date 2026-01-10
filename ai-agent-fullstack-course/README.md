@@ -13,7 +13,6 @@
 
 ### 1. 核心技术基石
 
-- **[第 0 章: 为什么要用 macOS 做 AI 开发？(Unix 哲学与 CLI 优势)](../notes/tools-and-apis/macos-for-ai-dev.md)**
 - **[第 1 章: AI Agent 开发全景与技术栈](./01-introduction.md)**
 - **[第 2 章: 从 Tool 开始：让大模型长出"手脚"](./02-tool-fundamentals.md)**
 - **[第 3 章: 实现 Mini Cursor：大模型自动调用 Tool 执行命令](./03-mini-cursor-implementation.md)**

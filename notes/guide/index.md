@@ -160,7 +160,6 @@ AI 模型、工具和技术的完整指南。
 
 - [AI 开发工具汇总](../tools-and-apis/ai-coding-tools.md)
 - [AI 配置标准](../tools-and-apis/ai-config-standards.md)
-- [MacOS AI 开发环境](../tools-and-apis/macos-for-ai-dev.md)
 
 ---
 
