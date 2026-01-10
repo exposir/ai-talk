@@ -8,8 +8,10 @@
 
 - `frontend-arch-visual-tool.md`: markdown, design
   doc, 前端架构可视化学习工具设计
+- `framework-internals.md`: markdown, article, 框架架构原理文章
 - `mastering-frontend-architecture.md`: markdown, guide, 前端架构进阶学习路线
 - `CLAUDE.md`: markdown, module map, 模块索引
+- `README.md`: markdown, overview, 模块说明
 
 法则: 成员完整·一行一文件·父级链接·技术词前置
 
