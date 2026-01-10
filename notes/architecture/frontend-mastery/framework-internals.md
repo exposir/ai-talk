@@ -1,91 +1,164 @@
-# 框架架构原理：透视现代前端的"发动机"
+这是一个非常扎实的开始。既然您现在的重点是**构建文本知识库内容**（这将作为工具中的文字说明、节点详情和场景描述的基础），我将为您输出**模块 1：框架架构原理**的详细内容。
 
-> L3 | 依赖: 无 | 输出: 深入解析文章 | 关联:
-> [frontend-arch-visual-tool.md](./frontend-arch-visual-tool.md)
+这份文档的设计目标是直接填入工具的“详情面板”和“架构图数据”中，因此结构会非常清晰化、结构化。
 
-在前端技术日新月异的今天，框架不仅仅是工具，更是架构思想的载体。对于架构师而言，理解 "How
-it works" 远比 "How to
-use" 更重要。本文将深入剖析现代前端框架的核心架构原理，探讨 React、Vue 等主流框架背后的设计权衡（Trade-off），以及这些原理如何在超大型项目中影响架构决策。
+---
 
-## 一、 现代框架的架构演进
+# 模块 1：框架架构原理 (Framework Architecture Principles)
 
-早期的 jQuery 时代，我们手动操作 DOM，这种过程式的方式在规模化后变得难以维护。现代框架的诞生，是为了解决两个核心问题：**状态与 UI 的同步**
-以及 **高效的 DOM 更新**。
+> **模块导读**：本模块深入现代前端框架的底层运行机制。作为架构师，不应仅停留在 API 使用层面，而需理解框架的
+> **Reconciler（协调器）**、**Renderer（渲染器）** 以及 **Reactivity（响应式）**
+> 模型。这将决定你在面对性能瓶颈时的优化手段，以及技术选型的深度依据。
 
-### 1. React：从 VDOM 到 Fiber 的跃迁
+---
 
-React 的核心理念是 `UI = f(state)`，它通过 Virtual DOM
-(VDOM) 构建了一个中间层，将状态变化转化为 DOM 操作。
+## 1. React 架构体系
 
-- **Virtual DOM &
-  Diff**：React 通过比较新旧两棵 VDOM 树的差异，计算出最小的 DOM 操作集。这种机制屏蔽了底层 DOM 的复杂性，实现了跨平台能力（React
-  Native）。
-- **Fiber 架构 (React 16+)**：这是 React 架构的一次重大重构。
-  - **问题背景**：在 React
-    15 中，更新过程是同步且递归的。一旦开始，无法中断。对于庞大的组件树，这一过程占用主线程过久，导致掉帧和卡顿。
-  - **解决方案**：Fiber 将渲染工作拆分为一个个小单元（Unit of
-    Work）。利用浏览器的空闲时间（RequestIdleCallback 思想），实现**可中断、可恢复、可优先级调度**的渲染机制。
-  - **架构意义**：Fiber 不仅解决了性能问题，更为 Concurrent
-    Mode（并发模式）和 Suspense 奠定了基础，使得 React 能够更智能地响应用户交互。
+### 1.1 核心概念：Fiber 架构
 
-### 2. Vue：响应式系统的极致优化
+React 16+ 引入的核心架构，将同步的递归渲染改为异步的可中断渲染。
 
-Vue 选择了另一条路径：**可变的响应式数据**。
+- **架构节点 (Nodes)**：
+- **Scheduler (调度器)**：计算任务优先级，requestIdleCallback 的 polyfill。
+- **Reconciler
+  (协调器)**：找出 UI 变化的组件（Diff 算法），构建 Fiber 树。此阶段可中断。
+- **Renderer (渲染器)**：将变化同步到宿主环境（ReactDOM, React
+  Native）。此阶段不可中断。
+- **Fiber Node**：虚拟 DOM 的升级版，本质是链表结构，包含 `return`, `child`,
+  `sibling` 指针。
 
-- **响应式原理**：
-  - **Vue 2**：基于
-    `Object.defineProperty`，通过 getter/setter 劫持数据访问。缺点是无法检测属性添加/删除，数组操作受限。
-  - **Vue 3**：基于 ES6 `Proxy`，实现了全方位的代理。配合
-    `Reflect`，不仅解决了 Vue 2 的限制，性能也得到了大幅提升。
-- **Compile-time Optimization (编译时优化)**：Vue
-  3 的编译器非常智能。它在编译阶段就能分析出哪些是静态节点（Static
-  Hoisting），哪些是动态节点，并打上补丁标记（Patch
-  Flags）。这使得 Vue 的运行时（Runtime）非常高效，因为它只需要关注那些真正会变化的节点，实现了 "靶向更新"。
+- **数据流向 (Flow)**： `Trigger Update` → `Scheduler (Priority)` →
+  `Reconciler (Render Phase/Loop)` → `Commit Phase` → `DOM Update`
+- **架构师视点 (Deep Dive)**：
+- **双缓存树 (Double Buffering)**：内存中同时存在 `current` 树和
+  `workInProgress` 树。更新在 WIP 树上进行，完成后直接指针互换，避免页面闪烁。
+- **代数效应 (Algebraic
+  Effects)**：Hooks 的实现基础，允许函数在执行过程中暂停并恢复（如
+  `Suspense`）。
 
-## 二、 现代框架架构对比：权衡的艺术
+### 1.2 核心概念：Hooks 实现原理
 
-没有完美的框架，只有最适合场景的权衡。
+- **架构节点**：
+- **Dispatcher**：根据挂载(Mount)或更新(Update)阶段分发不同的 Hook 实现。
+- **MemoizedState**：链表结构，存储 Hook 的状态。
 
-### 1. 运行时 (Runtime) vs 编译时 (Compile-time)
+- **关键机制**：
+- **链表顺序**：Hooks 必须在循环/条件语句外调用，因为 React 完全依赖**调用顺序**来映射 State 和 Component。
+- **闭包陷阱**：`useEffect` 或 `useCallback`
+  捕获了旧的 Props/State，导致逻辑错误。需正确管理依赖数组。
 
-- **React
-  (重运行时)**：React 的 JSX 非常灵活，本质是 JavaScript。这意味着 React 很难在编译阶段做太多优化，必须依赖强大的运行时（Fiber）来调度和 Diff。这带来了极高的灵活性，但也增加了运行时的负担。
-- **Vue/Svelte
-  (重编译时)**：Vue 的模板语法约束了开发者的写法，但给了编译器巨大的优化空间。Svelte 更是激进，直接在编译阶段将组件转换为高效的原生 DOM 操作代码，几乎消除了运行时的开销。
+### 1.3 前沿：React Server Components (RSC)
 
-| 特性           | React                     | Vue                    | Svelte               |
-| :------------- | :------------------------ | :--------------------- | :------------------- |
-| **核心机制**   | VDOM + Fiber Loop         | 响应式 + 编译优化      | 无 VDOM，纯编译      |
-| **灵活性**     | ⭐⭐⭐⭐⭐ (JS即UI)       | ⭐⭐⭐ (模板限制)      | ⭐⭐⭐ (模版限制)    |
-| **运行时体积** | 较大                      | 中等                   | 极小                 |
-| **心智模型**   | 不可变数据，UI = f(state) | 可变数据，自动追踪依赖 | 可变数据，编译器魔法 |
+- **架构变化**：
+- **Client Components**：传统的 React 组件，在浏览器运行。
+- **Server
+  Components**：在服务端运行，直接访问 DB/FS，序列化为 JSON 发送给前端，**无 Bundle 体积**。
 
-### 2. 细粒度更新 (Signals)
+- **交互流程**： `Browser Request` → `Server: Render RSC to JSON` →
+  `Browser: Stream & Parse` → `Reconcile with Client Tree`
 
-近年来，Signals（信号）概念异军突起（SolidJS, Preact,
-Qwik）。Signals 允许框架精确地知道哪个数据变化影响了哪个 DOM 节点，从而直接更新该节点，跳过整个组件树的 Diff 过程。这是一种极致的性能追求，Vue 的响应式系统本质上也是一种细粒度更新，正在被更多框架借鉴。
+---
 
-## 三、 超大型项目中的架构决策
+## 2. Vue 架构体系 (Vue 3)
 
-通过理解上述原理，当面对一个 300 万行代码的超大型项目时，我们能做出更理性的决策：
+### 2.1 核心概念：响应式系统 (Reactivity)
 
-### 1. 为什么选择 React？
+- **架构节点**：
+- **Proxy**：拦截对象读写操作（替代 Vue 2 的 `Object.defineProperty`）。
+- **Dep (Dependency)**：依赖收集器，使用 `Set` 存储副作用。
+- **Effect**：副作用函数（如组件渲染函数、computed、watch）。
 
-- **场景**：复杂的企业级应用，交互逻辑极度复杂，需要高度的动态性和灵活性。
-- **理由**：React 的 Fiber 架构在处理复杂状态和高频交互（如拖拽、动画协同）时，能提供更平滑的体验（并发特性）。其庞大的生态和 "JS
-  First" 的理念，更适合构建复杂的抽象层和设计系统。
+- **数据流向**：
+- **Track (读)**：`Get Property` → `Track()` → `Dep.add(Effect)`
+- **Trigger (写)**：`Set Property` → `Trigger()` → `Dep.forEach(run Effect)`
 
-### 2. 为什么选择 Vue？
+### 2.2 核心概念：编译时优化 (Compiler Optimization)
 
-- **场景**：需要快速迭代，团队成员水平参差不齐，或者对包体积和首屏性能有一定要求。
-- **理由**：Vue 的上手曲线更平缓，响应式系统符合直觉。编译时优化保证了下限很高，不易写出性能极差的代码。
+Vue 的独特优势在于它是一个“编译时 + 运行时”的框架。
 
-### 3. 未来的方向：Server Components
+- **架构节点**：
+- **Compiler**：将 Template 编译为 Render Function。
+- **PatchFlags**：编译时生成的标记（如 `TEXT`, `CLASS`,
+  `PROPS`），标记哪些部分是动态的。
+- **Block Tree**：配合 PatchFlags，Diff 算法只比对动态节点，忽略静态节点。
 
-不管是 React Server Components
-(RSC) 还是 Vue 的类似探索，都在试图打破前后端的边界，将组件渲染挪回服务端。这对于减少 Bundle
-Size、提升首屏性能是革命性的。架构师需要关注这一趋势，评估其对现有架构（如 BFF 层、API 设计）的冲击。
+- **架构师视点**：
+- **静态提升 (Static
+  Hoisting)**：静态节点被提升到渲染函数之外，只创建一次，后续复用。
+- **基于形状的优化**：相比 React 的全量 Diff，Vue 通过编译时信息将 Diff 复杂度从 O(n) 降低到 O(n
+  dynamic)。
 
-## 结语
+---
 
-框架在变，但架构的本质——**解决复杂性、提升效率、保证质量**——从未改变。掌握框架的底层原理，不仅能让你写出性能更好的代码，更能让你在面对技术选型时，不再迷信权威，而是基于**原理和场景**做出最正确的判断。这是一名前端架构师的必经之路。
+## 3. 现代架构模式对比
+
+### 3.1 运行时 vs 编译时 (Runtime vs Compile-time)
+
+- **重运行时 (React)**：
+- **特点**：极度灵活，JS 即 View。
+- **代价**：浏览器需要下载并执行大量运行时代码（Scheduler, Diff
+  Algo），初始化负荷大。
+
+- **重编译时 (Svelte/Solid)**：
+- **特点**：No Virtual DOM。在构建阶段将代码转换为直接操作 DOM 的命令。
+- **优势**：极小的 Bundle 体积，极快的更新速度。
+
+### 3.2 信号机制 (Signals)
+
+- **代表**：SolidJS, Preact Signals, Vue Ref, Angular Signals。
+- **原理**：细粒度的响应式更新。
+- **对比 React**：
+- **React**：State 变化 → 组件重执行 → Diff → 更新 DOM。
+- **Signals**：Signal 变化 → 直接更新绑定的 DOM 节点（组件不重执行）。
+
+- **趋势**：React 依然坚持 Pull 模型，而其他框架都在转向 Push (Signals) 模型。
+
+### 3.3 岛屿架构 (Islands Architecture)
+
+- **代表**：Astro, Fresh。
+- **核心理念**：默认输出纯 HTML（0 KB
+  JS），只对需要交互的组件（岛屿）进行“注水”（Hydration）。
+- **架构价值**：极大地优化了首屏性能（FCP/LCP），适合内容型网站（博客、文档、营销页）。
+
+---
+
+## 4. 超大型项目选型指南 (Strategic Guide)
+
+> **场景设定**：300万行代码，200+ 开发者，生命周期 5 年+。
+
+### 4.1 选型决策矩阵
+
+| 维度         | React                 | Vue                   | 架构师建议                                                        |
+| ------------ | --------------------- | --------------------- | ----------------------------------------------------------------- |
+| **灵活性**   | ⭐⭐⭐⭐⭐ (极高)     | ⭐⭐⭐ (中等)         | 需要高度定制化架构（如自研渲染引擎、复杂表单设计器）选 React。    |
+| **规范性**   | ⭐⭐ (依赖团队规范)   | ⭐⭐⭐⭐ (框架强制)   | 团队水平参差不齐、人员流动大，Vue 的模版语法能保证下限。          |
+| **生态系统** | ⭐⭐⭐⭐⭐ (统治级)   | ⭐⭐⭐⭐ (丰富)       | 需要使用特定的企业级库（如某些复杂的 Grid/Chart）时，React 优先。 |
+| **TS 支持**  | ⭐⭐⭐⭐⭐ (原生亲和) | ⭐⭐⭐⭐ (Volar 加持) | 300万行项目必须全量 TS。React 的 JSX 类型推导更自然。             |
+| **性能上限** | 需要手动优化 (Memo)   | 自动优化 (Compiler)   | React 容易写出性能瓶颈，需要设立严格的 Code Review 和性能监控。   |
+
+### 4.2 架构治理策略
+
+1. **框架锁定与收敛**：
+
+- 严禁一个项目中混用多种框架（微前端除外）。
+- 锁定大版本，建立统一的 `UI Kit` 封装底层组件，隔离框架 API 变动风险。
+
+2. **性能预算 (Performance Budget)**：
+
+- 大型 React 项目必须实施：
+- **严格的 Memoization 策略**。
+- **Context 拆分**：避免一个 Context 包含过多不相关数据导致全量重渲染。
+
+3. **开发者体验 (DX)**：
+
+- React 项目推荐使用 **RSC** 或 **Next.js** 架构，利用服务端能力减轻客户端负担。
+- Vue 项目利用 **Composition API**
+  提取复用逻辑（Composables），避免 Mixins 导致的代码黑洞。
+
+---
+
+### [Next Step]
+
+**Would you like me to proceed to "Module 2: State Management Architecture"?**
+(This will cover Redux, Zustand, MobX, Context, and Server State strategies for
+large-scale apps.)
