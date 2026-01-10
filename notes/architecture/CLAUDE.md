@@ -14,6 +14,7 @@
 - `evaluation.md`: markdown, evaluation, 评估方案
 - `frontend-arch-visual-tool.md`: markdown, design
   doc, 前端架构可视化学习工具设计
+- `mastering-frontend-architecture.md`: markdown, guide, 前端架构进阶学习路线
 - `usage-guide.md`: markdown, guide, 使用指南
 
 法则: 成员完整·一行一文件·父级链接·技术词前置
