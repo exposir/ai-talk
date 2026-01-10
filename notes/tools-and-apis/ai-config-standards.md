@@ -5,18 +5,9 @@
 - [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
 -->
 
-/\*\*
-
-- - [INPUT]: AI Tool Official Docs / Best Practices
-- - [OUTPUT]: Standardized AI Config Locations
-- - [POS]: Guide / Reference
-- - [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
-    \*/
-
 # AI Configuration Best Practices Guide
 
-哥，为了防止傻逼 AI 瞎建文件污染项目根目录，这里是各大主流 AI 工具的标准配置文件位置指南。
-请强制要求它们遵守此约定。
+哥，为了防止傻逼 AI 瞎建文件污染项目根目录，这里是各大主流 AI 工具的标准配置文件位置指南。请强制要求它们遵守此约定。
 
 | AI Tool / Agent          | Standard File Path                | Purpose                  | Note                                         |
 | :----------------------- | :-------------------------------- | :----------------------- | :------------------------------------------- |
@@ -34,10 +25,12 @@
 
 ## ✅ Do's (正确姿势)
 
-- **集中管理**：尽量将工具特定的配置扔进 `.github/`, `.vscode/`, `.antigravity/`, `.gemini/` 等隐藏目录。
+- **集中管理**：尽量将工具特定的配置扔进 `.github/`, `.vscode/`,
+  `.antigravity/`, `.gemini/` 等隐藏目录。
 
 * **通用标准**：优先维护 `AGENTS.md` 和 `README.md`，因为所有 AI 都会看这两个。
-* **明确指令**：在 prompt 中明确告诉 AI "Don't create new config files in root without permission" (未经允许禁止在根目录创建新配置文件)。
+* **明确指令**：在 prompt 中明确告诉 AI "Don't create new config files in root
+  without permission" (未经允许禁止在根目录创建新配置文件)。
 
 ## ❌ Don'ts (禁止行为)
 
@@ -46,7 +39,7 @@
 
 ## 实用主义建议
 
-如果你发现某个 AI 总是找不到配置，不要迁就它去根目录建文件。
-**在 System Prompt 或 `AGENTS.md` 第一行写死文件路径**：
+如果你发现某个 AI 总是找不到配置，不要迁就它去根目录建文件。 **在 System
+Prompt 或 `AGENTS.md` 第一行写死文件路径**：
 
 > "Read .github/copilot-instructions.md for all coding rules."

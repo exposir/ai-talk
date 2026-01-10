@@ -130,21 +130,21 @@ Agent 理解两相必须同构: 任何一相的变化必须在另一相显现双
 
 <L3_TEMPLATE> L3 文件头部契约
 
-/\*\*
+Code Files (.ts, .js, .go, etc.): /\*\*
 
 - [INPUT]: 依赖 {模块/文件} 的 {具体能力}
 - [OUTPUT]: 对外提供 {导出的函数/组件/类型/常量}
 - [POS]: {所属模块} 的 {角色定位}，{与兄弟文件的关系}
 - [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
 
-示例:
+Markdown Files (.md):
 
-/\*\*
-
-- [INPUT]: 依赖 @/ui/tokens 的 laperColors，依赖 react 的 useState/useEffect
-- [OUTPUT]: 对外提供 AvatarGenerator 组件、useAvatarStyle hook
-- [POS]: components/avatar 的核心渲染器，被 UserProfile 和 CommentItem 消费
-- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md \*/
+<!--
+- [INPUT]: 依赖 {模块/文件} 的 {具体能力}
+- [OUTPUT]: 本文档提供 {知识/规范/记录}
+- [POS]: {所属模块} 的 {角色定位}
+- [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+-->
 
 法则: INPUT 说清依赖什么·OUTPUT 说清提供什么·POS 说清自己是谁
 
