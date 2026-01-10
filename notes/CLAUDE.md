@@ -5,8 +5,10 @@
 知识笔记库，涵盖 AI 基础、LLM 原理、工具实践、案例研究等多个领域。
 
 成员清单
+
 - `CLAUDE.md`: markdown, module map, notes 索引
 - `index.md`: markdown, index, 笔记目录入口
+- `bookmarks.md`: markdown, bookmarks, 网页收藏夹
 - `ai-fundamentals/`: dir, topic module, AI 基础知识
 - `antigravity/`: dir, tool guide, Antigravity 文档
 - `architecture/`: dir, topic module, 架构设计笔记
