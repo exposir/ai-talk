@@ -11,6 +11,20 @@
 
 ---
 
+## 🎓 AI Agent 全栈开发课程
+
+从零构建 AI Agent 的实战课程。
+
+- [01. 课程介绍](../../ai-agent-fullstack-course/01-introduction.md)
+- [02. 工具基础](../../ai-agent-fullstack-course/02-tool-fundamentals.md)
+- [03. Mini Cursor 实现](../../ai-agent-fullstack-course/03-mini-cursor-implementation.md)
+- [04. MCP 协议基础](../../ai-agent-fullstack-course/04-mcp-fundamentals.md)
+- [05. MCP Server 复用](../../ai-agent-fullstack-course/05-mcp-server-reuse.md)
+- [06. RAG 与向量检索](../../ai-agent-fullstack-course/06-rag-and-vectors.md)
+- [07. RAG 加载器与分割器](../../ai-agent-fullstack-course/07-rag-loaders-and-splitters.md)
+
+---
+
 ## 🤖 AI 编程助手
 
 ### Claude Code
@@ -29,7 +43,7 @@ Anthropic 终端 AI 编程助手完整使用指南。
 - [前端架构](../claude-code/frontend-architecture.md)
 - [最佳实践](../claude-code/best-practices.md)
 - [社区实践](../claude-code/community-practices.md)
-- [笔记](../claude-code/notes.md)
+- [个人笔记](../claude-code/notes.md)
 
 ### Antigravity
 
@@ -46,7 +60,7 @@ Google Agent-First IDE 使用指南。
 - [快捷键](../antigravity/shortcuts.md)
 - [定价与用量](../antigravity/pricing-usage.md)
 - [最佳实践](../antigravity/best-practices.md)
-- [笔记](../antigravity/notes.md)
+- [使用笔记](../antigravity/notes.md)
 
 ---
 
@@ -184,3 +198,11 @@ AI 模型、工具和技术的完整指南。
 - [项目结构优化](../project-meta/project-structure-optimization.md)
 - [文档项目结构优化](../project-meta/structure-optimization-for-documentation-project.md)
 - [结构建议](../project-meta/structure-recommendations.md)
+
+---
+
+## 🔗 资源与收藏
+
+- [网页收藏夹](../bookmarks.md)
+- [资料库 (Library)](../../library/)
+- [项目文档 (Docs)](../../docs/claude.zh-cn.md)
